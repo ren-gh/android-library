@@ -1,0 +1,14 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item>
+        <shape>
+            <!-- View填充颜色 -->
+            <corners android:radius="@dimen/dp_6" />
+            <stroke
+                android:width="@dimen/dp_6"
+                android:color="@color/colorWhite" />
+            <solid android:color="@color/colorDefaultBg" />
+        </shape>
+    </item>
+
+</layer-list>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">library_common</string>
+    <string name="dialog_btn_yes">YES</string>
+    <string name="dialog_btn_no">NO</string>
+</resources>
