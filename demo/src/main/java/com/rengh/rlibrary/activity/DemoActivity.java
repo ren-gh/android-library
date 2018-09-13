@@ -33,7 +33,8 @@ public class DemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                LanHelper.getMac(mContext);
+                String mac = LanHelper.getMac(mContext);
+                mTvInfo.setText(mac);
             }
         });
         dialog.setButtonYesClick(new View.OnClickListener() {

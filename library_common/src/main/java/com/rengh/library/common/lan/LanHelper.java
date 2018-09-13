@@ -30,7 +30,7 @@ public class LanHelper {
     public static String getMac(Context context) {
         StringBuilder resultBuilder = RunCommand.run("getMac()", "busybox ifconfig");
         LogUtils.d(TAG, "result: " + resultBuilder);
-        return null;
+        return resultBuilder.toString();
     }
 
     public static List<LanDevice> getDevicesFromLan() {
