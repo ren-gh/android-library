@@ -1,3 +1,4 @@
+
 package com.rengh.library.common.util;
 
 import java.io.BufferedReader;
@@ -8,11 +9,12 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 public class RunCommand {
-    public static boolean run(String TAG, String command) {
+    public static StringBuilder run(String TAG, String command) {
         return run(TAG, command.split(" "));
     }
 
-    public static boolean run(String TAG, String... args) {
+    public static StringBuilder run(String TAG, String... args) {
+        StringBuilder resultBuilder = new StringBuilder();
         StringBuilder builder = new StringBuilder();
         for (String arg : args) {
             builder.append(arg).append(" ");
@@ -32,9 +34,11 @@ public class RunCommand {
                         proc.getOutputStream())), true);
                 String result;
                 while ((result = in.readLine()) != null) {
+                    resultBuilder.append(result).append("\n");
                     LogUtils.d(TAG, "run() result:" + result);
                 }
                 while ((result = err.readLine()) != null) {
+                    resultBuilder.append(result).append("\n");
                     LogUtils.d(TAG, "run() err:" + result);
                 }
             }
@@ -68,6 +72,7 @@ public class RunCommand {
                 proc = null;
             }
         }
-        return success;
+        resultBuilder.append(success);
+        return resultBuilder;
     }
 }

@@ -6,4 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".activity.DemoActivity">
 
+    <TextView
+        android:id="@+id/tv_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_8"
+        android:elevation="@dimen/dp_4"
+        android:text="Network Info"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

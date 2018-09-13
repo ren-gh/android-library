@@ -15,12 +15,23 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
+import com.rengh.library.common.util.FileUtils;
 import com.rengh.library.common.util.LogUtils;
+import com.rengh.library.common.util.RunCommand;
 
 public class LanHelper {
     private static final String TAG = "LanHelper";
+
+    public static String getMac(Context context) {
+        StringBuilder resultBuilder = RunCommand.run("getMac()", "busybox ifconfig");
+        LogUtils.d(TAG, "result: " + resultBuilder);
+        return null;
+    }
 
     public static List<LanDevice> getDevicesFromLan() {
         String ip = getIp();
