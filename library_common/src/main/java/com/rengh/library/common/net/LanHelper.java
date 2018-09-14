@@ -1,40 +1,25 @@
 
-package com.rengh.library.common.lan;
+package com.rengh.library.common.net;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.Inet6Address;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
-import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
-import com.rengh.library.common.util.FileUtils;
 import com.rengh.library.common.util.LogUtils;
-import com.rengh.library.common.util.RunCommand;
 
 public class LanHelper {
     private static final String TAG = "LanHelper";
 
-    public static String getMac(Context context) {
-        StringBuilder resultBuilder = RunCommand.run("getMac()", "busybox ifconfig");
-        LogUtils.d(TAG, "result: " + resultBuilder);
-        return resultBuilder.toString();
-    }
-
     public static List<LanDevice> getDevicesFromLan() {
-        String ip = getIp();
+        String ip = LocalNetHelper.getIp();
         if (TextUtils.isEmpty(ip)) {
             return null;
         }
@@ -42,32 +27,6 @@ public class LanHelper {
         LogUtils.i(TAG, "ip: " + ip + ", host: " + host);
         sendMsg(host);
         return readArp();
-    }
-
-    public static String getIp() {
-        String localIp = null;
-        try {
-            Enumeration nis = NetworkInterface.getNetworkInterfaces();
-            InetAddress ia = null;
-            while (nis.hasMoreElements()) {
-                NetworkInterface ni = (NetworkInterface) nis.nextElement();
-                Enumeration<InetAddress> ias = ni.getInetAddresses();
-                while (ias.hasMoreElements()) {
-                    ia = ias.nextElement();
-                    if (ia instanceof Inet6Address) {
-                        continue;// skip ipv6
-                    }
-                    String ip = ia.getHostAddress();
-                    if (!"127.0.0.1".equals(ip)) {
-                        localIp = ia.getHostAddress();
-                        break;
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            LogUtils.e(TAG, "SocketException: " + e.getMessage());
-        }
-        return localIp;
     }
 
     private static void sendMsg(String net) {

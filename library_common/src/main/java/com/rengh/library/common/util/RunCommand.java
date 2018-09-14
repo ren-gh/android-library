@@ -1,6 +1,8 @@
 
 package com.rengh.library.common.util;
 
+import android.support.annotation.Nullable;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,6 +11,17 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 public class RunCommand {
+    @Nullable
+    public static StringBuilder getRunResult(StringBuilder resultBuilder) {
+        if (resultBuilder.lastIndexOf("\n") != 0) {
+            String result = resultBuilder.substring(resultBuilder.lastIndexOf("\n"));
+            if (!"true".equalsIgnoreCase(result.trim())) {
+                return null;
+            }
+        }
+        return resultBuilder;
+    }
+
     public static StringBuilder run(String TAG, String command) {
         return run(TAG, command.split(" "));
     }

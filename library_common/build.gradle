@@ -28,6 +28,9 @@ dependencies {
     implementation('com.android.support.constraint:constraint-layout:1.1.2')
 
     api 'com.github.bumptech.glide:glide:4.6.1'
+    api 'com.github.bumptech.glide:glide:4.6.1'
+    api 'io.reactivex:rxjava:1.1.6'
+    api 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -46,12 +49,12 @@ task buildJar(type: Jar, dependsOn: assemble) {
     archiveName fileName + '.jar'
 
     manifest {
-        attributes 'Manifest-Version':android.defaultConfig.versionName
+        attributes 'Manifest-Version': android.defaultConfig.versionName
         attributes 'Author': 'LAP Team'
     }
 }
 
-task copyJar(type: Copy){
+task copyJar(type: Copy) {
     from "build/libs/${fileName}.jar"
     into "../target"
 }
@@ -71,7 +74,7 @@ task javadoc(type: Javadoc) {
 }
 
 task zipJavadoc(dependsOn: javadoc, type: Zip) {
-    from ('build/docs/javadoc/')
+    from('build/docs/javadoc/')
     archiveName = "${fileName}_javadoc.zip"
     destinationDir = file('../target')
 }
