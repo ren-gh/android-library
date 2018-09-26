@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -106,14 +107,14 @@ public class AliActivity extends AppCompatActivity implements WeakHandlerListene
 
         ItemBean titleBean = new ItemBean();
         titleBean.title = new ItemBean.Title();
-        titleBean.title.title = "标题";
+        titleBean.title.title = null;
         mDatas.add(titleBean);
 
         ItemBean redPkgBean = new ItemBean();
         redPkgBean.redPackage = new ItemBean.RedPackage();
         redPkgBean.redPackage.activityCode = "22222";
-        redPkgBean.redPackage.picUrl = "https://img.alicdn.com/imgextra/i2/1943402959/O1CN011XjGQ5BihuPlDD3_!!1943402959.gif";
         redPkgBean.redPackage.pid = "12345";
+        redPkgBean.redPackage.picUrl = "https://img.alicdn.com/imgextra/i2/1943402959/O1CN011XjGQ5BihuPlDD3_!!1943402959.gif";
         mDatas.add(redPkgBean);
 
         ItemBean videoBean = new ItemBean();
@@ -129,7 +130,7 @@ public class AliActivity extends AppCompatActivity implements WeakHandlerListene
         videoBean.video.video3.url = "https://img.alicdn.com/imgextra/i2/1114511827/O1CN011PMo4HVB0dQnaDM_!!1114511827.jpg";
         mDatas.add(videoBean);
 
-        int max = 1000;
+        int max = 50;
         int line = max / 3;
         int last = max - 3 * line;
         LogUtils.i(TAG, "max: " + max + ", line: " + line + ", last: " + last);
@@ -416,7 +417,7 @@ public class AliActivity extends AppCompatActivity implements WeakHandlerListene
                 TextView tvTitle = ((TitleViewHolder) holder).tvTitle;
                 String title = beans.get(position).title.title;
                 if (TextUtils.isEmpty(title)) {
-                    tvTitle.setVisibility(View.INVISIBLE);
+                    tvTitle.setVisibility(View.GONE);
                 } else {
                     tvTitle.setText(title);
                 }
@@ -434,6 +435,15 @@ public class AliActivity extends AppCompatActivity implements WeakHandlerListene
                 }
                 imageButton.setOnFocusChangeListener(onFocusChangeListener1);
                 imageButton.setOnClickListener(onClickListener1);
+
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageButton.getLayoutParams();
+                if (mDatas.size() > 3) {
+                    // 有商品
+                    params.setMargins(0, 200, 0, 0);
+                } else {
+                    params.setMargins(0, 324, 0, 0);
+                }
+                imageButton.setLayoutParams(params);
             } else if (holder instanceof VideoViewHolder) {
                 LogUtils.i(TAG, "bind video..." + position + ", bean: " + beans.get(position));
                 TextView tvTitle = ((VideoViewHolder) holder).tvTitle;

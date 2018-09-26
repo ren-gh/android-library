@@ -7,25 +7,24 @@
         android:id="@+id/tv_title_videos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_12"
-        android:text="视频集合"
-        android:textColor="@color/colorBlack"
-        android:textSize="@dimen/sp_8"
+        android:layout_marginLeft="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_10"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/sp_13"
         android:textStyle="normal" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_title_videos"
-        android:layout_marginTop="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12">
+        android:layout_marginTop="@dimen/dp_6_5"
+        android:paddingLeft="@dimen/dp_40"
+        android:paddingRight="@dimen/dp_40">
 
         <ImageButton
             android:id="@+id/img_btn_video_1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_120"
+            android:layout_height="@dimen/dp_101"
             android:layout_weight="1"
             android:background="@color/colorTrans"
             android:padding="@dimen/dp_2"
@@ -34,8 +33,8 @@
         <ImageButton
             android:id="@+id/img_btn_video_2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_120"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_height="@dimen/dp_101"
+            android:layout_marginLeft="@dimen/dp_10"
             android:layout_weight="1"
             android:background="@color/colorTrans"
             android:padding="@dimen/dp_2"
@@ -44,8 +43,8 @@
         <ImageButton
             android:id="@+id/img_btn_video_3"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_120"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_height="@dimen/dp_101"
+            android:layout_marginLeft="@dimen/dp_10"
             android:layout_weight="1"
             android:background="@color/colorTrans"
             android:padding="@dimen/dp_2"

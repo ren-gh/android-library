@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@color/colorAliBg"
     tools:context=".activity.AliActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
         android:scrollbars="none" />
 
 </RelativeLayout>
