@@ -1,11 +1,11 @@
-package com.rengh.rlibrary
+package com.rengh.rlibrary.activity
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.rengh.library.common.dialog.RDialog
+import com.rengh.rlibrary.R
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_main.*

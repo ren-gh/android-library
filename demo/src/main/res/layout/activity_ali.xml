@@ -1,102 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".activity.AliActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_items"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".activity.AliActivity">
-
-    <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:focusable="false">
-
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/dp_12"
-                android:orientation="vertical">
-
-            <TextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:textColor="@color/colorBlack"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/sp_18"
-                    android:text="双11促销"/>
-
-            <TextView
-                    android:id="@+id/tv_title_red_pkg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
-                    android:textColor="@color/colorBlack"
-                    android:textStyle="normal"
-                    android:textSize="@dimen/sp_8"
-                    android:text="领取红包"/>
-
-            <ImageButton
-                    android:id="@+id/img_btn_red_pkg"
-                    android:layout_width="@dimen/dp_600"
-                    android:layout_height="@dimen/dp_120"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@color/colorAccent"
-                    android:nextFocusDown="@id/img_btn_video_1"/>
-
-            <TextView
-                    android:id="@+id/tv_title_videos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_12"
-                    android:textColor="@color/colorBlack"
-                    android:textStyle="normal"
-                    android:textSize="@dimen/sp_8"
-                    android:text="视频集合"/>
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/dp_12"
-                    android:paddingRight="@dimen/dp_12"
-                    android:layout_marginTop="@dimen/dp_8">
-
-                <ImageButton
-                        android:id="@+id/img_btn_video_1"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_120"
-                        android:layout_weight="1"
-                        android:src="@color/colorAccent"/>
-
-                <ImageButton
-                        android:id="@+id/img_btn_video_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_120"
-                        android:layout_marginLeft="@dimen/dp_12"
-                        android:layout_weight="1"
-                        android:src="@color/colorAccent"/>
-
-                <ImageButton
-                        android:id="@+id/img_btn_video_3"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_120"
-                        android:layout_marginLeft="@dimen/dp_12"
-                        android:layout_weight="1"
-                        android:src="@color/colorAccent"/>
-            </LinearLayout>
-
-            <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_items"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:layout_marginTop="@dimen/dp_20"
-                    tools:layout_editor_absoluteY="0dp"
-                    tools:layout_editor_absoluteX="0dp"/>
-        </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:scrollbars="none" />
 
 </RelativeLayout>
