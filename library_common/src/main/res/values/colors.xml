@@ -6,11 +6,13 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorWhite">#FFFFFFFF</color>
     <color name="colorBlack">#FF000000</color>
+    <color name="colorRed">#FFFF0000</color>
     <color name="colorTrans">#00FFFFFF</color>
     <color name="colorOverlayBlack">#66000000</color>
     <color name="colorDialogBgNormal">#5affffff</color>
     <color name="colorDialogBgFocus">#ffffffff</color>
-    <color name="colorDefaultBg">#1b1b23</color>
+    <color name="colorDefaultBg">#FF1B1B23</color>
 
-    <color name="colorAliBg">#484851</color>
+    <color name="colorAliBg">#FF450097</color>
+    <color name="colorAliPric">#FFD0021B</color>
 </resources>

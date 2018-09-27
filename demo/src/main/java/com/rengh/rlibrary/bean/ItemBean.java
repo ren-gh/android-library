@@ -68,7 +68,7 @@ public class ItemBean {
     }
 
     public static class Commodity {
-        public CommodityItem commodity1, commodity2, commodity3;
+        public CommodityItem commodity1, commodity2, commodity3, commodity4;
 
         @Override
         public String toString() {
@@ -76,6 +76,7 @@ public class ItemBean {
                     "commodity1=" + commodity1 +
                     ", commodity2=" + commodity2 +
                     ", commodity3=" + commodity3 +
+                    ", commodity4=" + commodity4 +
                     '}';
         }
 
