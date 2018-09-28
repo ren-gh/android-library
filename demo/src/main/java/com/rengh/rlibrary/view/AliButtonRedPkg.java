@@ -11,9 +11,9 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
-public class AliButtonRedPkg extends RelativeLayout {
+public class AliButtonRedPkg extends LinearLayout {
     private final String TAG = "AliButtonRedPkg";
     private Context mContext;
     private ImageView mImgViewPkg;

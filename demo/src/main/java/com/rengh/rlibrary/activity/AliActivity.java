@@ -5,11 +5,13 @@ import com.rengh.library.common.handler.WeakHandler;
 import com.rengh.library.common.handler.WeakHandlerListener;
 import com.rengh.library.common.util.LogUtils;
 import com.rengh.library.common.util.UIUtils;
+import com.rengh.library.common.view.ScaleRecyclerView;
 import com.rengh.rlibrary.R;
 import com.rengh.rlibrary.bean.ItemBean;
 import com.rengh.rlibrary.custom.AliAdapter;
 import com.rengh.rlibrary.custom.OnRecyclerItemClickListener;
 import com.rengh.rlibrary.custom.OnRecyclerItemFocusChangeListener;
+import com.rengh.rlibrary.custom.SpaceItemDecoration;
 import com.rengh.rlibrary.custom.onRecyclerItemLongClickListener;
 import com.rengh.rlibrary.view.AliButtonCommodity;
 
@@ -31,19 +33,18 @@ import java.util.List;
 public class AliActivity extends AppCompatActivity implements WeakHandlerListener {
     private final String TAG = "AliActivity";
     private Context mContext;
+    private WeakHandler mWeakHandler;
     private boolean mEatKeyEvent;
-    private RecyclerView mRecyclerView;
+    private ScaleRecyclerView mRecyclerView;
     private List<ItemBean> mDatas;
     private AliAdapter mAdapter;
-    private final int MAX_SPAN_COUNT = 1;
-    private final int COUNT_OF_COMMODITY = 4;
-    private final float SCROLL_SPEED = 60.0f;
-    private final long SCROLL_DELAY = (long) (SCROLL_SPEED * 5f);
     private int mFocusPosition = 0;
 
+    private final int MAX_SPAN_COUNT = 1;
+    private final int COUNT_OF_COMMODITY = 4;
+    private final float SCROLL_SPEED = 100.0f;
+    private final long SCROLL_DELAY = (long) (SCROLL_SPEED * 5f);
     private final int MSG_WHAT_EAT_KEYEVENT = 1;
-
-    private WeakHandler mWeakHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +101,9 @@ public class AliActivity extends AppCompatActivity implements WeakHandlerListene
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (KeyEvent.KEYCODE_BACK == keyCode) {
-            // if (mFocusPosition > 2) {
-            // return true;
-            // }
+            if (mFocusPosition > 2) {
+                // return true;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -220,20 +221,23 @@ public class AliActivity extends AppCompatActivity implements WeakHandlerListene
                 startSmoothScroll(smoothScroller);
             }
         };
+        manager.supportsPredictiveItemAnimations();
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         manager.setInitialPrefetchItemCount(MAX_SPAN_COUNT);
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mRecyclerView.setLayoutManager(manager);
         DefaultItemAnimator defaultItemAnimator = new DefaultItemAnimator();
+        SpaceItemDecoration spaceItemDecoration = new SpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_10));
+        mRecyclerView.addItemDecoration(spaceItemDecoration);
         mRecyclerView.setItemAnimator(defaultItemAnimator);
         mRecyclerView.setItemViewCacheSize(2);
-
+        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.setNestedScrollingEnabled(false);
         mRecyclerView.setAdapter(getAliAdapter());
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private AliAdapter getAliAdapter() {
         if (null == mAdapter) {
-            mAdapter = new AliAdapter(mDatas);
+            mAdapter = new AliAdapter(mDatas, mWeakHandler);
             mAdapter.setOnItemFocusChangeListener(new OnRecyclerItemFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
@@ -246,7 +250,7 @@ public class AliActivity extends AppCompatActivity implements WeakHandlerListene
                         ((AliButtonCommodity) view).setScroll(hasFocus);
                     }
                     if (hasFocus) {
-                        UIUtils.scaleView(view, 1.1f);
+                        UIUtils.scaleView(view, 1.05f);
                     } else {
                         UIUtils.scaleView(view, 1.0f);
                     }

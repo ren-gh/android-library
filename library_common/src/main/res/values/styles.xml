@@ -14,6 +14,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <!-- FullScreen主题 -->
+    <style name="AppThemeFullScreenBlack" parent="AppThemeFullScreen">
+        <item name="android:windowBackground">@color/colorDefaultBg</item>
+    </style>
+
     <!-- Trans主题 -->
     <style name="AppThemeTranslation" parent="AppThemeFullScreen">
         <item name="android:windowBackground">@color/colorTrans</item>

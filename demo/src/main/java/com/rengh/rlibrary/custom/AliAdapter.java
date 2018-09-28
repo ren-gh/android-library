@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.rengh.library.common.handler.WeakHandler;
 import com.rengh.library.common.util.LogUtils;
 import com.rengh.rlibrary.R;
 import com.rengh.rlibrary.bean.ItemBean;
@@ -20,7 +21,9 @@ import java.util.List;
 
 public class AliAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final String TAG = "AliAdapter";
-    private List<ItemBean> beans;
+    private WeakHandler mWeakHandler;
+
+    private List<ItemBean> mBeans;
     private OnRecyclerItemFocusChangeListener mOnItemFocusChangeListener;// 焦点事件
     private OnRecyclerItemClickListener mOnItemClickListener;// 单击事件
     private onRecyclerItemLongClickListener mOnItemLongClickListener;// 长按事件
@@ -39,8 +42,9 @@ public class AliAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public final int INDEX_OF_ITEM_3 = 3;
     public final int INDEX_OF_ITEM_4 = 4;
 
-    public AliAdapter(List<ItemBean> beans) {
-        this.beans = beans;
+    public AliAdapter(List<ItemBean> beans, WeakHandler weakHandler) {
+        this.mBeans = beans;
+        this.mWeakHandler = weakHandler;
     }
 
     @Override
@@ -74,65 +78,85 @@ public class AliAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof HodlerHelper.TitleViewHolder) {
-            LogUtils.i(TAG, "bind title..." + position + ", bean: " + beans.get(position));
-            TextView tvTitle = ((HodlerHelper.TitleViewHolder) holder).tvTitle;
-            String title = beans.get(position).title.title;
-            if (TextUtils.isEmpty(title)) {
-                tvTitle.setVisibility(View.GONE);
-            } else {
-                tvTitle.setText(title);
-            }
+            LogUtils.i(TAG, "bind title..." + position + ", bean: " + mBeans.get(position));
+            mWeakHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    TextView tvTitle = ((HodlerHelper.TitleViewHolder) holder).tvTitle;
+                    String title = mBeans.get(position).title.title;
+                    if (TextUtils.isEmpty(title)) {
+                        tvTitle.setVisibility(View.GONE);
+                    } else {
+                        tvTitle.setText(title);
+                    }
+                }
+            });
         } else if (holder instanceof HodlerHelper.RedPkgiewHolder) {
-            LogUtils.i(TAG, "bind pkg..." + position + ", bean: " + beans.get(position));
-            TextView tvTitle = ((HodlerHelper.RedPkgiewHolder) holder).tvTitle;
-            tvTitle.setVisibility(View.INVISIBLE);
-            AliButtonRedPkg imageButton = ((HodlerHelper.RedPkgiewHolder) holder).imgBtn;
-            String picUrl = beans.get(position).redPackage.picUrl;
-            if (TextUtils.isEmpty(picUrl)) {
-                imageButton.setImageResource(R.color.colorTrans);
-                ((HodlerHelper.RedPkgiewHolder) holder).itemView.setVisibility(View.INVISIBLE);
-            } else {
-                imageButton.setPic(picUrl);
-            }
-            imageButton.setOnFocusChangeListener(getFocusChangeListener(position, INDEX_OF_ITEM_1));
-            imageButton.setOnClickListener(getOnClickListener(position, INDEX_OF_ITEM_1));
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageButton.getLayoutParams();
-            if (beans.size() > 3) {
-                params.setMargins(0, 200, 0, 0);
-            } else {
-                params.setMargins(0, 324, 0, 0);
-            }
-            imageButton.setLayoutParams(params);
+            LogUtils.i(TAG, "bind pkg..." + position + ", bean: " + mBeans.get(position));
+            mWeakHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    TextView tvTitle = ((HodlerHelper.RedPkgiewHolder) holder).tvTitle;
+                    tvTitle.setVisibility(View.INVISIBLE);
+                    AliButtonRedPkg imageButton = ((HodlerHelper.RedPkgiewHolder) holder).imgBtn;
+                    String picUrl = mBeans.get(position).redPackage.picUrl;
+                    if (TextUtils.isEmpty(picUrl)) {
+                        imageButton.setImageResource(R.color.colorTrans);
+                        ((HodlerHelper.RedPkgiewHolder) holder).itemView.setVisibility(View.INVISIBLE);
+                    } else {
+                        imageButton.setPic(picUrl);
+                    }
+                    imageButton.setOnFocusChangeListener(getFocusChangeListener(position, INDEX_OF_ITEM_1));
+                    imageButton.setOnClickListener(getOnClickListener(position, INDEX_OF_ITEM_1));
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageButton.getLayoutParams();
+                    if (mBeans.size() > 3) {
+                        params.setMargins(0, 200, 0, 0);
+                    } else {
+                        params.setMargins(0, 324, 0, 0);
+                    }
+                    imageButton.setLayoutParams(params);
+                }
+            });
         } else if (holder instanceof HodlerHelper.VideoViewHolder) {
-            LogUtils.i(TAG, "bind video..." + position + ", bean: " + beans.get(position));
-            setVideoView(((HodlerHelper.VideoViewHolder) holder).imgBtn1, beans.get(position).video.video1,
-                    getFocusChangeListener(position, INDEX_OF_ITEM_1), getOnClickListener(position, INDEX_OF_ITEM_1));
-            setVideoView(((HodlerHelper.VideoViewHolder) holder).imgBtn2, beans.get(position).video.video2,
-                    getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_2));
-            setVideoView(((HodlerHelper.VideoViewHolder) holder).imgBtn3, beans.get(position).video.video3,
-                    getFocusChangeListener(position, INDEX_OF_ITEM_3), getOnClickListener(position, INDEX_OF_ITEM_3));
+            LogUtils.i(TAG, "bind video..." + position + ", bean: " + mBeans.get(position));
+            mWeakHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    setVideoView(((HodlerHelper.VideoViewHolder) holder).imgBtn1, mBeans.get(position).video.video1,
+                            getFocusChangeListener(position, INDEX_OF_ITEM_1), getOnClickListener(position, INDEX_OF_ITEM_1));
+                    setVideoView(((HodlerHelper.VideoViewHolder) holder).imgBtn2, mBeans.get(position).video.video2,
+                            getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_2));
+                    setVideoView(((HodlerHelper.VideoViewHolder) holder).imgBtn3, mBeans.get(position).video.video3,
+                            getFocusChangeListener(position, INDEX_OF_ITEM_3), getOnClickListener(position, INDEX_OF_ITEM_3));
+                }
+            });
         } else if (holder instanceof HodlerHelper.CommodityViewHolder) {
-            LogUtils.i(TAG, "bind commodity..." + position + ", bean: " + beans.get(position));
-            TextView tvTitle = ((HodlerHelper.CommodityViewHolder) holder).tvTitle;
-            if (position == (COUNT_OF_TITLE + COUNT_OF_RED_PKG + COUNT_OF_VIDEO)) {
-                tvTitle.setVisibility(View.VISIBLE);
-            } else {
-                tvTitle.setVisibility(View.GONE);
-            }
-            setCommodityView(((HodlerHelper.CommodityViewHolder) holder).imgBtn1, beans.get(position).commodity.commodity1,
-                    getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_1));
-            setCommodityView(((HodlerHelper.CommodityViewHolder) holder).imgBtn2, beans.get(position).commodity.commodity2,
-                    getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_2));
-            setCommodityView(((HodlerHelper.CommodityViewHolder) holder).imgBtn3, beans.get(position).commodity.commodity3,
-                    getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_3));
-            setCommodityView(((HodlerHelper.CommodityViewHolder) holder).imgBtn4, beans.get(position).commodity.commodity4,
-                    getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_4));
+            LogUtils.i(TAG, "bind commodity..." + position + ", bean: " + mBeans.get(position));
+            mWeakHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    TextView tvTitle = ((HodlerHelper.CommodityViewHolder) holder).tvTitle;
+                    if (position == (COUNT_OF_TITLE + COUNT_OF_RED_PKG + COUNT_OF_VIDEO)) {
+                        tvTitle.setVisibility(View.VISIBLE);
+                    } else {
+                        tvTitle.setVisibility(View.GONE);
+                    }
+                    setCommodityView(((HodlerHelper.CommodityViewHolder) holder).imgBtn1, mBeans.get(position).commodity.commodity1,
+                            getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_1));
+                    setCommodityView(((HodlerHelper.CommodityViewHolder) holder).imgBtn2, mBeans.get(position).commodity.commodity2,
+                            getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_2));
+                    setCommodityView(((HodlerHelper.CommodityViewHolder) holder).imgBtn3, mBeans.get(position).commodity.commodity3,
+                            getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_3));
+                    setCommodityView(((HodlerHelper.CommodityViewHolder) holder).imgBtn4, mBeans.get(position).commodity.commodity4,
+                            getFocusChangeListener(position, INDEX_OF_ITEM_2), getOnClickListener(position, INDEX_OF_ITEM_4));
+                }
+            });
         }
     }
 
     @Override
     public int getItemCount() {
-        return beans.size();
+        return mBeans.size();
     }
 
     @Override

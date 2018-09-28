@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_title_videos"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_6_5"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingLeft="@dimen/dp_40"
