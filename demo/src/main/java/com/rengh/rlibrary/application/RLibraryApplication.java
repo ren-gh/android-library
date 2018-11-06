@@ -5,6 +5,8 @@ import android.app.Application;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 
+import com.rengh.library.common.application.CrashHandler;
+import com.rengh.library.common.application.HeartRunnable;
 import com.rengh.library.common.notification.NotificationHelper;
 import com.rengh.library.common.util.LogUtils;
 import com.rengh.rlibrary.R;
@@ -15,11 +17,16 @@ public class RLibraryApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        String rootTag = "RLibraryDemo";
+        String appName = getString(R.string.app_name);
+
         LogUtils.setAutoSave(false);
-        LogUtils.setRootTag("RLibraryDemo");
+        LogUtils.setRootTag(rootTag);
         LogUtils.i(TAG, "onCreate()");
 
-        NotificationHelper.getInstance().init(this).initChannelId(getString(R.string.app_name));
+        NotificationHelper.getInstance().init(this).initChannelId(appName);
+        CrashHandler.getInstance().init(this);
+        HeartRunnable.init(appName, 0, 30);
     }
 
     @Override

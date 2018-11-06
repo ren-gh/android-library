@@ -77,7 +77,7 @@ public class DemoActivity extends AppCompatActivity {
                                 intent.putExtra("wlan0Mac", LocalNetHelper.getMac("wlan0"));
                                 intent.putExtra("netDev", LocalNetHelper.getIpName());
                                 intent.putExtra("netDevMac", LocalNetHelper.getMac(LocalNetHelper.getIpName()));
-                                intent.putExtra("netDevIp", LocalNetHelper.getIpName());
+                                intent.putExtra("netDevIp", LocalNetHelper.getIp());
                                 intent.putStringArrayListExtra("imei", (ArrayList<String>) imeis);
                                 intent.putStringArrayListExtra("meid", (ArrayList<String>) meids);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext,
