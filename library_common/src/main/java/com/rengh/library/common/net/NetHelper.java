@@ -1,5 +1,5 @@
 
-package com.rengh.library.common.util;
+package com.rengh.library.common.net;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -31,18 +31,23 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
+import com.rengh.library.common.util.BitmapUtils;
+import com.rengh.library.common.util.LogUtils;
+import com.rengh.library.common.util.MD5Utils;
+import com.rengh.library.common.util.ThreadUtils;
+
 /**
  * Created by rengh on 17-5-29.
  */
-public class HttpConnHelper {
-    private final String TAG = "HttpConnHelper";
+public class NetHelper {
+    private final String TAG = "NetHelper";
 
     private int mTimeOut = 1000 * 5;
 
-    public HttpConnHelper() {
+    public NetHelper() {
     }
 
-    public HttpConnHelper setTimeOut(int mills) {
+    public NetHelper setTimeOut(int mills) {
         mTimeOut = mills;
         return this;
     }
@@ -224,7 +229,7 @@ public class HttpConnHelper {
                 if (null != postParam) {
                     urlConnection.setDoOutput(true); // 需要输出
                     dos = new DataOutputStream(urlConnection.getOutputStream());
-                    dos.writeBytes(postParam);
+                    dos.write(postParam.getBytes());
                     dos.flush();
                     dos.close();
                 }

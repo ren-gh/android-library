@@ -69,7 +69,7 @@ public class LocalNetHelper {
                         }
                     }
                 } else {
-                    meid = telephonyManager.getDeviceId(); // TODO 替换成反射
+                    meid = telephonyManager.getDeviceId();
                 }
                 if (!meids.contains(meid) && !TextUtils.isEmpty(meid) && !"null".equalsIgnoreCase(meid)) {
                     meids.add(meid);

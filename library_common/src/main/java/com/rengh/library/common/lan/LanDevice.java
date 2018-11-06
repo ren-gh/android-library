@@ -1,5 +1,5 @@
 
-package com.rengh.library.common.net;
+package com.rengh.library.common.lan;
 
 public class LanDevice {
     public String ip, type, flag, mac, mask, device;

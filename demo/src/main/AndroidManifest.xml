@@ -10,6 +10,7 @@
         android:name="android.hardware.touchscreen"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -24,6 +25,7 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
+        android:name=".application.RLibraryApplication"
         android:allowBackup="false"
         android:banner="@mipmap/ic_launcher"
         android:icon="@mipmap/ic_launcher"
@@ -37,29 +39,29 @@
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".activity.DemoActivity"></activity>
         <activity
             android:name=".activity.FullScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme"></activity>
         <activity
-            android:name=".activity.AliActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:hardwareAccelerated="true"
-            android:label="@string/title_activity_ali_shop"
-            android:theme="@style/AppThemeFullScreenBlack">
+            android:name=".activity.DemoActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".broadcast.NotificationClickReceiver">
+            <intent-filter>
+                <action android:name="com.rengh.rlibrary.action.NOTIFICATION_BROADCAST_RECEIVER" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

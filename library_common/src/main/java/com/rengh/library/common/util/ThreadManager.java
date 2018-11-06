@@ -35,15 +35,10 @@ public class ThreadManager {
     }
 
     private void init() {
-        //single只用于开机
         mSingleThreadPool = Executors.newSingleThreadExecutor();
-        //cache只用于曝光和UI相关操作
         mCachedThreadPool = Executors.newCachedThreadPool();
-        //fix用于其他业务
         mFixedThreadPool = Executors.newFixedThreadPool(sCoreThreadsCount);
-        //延迟业务使用
         mScheduledThreadPool = Executors.newScheduledThreadPool(sCoreThreadsCount);
-        //
         mScheduledSingleThreadPool = Executors.newSingleThreadScheduledExecutor();
     }
 

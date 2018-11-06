@@ -1,3 +1,4 @@
+
 package com.rengh.library.common.util;
 
 import java.net.URLEncoder;
@@ -13,6 +14,7 @@ public class UrlUtils {
 
     /**
      * 生成url
+     * 
      * @param host
      * @param param
      * @return
@@ -32,8 +34,7 @@ public class UrlUtils {
                     Object value = param.get(key);
                     stringBuilder.append(key);
                     stringBuilder.append("=");
-                    stringBuilder.append(URLEncoder.encode(value.toString(),
-                            "utf-8"));
+                    stringBuilder.append(URLEncoder.encode(value.toString(), "utf-8"));
                     if (iterator.hasNext()) {
                         stringBuilder.append("&");
                     }
@@ -41,7 +42,7 @@ public class UrlUtils {
             }
             return host + stringBuilder.toString();
         } catch (Exception e) {
-            LogUtils.i(TAG,"questTask get Url e : " + e != null ? e.toString() : "e == null");
+            LogUtils.i(TAG, "questTask get Url e : " + e != null ? e.toString() : "e == null");
         }
         return null;
     }

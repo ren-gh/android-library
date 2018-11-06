@@ -1,5 +1,5 @@
 
-package com.rengh.library.common.net;
+package com.rengh.library.common.lan;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import android.text.TextUtils;
 
+import com.rengh.library.common.net.LocalNetHelper;
 import com.rengh.library.common.util.LogUtils;
 
 public class LanHelper {

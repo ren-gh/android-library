@@ -1,5 +1,5 @@
 
-package com.rengh.library.common.util;
+package com.rengh.library.common.net;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,11 +11,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
+import com.rengh.library.common.util.ThreadManager;
+
 /**
  * Created by rengh on 17-10-12.
  */
 
-public class IpAddressUtils {
+public class IpAddrHelper {
     public static boolean isIpAddr(String addr) {
         if (TextUtils.isEmpty(addr)) {
             return false;
@@ -37,14 +39,14 @@ public class IpAddressUtils {
 
     public static void getIpInfo(final Handler handler, final String ip, final int successCode,
             final int failedCode, final int failedRequestCode) {
-        if (null == handler || !IpAddressUtils.isIpAddr(ip)) {
+        if (null == handler || !IpAddrHelper.isIpAddr(ip)) {
             return;
         }
         ThreadManager.getInstance().excuteCached(new Runnable() {
             @Override
             public void run() {
                 String url = "http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip=" + ip;
-                HttpConnHelper.HttpResponse httpResponse = new HttpConnHelper().request(url);
+                NetHelper.HttpResponse httpResponse = new NetHelper().request(url);
                 if (httpResponse != null && httpResponse.isSuccess()) {
                     String response = httpResponse.getResponse();
                     IpInfo ipInfoObj = new IpInfo(response);

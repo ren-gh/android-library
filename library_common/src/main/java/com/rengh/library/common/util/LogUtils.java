@@ -42,7 +42,7 @@ public class LogUtils {
     private static final String PATH_DATA_LOGS = "/data/Logs/";
     private static final String PATH_DATA_LOGS_COMMON = PATH_DATA_LOGS + "common/";
     private static volatile String PATH_LOGS_DIR = null;
-    private static volatile String ROOT_TAG = "LogUtils";
+    private static volatile String ROOT_TAG = LogUtils.class.getName();
     private static final String FILE_NAME_SPLIT = ".";
     private static volatile ExecutorService sExecutorService = Executors.newSingleThreadExecutor();
 
