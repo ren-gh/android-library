@@ -116,8 +116,10 @@ public class BitmapUtils {
             InputStream is = context.getResources().openRawResource(resId);
             return BitmapFactory.decodeStream(is, null, getBitmapOption());
         } catch (Resources.NotFoundException e) {
-            return null;
+        } catch (NullPointerException e) {
+        } catch (Exception e) {
         }
+        return null;
     }
 
     @SuppressWarnings("deprecation")

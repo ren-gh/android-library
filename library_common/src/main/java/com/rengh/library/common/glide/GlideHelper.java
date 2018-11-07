@@ -39,7 +39,11 @@ public class GlideHelper {
         } else {
             drawable = new BitmapDrawable(context.getResources(), bmp);
         }
-        view.setBackgroundDrawable(drawable);
+        if (null != drawable) {
+            view.setBackgroundDrawable(drawable);
+        } else {
+            view.setBackgroundColor(context.getResources().getColor(resId));
+        }
         // Glide.with(context).load(resId).into(new SimpleTarget<Drawable>() {
         // @Override
         // public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
