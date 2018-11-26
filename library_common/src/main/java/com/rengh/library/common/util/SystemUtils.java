@@ -1,9 +1,6 @@
 
 package com.rengh.library.common.util;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ActivityNotFoundException;
@@ -15,6 +12,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.text.TextUtils;
+
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * 应用工具，用来判断应用状态、获取其他应用上下文、启动其他应用等操作。
@@ -67,9 +67,33 @@ public class SystemUtils {
     }
 
     /**
+     * 获取顶端activity的包名，Android新版本需要系统应用才可判断
+     *
+     * @param context 上下文
+     * @return String pkg或null
+     * @Description 获取顶端activity的包名
+     */
+    public static String getTopActivity(Context context) {
+        String activity = null;
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        @SuppressWarnings("deprecation")
+        List<RunningTaskInfo> tasks = am.getRunningTasks(1);
+        if (null != tasks && tasks.size() > 0) {
+            RunningTaskInfo info = tasks.get(0);
+            if (null != info) {
+                ComponentName base = info.topActivity;
+                if (null != base) {
+                    activity = base.getClassName();
+                }
+            }
+        }
+        return activity;
+    }
+
+    /**
      * 判断应用是否在最前端显示，Android新版本需要系统应用才可判断
      *
-     * @param context     上下文
+     * @param context 上下文
      * @param destPkgName 目标包名
      * @return boolean true为在最顶层，false为否
      * @Description: 判断activity是否在最顶层
@@ -97,7 +121,7 @@ public class SystemUtils {
     /**
      * 判断应用是否有Activity活着，Android新版本需要系统应用才可判断
      *
-     * @param context     上下文
+     * @param context 上下文
      * @param destPkgName 要判断的应用
      * @return boolean true为在运行，false为已结束
      * @Description: 判断应用是否有activity在运行
@@ -195,7 +219,7 @@ public class SystemUtils {
     /**
      * 获取指定应用的上下文
      *
-     * @param context     调用者的上下文
+     * @param context 调用者的上下文
      * @param destPkgName 目标应用的包名
      * @return Context 目标应用上下文，找不到包名时返回null。
      */
