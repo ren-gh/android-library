@@ -1,6 +1,9 @@
 
 package com.rengh.library.common.util;
 
+import android.content.Context;
+import android.text.TextUtils;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -17,9 +20,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.Locale;
-
-import android.content.Context;
-import android.text.TextUtils;
 
 /**
  * Created by rengh on 17-5-29.
@@ -196,6 +196,10 @@ public class FileUtils {
      * 读取文件内容
      */
     public static String getContent(String path) {
+        return getContent(path, -1, -1);
+    }
+
+    public static String getContent(String path, int start, int number) {
         if (TextUtils.isEmpty(path)) {
             return null;
         }
@@ -209,13 +213,17 @@ public class FileUtils {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return getContent(in);
+        return getContent(in, start, number);
     }
 
     /**
      * 读取文件内容
      */
     public static String getContent(InputStream in) {
+        return getContent(in, -1, -1);
+    }
+
+    public static String getContent(InputStream in, int start, int number) {
         if (in == null) {
             return null;
         }
@@ -223,9 +231,28 @@ public class FileUtils {
         StringBuilder builder = new StringBuilder();
         String line = null;
         try {
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-                builder.append("\n");
+            boolean hasEnter = false;
+            if (start >= 0 && number >= 0) {
+                for (int n = 0; n < start; n++) {
+                    line = reader.readLine();
+                }
+                for (int i = 0; i < number; i++) {
+                    line = reader.readLine();
+                    if (null != line) {
+                        builder.append(line);
+                        builder.append("\n");
+                        hasEnter = true;
+                    }
+                }
+            } else {
+                while ((line = reader.readLine()) != null) {
+                    builder.append(line);
+                    builder.append("\n");
+                    hasEnter = true;
+                }
+            }
+            if (hasEnter) {
+                builder.deleteCharAt(builder.lastIndexOf("\n"));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -454,7 +481,7 @@ public class FileUtils {
     /**
      * 修改目录或文件的权限，递归修改
      *
-     * @param path       文件或目录的路径
+     * @param path 文件或目录的路径
      * @param permission 需要设置的权限
      */
     public static void chmod(String path, String permission) {
