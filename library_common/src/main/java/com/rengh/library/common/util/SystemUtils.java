@@ -184,7 +184,7 @@ public class SystemUtils {
     private static boolean startActivity(Context context, Intent intent, Bundle options) {
         if (null != intent) {
             try {
-                intent.putExtra("from", "com.stv.bootadmanager");
+                intent.putExtra("from", context.getPackageName());
                 // context.startActivity(intent, options);
                 context.startActivity(intent);
                 return true;
