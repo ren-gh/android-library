@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,6 +47,13 @@ public class DemoActivity extends AppCompatActivity {
         mRxPermissions = new RxPermissions(this);
 
         mTvInfo = findViewById(R.id.tv_info);
+
+        Intent intent = getIntent();
+        if (null != intent) {
+            String action = intent.getAction();
+            Uri uri = intent.getData();
+            LogUtils.i(TAG, "action: " + action + ", uri: " + uri);
+        }
 
         showDialog();
 
