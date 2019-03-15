@@ -15,6 +15,9 @@ import android.widget.TextView;
 import com.rengh.library.common.dialog.RDialog;
 import com.rengh.library.common.net.LocalNetHelper;
 import com.rengh.library.common.notification.NotificationHelper;
+import com.rengh.library.common.player.PlayerActivity;
+import com.rengh.library.common.player.PlayerListener;
+import com.rengh.library.common.player.PlayerHelper;
 import com.rengh.library.common.util.LogUtils;
 import com.rengh.rlibrary.R;
 import com.rengh.rlibrary.broadcast.NotificationClickReceiver;
@@ -38,6 +41,10 @@ public class DemoActivity extends AppCompatActivity {
     private Context mContext;
     private TextView mTvInfo;
 
+    private String VIDEO_NAME = "王牌对王牌 第6期 完整版";
+    private String VIDEO_URL = "http://123.125.10.147/vlivehls.tc.qq.com/AjZYAjtU7nVEhAgw6vm5Kn95TuIhTFbs0C41Fe2fRXJI/mp4/25/IuBKRi2wL5m_TTz_Nqz53RQnvI3ahQVEdnZllVmYeDW3La8RtyjcXw/qRkIk-UyuFv1f5maP0NKzKuQXUK_Jf0ucNM67R7gdsIOkoyLeyFumGGJzH9RS1L2_wg9MyhUDAMUFH7k0xLUgr2Iz2lPf1OuGeUnac-IAojnWOryN9pNZBbW7qARXzllIo-asWMubgg3Z18R53eJXpO6rFPI8tDP/t00306acx0a.p209.mp4/t00306acx0a.p209.mp4.av.m3u8?fn=p209&bw=0&st=0&et=0&iv=&ivfn=&ivfc=&ivt=&ivs=&ivd=&ivl=&ftype=mp4&fbw=187&type=m3u8&drm=0&hlskey=empty&sdtfrom=v5000";
+    private String VIDEO_URL_2 = "/sdcard/ad.ts";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,12 +67,77 @@ public class DemoActivity extends AppCompatActivity {
         rxJavaTest();
     }
 
+    private PlayerListener mPlayerListener = new PlayerListener() {
+        @Override
+        public void onStart() {
+            LogUtils.i(TAG, "onStart()");
+        }
+
+        @Override
+        public void onPlaying() {
+            LogUtils.i(TAG, "onPlaying()");
+        }
+
+        @Override
+        public void onPause() {
+            LogUtils.i(TAG, "onPause()");
+        }
+
+        @Override
+        public void onFast() {
+            LogUtils.i(TAG, "onFast()");
+        }
+
+        @Override
+        public void onRewind() {
+            LogUtils.i(TAG, "onRewind()");
+        }
+
+        @Override
+        public void onSeekCommpleted() {
+            LogUtils.i(TAG, "onSeekCommpleted()");
+        }
+
+        @Override
+        public void onError() {
+            LogUtils.i(TAG, "onError()");
+        }
+
+        @Override
+        public void onCompleted() {
+            LogUtils.i(TAG, "onCompleted()");
+        }
+
+        @Override
+        public void onStop() {
+            LogUtils.i(TAG, "onStop()");
+        }
+
+        @Override
+        public void onClick() {
+            LogUtils.i(TAG, "onClick()");
+        }
+
+        @Override
+        public void onFinish() {
+            LogUtils.i(TAG, "onFinish()");
+        }
+    };
+
     private void showDialog() {
         final RDialog dialog = new RDialog(this);
         dialog.setButtonNoClick(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+
+                PlayerHelper.setListener(mPlayerListener);
+                Intent intent = new Intent();
+                intent.setClass(mContext, PlayerActivity.class);
+                intent.putExtra(PlayerHelper.KEY_TITLE, VIDEO_NAME);
+                intent.setData(Uri.parse(VIDEO_URL));
+                intent.putExtra(PlayerHelper.KEY_DOUBLE_CLICK_TO_PAUSE, true);
+                startActivity(intent);
             }
         });
         dialog.setButtonYesClick(new View.OnClickListener() {
@@ -133,7 +205,7 @@ public class DemoActivity extends AppCompatActivity {
                         pendingIntent,
                         R.mipmap.ic_launcher,
                         R.mipmap.ic_launcher,
-                        mContext.getResources().getColor(R.color.colorRed));
+                        mContext.getResources().getColor(android.R.color.holo_red_dark));
         NotificationHelper.getInstance().showNotification(1, builder);
     }
 

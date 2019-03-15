@@ -13,6 +13,67 @@
     <color name="colorDialogBgFocus">#ffffffff</color>
     <color name="colorDefaultBg">#FF1B1B23</color>
 
-    <color name="colorAliBg">#FF450097</color>
-    <color name="colorAliPric">#FFD0021B</color>
+    <color name="transparent">#00000000</color>
+    <color name="focused">#ffffffff</color>
+    <color name="white80">#CCFFFFFF</color>
+    <color name="white70">#B2FFFFFF</color>
+    <color name="white60">#99ffffff</color>
+    <color name="white50">#80ffffff</color>
+    <color name="white40">#66ffffff</color>
+    <color name="white35">#59ffffff</color>
+    <color name="white30">#4cffffff</color>
+    <color name="white18">#2EFFFFFF</color>
+    <color name="white15">#26FFFFFF</color>
+    <color name="white9">#17FFFFFF</color>
+    <color name="white8">#14FFFFFF</color>
+    <color name="white20">#33FFFFFF</color>
+    <color name="white10">#20FFFFFF</color>
+    <color name="white08">#14ffffff</color>
+    <color name="white3">#07FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="black15">#26000000</color>
+    <color name="black50">#80000000</color>
+    <color name="black95">#F3000000</color>
+    <color name="black90">#E6000000</color>
+    <color name="black80">#CC000000</color>
+    <color name="black70">#B2000000</color>
+    <color name="black10">#20000000</color>
+    <color name="black08">#14000000</color>
+    <!-- button 6.0 color begin -->
+    <color name="letv_button_normal">#5affffff</color>
+    <color name="letv_button_disable">#1affffff</color>
+    <color name="letv_button_focus">#ffffff</color>
+    <color name="letv_button_text_normal">#7f000000</color>
+    <color name="letv_button_text_disable">#1a000000</color>
+    <color name="letv_button_text_focus">#cc000000</color>
+    <color name="letv_button_orange_focus">#ff8400</color>
+    <color name="letv_button_orange_text_focus">#ffffff</color>
+    <!-- button 6.0 color end -->
+
+    <!-- player -->
+    <color name="play_position_text_color">#fff1f1f1</color>
+
+    <!-- 6.0 default bg -->
+    <color name="default_background_color">#1b1b23</color>
+
+    <!-- 6.0 dialog -->
+    <color name="dialog_common_button_panel_bg_color">#383d42</color>
+    <color name="letv_common_dialog_title_bg_color">#464b50</color>
+
+    <color name="primary_holo_letv_normal">#66ffffff</color>
+    <color name="primary_holo_letv_focused">#ffffffff</color>
+    <color name="primary_holo_letv_disable">#19ffffff</color>
+
+    <!-- text 6.0-->
+    <color name="text_focus_color">#cc000000</color>
+    <color name="text_focused_color">#FFFFFF</color>
+    <color name="text_normal_color">#FF999999</color>
+
+    <!-- EUI 6.0 LetvProgressBar -->
+    <color name="letv_progress">#ffffff</color>
+    <color name="letv_progress_focused">#ffffffff</color>
+    <color name="letv_secondary_progress">#33ffffff</color>
+    <color name="letv_progress_bar_background">#1effffff</color>
+    <color name="letv_controller_progress_thumb">#e3e3e3</color>
+
 </resources>

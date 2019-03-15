@@ -9,18 +9,18 @@
     </style>
 
     <!-- FullScreen主题 -->
-    <style name="AppThemeFullScreen" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.FullScreen" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <!-- FullScreen主题 -->
-    <style name="AppThemeFullScreenBlack" parent="AppThemeFullScreen">
+    <style name="AppTheme.FullScreen.Black" parent="AppTheme.FullScreen">
         <item name="android:windowBackground">@color/colorDefaultBg</item>
     </style>
 
     <!-- Trans主题 -->
-    <style name="AppThemeTranslation" parent="AppThemeFullScreen">
+    <style name="AppTheme.Translation" parent="AppTheme.FullScreen">
         <item name="android:windowBackground">@color/colorTrans</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>

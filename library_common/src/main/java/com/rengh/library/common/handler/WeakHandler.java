@@ -12,6 +12,11 @@ import android.os.Message;
 public class WeakHandler extends Handler {
     private final WeakReference<WeakHandlerListener> weakReference;
 
+    public WeakHandler() {
+        super();
+        weakReference = new WeakReference<WeakHandlerListener>(null);
+    }
+
     public WeakHandler(WeakHandlerListener weakHandlerListener) {
         super();
         weakReference = new WeakReference<WeakHandlerListener>(weakHandlerListener);
