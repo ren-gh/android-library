@@ -174,6 +174,9 @@ public class PlayerController extends RelativeLayout {
     }
 
     public PlayerController onError() {
+        mIvStateCenter.setVisibility(View.VISIBLE);
+        mLlBottom.setVisibility(View.VISIBLE);
+        mLlLoading.setVisibility(View.GONE);
         setIvStateCenter(R.drawable.ic_player_play_focus);
         show();
         return this;

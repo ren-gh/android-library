@@ -42,7 +42,7 @@ public class DemoActivity extends AppCompatActivity {
     private TextView mTvInfo;
 
     private String VIDEO_NAME = "王牌对王牌 第6期 完整版";
-    private String VIDEO_URL = "http://123.125.10.147/vlivehls.tc.qq.com/AjZYAjtU7nVEhAgw6vm5Kn95TuIhTFbs0C41Fe2fRXJI/mp4/25/IuBKRi2wL5m_TTz_Nqz53RQnvI3ahQVEdnZllVmYeDW3La8RtyjcXw/qRkIk-UyuFv1f5maP0NKzKuQXUK_Jf0ucNM67R7gdsIOkoyLeyFumGGJzH9RS1L2_wg9MyhUDAMUFH7k0xLUgr2Iz2lPf1OuGeUnac-IAojnWOryN9pNZBbW7qARXzllIo-asWMubgg3Z18R53eJXpO6rFPI8tDP/t00306acx0a.p209.mp4/t00306acx0a.p209.mp4.av.m3u8?fn=p209&bw=0&st=0&et=0&iv=&ivfn=&ivfc=&ivt=&ivs=&ivd=&ivl=&ftype=mp4&fbw=187&type=m3u8&drm=0&hlskey=empty&sdtfrom=v5000";
+    private String VIDEO_URL = "";
     private String VIDEO_URL_2 = "/sdcard/ad.ts";
 
     @Override
@@ -130,14 +130,7 @@ public class DemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-
-                PlayerHelper.setListener(mPlayerListener);
-                Intent intent = new Intent();
-                intent.setClass(mContext, PlayerActivity.class);
-                intent.putExtra(PlayerHelper.KEY_TITLE, VIDEO_NAME);
-                intent.setData(Uri.parse(VIDEO_URL));
-                intent.putExtra(PlayerHelper.KEY_DOUBLE_CLICK_TO_PAUSE, true);
-                startActivity(intent);
+                startPlayVideo();
             }
         });
         dialog.setButtonYesClick(new View.OnClickListener() {
@@ -149,6 +142,18 @@ public class DemoActivity extends AppCompatActivity {
         });
         dialog.setContent("你好，欢迎使用R开发库！");
         dialog.show();
+    }
+
+    private void startPlayVideo() {
+        PlayerHelper.setPlayerListener(mPlayerListener);
+        PlayerHelper.setAutoFinish(false);
+        PlayerHelper.setDoubleClick(false);
+        PlayerHelper.setAutoFinishDelay(0);
+        Intent intent = new Intent();
+        intent.setClass(mContext, PlayerActivity.class);
+        intent.setData(Uri.parse(VIDEO_URL_2));
+        intent.putExtra(PlayerHelper.KEY_VIDEO_TITLE_SHOWED_ON_TOP, VIDEO_NAME);
+        startActivity(intent);
     }
 
     private void setDeviceInfo() {

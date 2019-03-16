@@ -44,7 +44,14 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     private final int MSG_WHAT_ON_CLICKED = 5;
     private final int MSG_WHAT_ON_FINISH = 6;
 
-    private boolean mDoubleClickToPause = false; // 双击暂停模式
+    private final int TIME_FORWORD_OR_REWIND = 5000;
+    private final int TIME_DOUBLE_CLICK_DELAY = 1000;
+    private final int TIME_UPDATE_PROGRESS = 200;
+
+    private boolean mDoubleClick = false; // 双击暂停模式
+    private boolean mAutoFinish = false; // 播放完成关闭当前界面
+    private int mAutoFinishDelay = 0;
+
     private boolean mCenterKeyPressed = false; // 记录是否有首次按键
     private Runnable mCenterKeyRunnable = new Runnable() {
         @Override
@@ -86,10 +93,14 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         if (null != intent) {
             String action = intent.getAction();
             mVideoUri = intent.getData();
-            mVideoName = intent.getStringExtra(PlayerHelper.KEY_TITLE);
-            mDoubleClickToPause = intent.getBooleanExtra(PlayerHelper.KEY_DOUBLE_CLICK_TO_PAUSE, false);
+            mVideoName = intent.getStringExtra(PlayerHelper.KEY_VIDEO_TITLE_SHOWED_ON_TOP);
             LogUtils.i(TAG, "title: " + mVideoName + ", uri: " + mVideoUri);
-            mPlayerListener = PlayerHelper.getListener();
+
+            mPlayerListener = PlayerHelper.getPlayerListener();
+            mDoubleClick = PlayerHelper.getDoubleClick();
+            mAutoFinish = PlayerHelper.getAutoFinish();
+            mAutoFinishDelay = PlayerHelper.getAutoFinishDelay();
+            PlayerHelper.clearAll();
         }
     }
 
@@ -165,18 +176,24 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 ToastUtils.showToast(mContext, "错误，无法播放该视频！" +
                         " 错误类型: " + msg.arg1 + "。附加错误码: " + msg.arg2);
                 mPlayerController.onError();
-                mWeakHandler.sendEmptyMessageDelayed(MSG_WHAT_ON_FINISH, 2000);
                 if (null != mPlayerListener) {
                     mPlayerListener.onError();
+                }
+                if (mAutoFinish) {
+                    mWeakHandler.sendEmptyMessageDelayed(MSG_WHAT_ON_FINISH,
+                            TIME_FORWORD_OR_REWIND);
                 }
             }
                 break;
             case MSG_WHAT_ON_COMPLETION: {
                 ToastUtils.showToast(mContext, "播放完成");
                 mPlayerController.onCompleted();
-                // mWeakHandler.sendEmptyMessageDelayed(MSG_WHAT_ON_FINISH, 2000);
                 if (null != mPlayerListener) {
                     mPlayerListener.onCompleted();
+                }
+                if (mAutoFinish) {
+                    mWeakHandler.sendEmptyMessageDelayed(MSG_WHAT_ON_FINISH,
+                            mAutoFinishDelay);
                 }
             }
                 break;
@@ -189,7 +206,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 if (KeyEvent.KEYCODE_BACK == msg.arg1) { // 4
                     doubleClickBackToFinish();
                 } else {
-                    controlMediaOnClick(msg);
+                    processMediaOnClick(msg);
                 }
             }
                 break;
@@ -197,7 +214,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 if (null != mPlayerListener) {
                     mPlayerListener.onFinish();
                 }
-                PlayerHelper.setListener(null);
+                PlayerHelper.clearAll();
                 finish();
             }
                 break;
@@ -267,7 +284,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 mPlayerController.setTitle(mVideoName);
             }
             mVideoView.setVideoURI(mVideoUri);
-            if (mDoubleClickToPause) {
+            if (mDoubleClick) {
                 ToastUtils.showToast(this, "双击暂停或播放");
             }
         }
@@ -291,13 +308,13 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                     } catch (Exception e) {
                         LogUtils.d(TAG, "update exception: " + e.getMessage());
                     }
-                    ThreadUtils.sleep(200);
+                    ThreadUtils.sleep(TIME_UPDATE_PROGRESS);
                 }
             }
         });
     }
 
-    private void controlMediaOnClick(Message msg) {
+    private void processMediaOnClick(Message msg) {
         // 显示/隐藏控制器
         if (KeyEvent.KEYCODE_MENU == msg.arg1 // 82
                 || KeyEvent.KEYCODE_DPAD_UP == msg.arg1 // 19
@@ -306,13 +323,13 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         }
         // 播放/暂停
         else if (KeyEvent.KEYCODE_DPAD_CENTER == msg.arg1) { // 23
-            if (mDoubleClickToPause) {
+            if (mDoubleClick) {
                 doubleClickCenterToPause();
             } else {
                 msg = new Message();
                 msg.what = MSG_WHAT_ON_CLICKED;
                 msg.arg1 = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-                controlMediaOnClick(msg);
+                processMediaOnClick(msg);
             }
         }
         // 播放/暂停
@@ -369,7 +386,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 int duration = mVideoView.getDuration();
                 if (-1 != duration || mVideoView.canSeekForward()) {
                     int current = mVideoView.getCurrentPosition();
-                    current += 5000;
+                    current += TIME_FORWORD_OR_REWIND;
                     if (current > duration) {
                         current = duration;
                     }
@@ -392,7 +409,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 int duration = mVideoView.getDuration();
                 if (-1 != duration || mVideoView.canSeekBackward()) {
                     int current = mVideoView.getCurrentPosition();
-                    current -= 5000;
+                    current -= TIME_FORWORD_OR_REWIND;
                     if (current < 0) {
                         current = 0;
                     }
@@ -420,7 +437,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         if (!mBackKeyPressed) {
             ToastUtils.showToast(this, "再按一次退出");
             mBackKeyPressed = true;
-            mWeakHandler.postDelayed(mBackKeyRunnable, 2000);
+            mWeakHandler.postDelayed(mBackKeyRunnable, TIME_DOUBLE_CLICK_DELAY);
         } else {
             mBackKeyPressed = false;
             mWeakHandler.removeCallbacks(mBackKeyRunnable);
@@ -431,14 +448,14 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     private void doubleClickCenterToPause() {
         if (!mCenterKeyPressed) {
             mCenterKeyPressed = true;
-            mWeakHandler.postDelayed(mCenterKeyRunnable, 2000);
+            mWeakHandler.postDelayed(mCenterKeyRunnable, TIME_DOUBLE_CLICK_DELAY);
         } else {
             mCenterKeyPressed = false;
             mWeakHandler.removeCallbacks(mCenterKeyRunnable);
             Message msg = new Message();
             msg.what = MSG_WHAT_ON_CLICKED;
             msg.arg1 = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-            controlMediaOnClick(msg);
+            processMediaOnClick(msg);
         }
     }
 }
