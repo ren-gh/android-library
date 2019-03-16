@@ -418,6 +418,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                         mPlayerListener.onFast();
                     }
                 } else {
+                    mPlayerController.showAndAutoHide();
                     ToastUtils.showToast(mContext, "该视频不支持快进");
                 }
             }
@@ -441,6 +442,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                         mPlayerListener.onRewind();
                     }
                 } else {
+                    mPlayerController.showAndAutoHide();
                     ToastUtils.showToast(mContext, "该视频不支持快退");
                 }
             }

@@ -21,7 +21,9 @@ import com.rengh.library.common.notification.NotificationHelper;
 import com.rengh.library.common.player.PlayerActivity;
 import com.rengh.library.common.player.PlayerListener;
 import com.rengh.library.common.player.PlayerHelper;
+import com.rengh.library.common.util.FileUtils;
 import com.rengh.library.common.util.LogUtils;
+import com.rengh.library.common.util.StringUtils;
 import com.rengh.rlibrary.R;
 import com.rengh.rlibrary.broadcast.NotificationClickReceiver;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -45,7 +47,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mTvInfo;
     private Button mBtnPlayNormal, mBtnPlayCover, mBtnPlayDouble, mBtnPlayFinish, mBtnPlayAd;
 
-    private String VIDEO_NAME = "测试视频";
+    private String VIDEO_NAME = "CCTV-1";
     private String VIDEO_URL = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
     private String VIDEO_URL_2 = "/sdcard/ad.ts";
 

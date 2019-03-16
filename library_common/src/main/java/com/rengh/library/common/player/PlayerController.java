@@ -42,6 +42,7 @@ public class PlayerController extends RelativeLayout {
     private Drawable bakDrawable = null;
 
     private boolean mIsStarted, mIsShowed, mIsAdVideo;
+    private Integer mDuration = -1;
 
     public PlayerController(Context context) {
         super(context);
@@ -169,6 +170,7 @@ public class PlayerController extends RelativeLayout {
     private int mCountBak = 0;
 
     public PlayerController onUpdate(int duration, int current) {
+        mDuration = duration;
         setTimeTotal(duration);
         setTimePlayed(current);
         setProgress(duration, current);
@@ -181,7 +183,11 @@ public class PlayerController extends RelativeLayout {
             setIvStateCenter(bakDrawable);
         }
         bakDrawable = null;
-        showAndAutoHide();
+        if (-1 == mDuration) {
+            show();
+        } else {
+            showAndAutoHide();
+        }
     }
 
     public PlayerController onFast() {
