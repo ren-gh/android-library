@@ -38,7 +38,7 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
+public class DemoActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
     private final String TAG = "DemoActivity";
     private RxPermissions mRxPermissions;
     private Context mContext;
@@ -69,6 +69,12 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         mBtnPlayDouble.setOnClickListener(this);
         mBtnPlayFinish.setOnClickListener(this);
         mBtnPlayAd.setOnClickListener(this);
+
+        mBtnPlayNormal.setOnFocusChangeListener(this);
+        mBtnPlayCover.setOnFocusChangeListener(this);
+        mBtnPlayDouble.setOnFocusChangeListener(this);
+        mBtnPlayFinish.setOnFocusChangeListener(this);
+        mBtnPlayAd.setOnFocusChangeListener(this);
 
         Intent intent = getIntent();
         if (null != intent) {
@@ -156,6 +162,24 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             }
                 break;
         }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+switch (v.getId()){
+    case R.id.btn_play_normal:
+    case R.id.btn_play_cover_view:
+    case R.id.btn_play_double_click:
+    case R.id.btn_play_auto_finish:
+    case R.id.btn_play_ad_mode:{
+        Button btn = (Button)v;
+        if(hasFocus){
+            btn.setTextColor(getResources().getColor(R.color.colorRed));
+        }else{
+            btn.setTextColor(getResources().getColor(R.color.black));
+        }
+    }break;
+}
     }
 
     private PlayerListener mPlayerListener = new PlayerListener() {

@@ -116,7 +116,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         if (mRxPermissions.isGranted(readSDCard)) {
             setVideoViewBase();
         } else {
-            mRxPermissions.request()
+            mRxPermissions.request(readSDCard)
                     .subscribe(new Consumer<Boolean>() {
                         @Override
                         public void accept(Boolean granted) throws Exception {
@@ -319,13 +319,11 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                     try {
                         int duration = mVideoView.getDuration();
                         int current = mVideoView.getCurrentPosition();
-                        if (-1 != duration) {
-                            Message msg = new Message();
-                            msg.what = MSG_WHAT_ON_UPDATE;
-                            msg.arg1 = duration;
-                            msg.arg2 = current;
-                            mWeakHandler.sendMessage(msg);
-                        }
+                        Message msg = new Message();
+                        msg.what = MSG_WHAT_ON_UPDATE;
+                        msg.arg1 = duration;
+                        msg.arg2 = current;
+                        mWeakHandler.sendMessage(msg);
                     } catch (Exception e) {
                         LogUtils.d(TAG, "update exception: " + e.getMessage());
                     }

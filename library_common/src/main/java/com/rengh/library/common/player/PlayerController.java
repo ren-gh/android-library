@@ -71,6 +71,9 @@ public class PlayerController extends RelativeLayout {
         mLlLoading = findViewById(R.id.ll_loading);
         mIvCountDown = findViewById(R.id.iv_count_down);
 
+        mSeekBar.setMax(0);
+        mSeekBar.setProgress(0);
+
         mIvStateCenter.setVisibility(View.GONE);
         mLlBottom.setVisibility(View.GONE);
         mLlLoading.setVisibility(View.VISIBLE);
@@ -133,7 +136,6 @@ public class PlayerController extends RelativeLayout {
         }
         mLlLoading.setVisibility(View.GONE);
         mIsStarted = true;
-        onPlaying();
         showAndAutoHide();
         return this;
     }
@@ -160,6 +162,7 @@ public class PlayerController extends RelativeLayout {
 
     public PlayerController onPlaying() {
         setIvStateCenter(R.drawable.ic_player_suspended_focus);
+        showAndAutoHide();
         return this;
     }
 
