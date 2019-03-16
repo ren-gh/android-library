@@ -3,15 +3,20 @@ package com.rengh.library.common.player;
 
 import com.rengh.library.common.R;
 import com.rengh.library.common.handler.WeakHandler;
+import com.rengh.library.common.util.BitmapUtils;
+import com.rengh.library.common.util.FileUtils;
+import com.rengh.library.common.util.LogUtils;
 import com.rengh.library.common.util.TimeUtils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -19,22 +24,24 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.InputStream;
+
 public class PlayerController extends RelativeLayout {
+    private final String TAG = "PlayerController";
+
     private Context mContext;
     private WeakHandler mWeakHandler;
 
     private TextView mTvTitle;
-    private ImageView mIvStateCenter;
-
+    private ImageView mIvCountDown, mIvStateCenter;
     private LinearLayout mLlBottom;
     private AppCompatSeekBar mSeekBar;
     private TextView mTvTimePlayed, mTvTimeTotal;
-
     private LinearLayout mLlLoading;
 
     private Drawable bakDrawable = null;
 
-    private boolean mIsStarted, mIsShowed;
+    private boolean mIsStarted, mIsShowed, mIsAdVideo;
 
     public PlayerController(Context context) {
         super(context);
@@ -62,6 +69,7 @@ public class PlayerController extends RelativeLayout {
         mSeekBar = findViewById(R.id.sb_player_seekbar);
         mTvTimeTotal = findViewById(R.id.tv_player_time_total);
         mLlLoading = findViewById(R.id.ll_loading);
+        mIvCountDown = findViewById(R.id.iv_count_down);
 
         mIvStateCenter.setVisibility(View.GONE);
         mLlBottom.setVisibility(View.GONE);
@@ -69,6 +77,17 @@ public class PlayerController extends RelativeLayout {
 
         mIsShowed = false;
         mIsStarted = false;
+    }
+
+    public PlayerController setVideoType(boolean isAdVideo) {
+        mIsAdVideo = isAdVideo;
+        if (mIsAdVideo) {
+            mTvTitle.setVisibility(View.GONE);
+            mIvStateCenter.setVisibility(View.GONE);
+            mLlBottom.setVisibility(View.GONE);
+            mLlLoading.setVisibility(View.GONE);
+        }
+        return this;
     }
 
     public PlayerController setTitle(String title) {
@@ -107,16 +126,20 @@ public class PlayerController extends RelativeLayout {
     }
 
     public PlayerController onStarted() {
-        mIvStateCenter.setVisibility(View.VISIBLE);
-        mLlBottom.setVisibility(View.VISIBLE);
+        if (!mIsAdVideo) {
+            mIvStateCenter.setVisibility(View.VISIBLE);
+            mLlBottom.setVisibility(View.VISIBLE);
+            mIsShowed = true;
+        }
         mLlLoading.setVisibility(View.GONE);
         mIsStarted = true;
-        mIsShowed = true;
         onPlaying();
+        showAndAutoHide();
         return this;
     }
 
     public PlayerController onPause() {
+        mWeakHandler.removeCallbacks(autoHide);
         setIvStateCenter(R.drawable.ic_player_play_focus);
         show();
         return this;
@@ -137,14 +160,16 @@ public class PlayerController extends RelativeLayout {
 
     public PlayerController onPlaying() {
         setIvStateCenter(R.drawable.ic_player_suspended_focus);
-        mWeakHandler.postDelayed(autoHide, 2000);
         return this;
     }
+
+    private int mCountBak = 0;
 
     public PlayerController onUpdate(int duration, int current) {
         setTimeTotal(duration);
         setTimePlayed(current);
         setProgress(duration, current);
+        setCountDown(duration, current);
         return this;
     }
 
@@ -153,6 +178,7 @@ public class PlayerController extends RelativeLayout {
             setIvStateCenter(bakDrawable);
         }
         bakDrawable = null;
+        showAndAutoHide();
     }
 
     public PlayerController onFast() {
@@ -188,20 +214,59 @@ public class PlayerController extends RelativeLayout {
         return this;
     }
 
-    public PlayerController showOrHide() {
-        if (mIsShowed) {
-            hide();
-        } else {
-            show();
+    private void setCountDown(int duration, int current) {
+        if (mIsAdVideo) {
+            int down = (duration - current) / 1000;
+            if (down != mCountBak) {
+                mCountBak = down;
+                try {
+                    String path = "pic/ad_second/countime" + mCountBak + ".png";
+                    InputStream in = FileUtils.getAssetsFileInputStream(mContext, path);
+                    Bitmap bmp = BitmapUtils.readBitMap(mContext, in);
+                    float height = mContext.getResources().getDimension(R.dimen.dp_20);
+                    float width = bmp.getWidth() * (height / bmp.getHeight());
+                    ViewGroup.LayoutParams params = mIvCountDown.getLayoutParams();
+                    params.width = (int) width;
+                    params.height = (int) height;
+                    mIvCountDown.setLayoutParams(params);
+                    mIvCountDown.setImageBitmap(bmp);
+                } catch (Exception e) {
+                    LogUtils.e(TAG, "Count: " + mCountBak + ", get ad count down pic error: "
+                            + e.getMessage());
+                }
+            }
         }
-        return this;
     }
 
     public boolean isShowed() {
         return mIsShowed;
     }
 
+    public PlayerController showOrHide() {
+        if (mIsShowed) {
+            hide();
+        } else {
+            showAndAutoHide();
+        }
+        return this;
+    }
+
     public PlayerController show() {
+        return showImpl(false);
+    }
+
+    public PlayerController showAndAutoHide() {
+        return showImpl(true);
+    }
+
+    private PlayerController showImpl(boolean willHide) {
+        if (mIsAdVideo) {
+            return this;
+        }
+        mWeakHandler.removeCallbacks(autoHide);
+        if (willHide) {
+            mWeakHandler.postDelayed(autoHide, 3000);
+        }
         if (mIsStarted && !mIsShowed) {
             mIsShowed = true;
             mTvTitle.startAnimation(getAnimation(mContext, R.anim.slide_in_top));

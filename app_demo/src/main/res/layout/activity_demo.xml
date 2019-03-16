@@ -1,20 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/focused"
+    android:orientation="vertical"
     tools:context=".activity.DemoActivity">
+
+    <LinearLayout
+        android:id="@+id/ll_btn_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_play_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="正常播放" />
+
+        <Button
+            android:id="@+id/btn_play_cover_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="带启动图" />
+
+        <Button
+            android:id="@+id/btn_play_double_click"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="双击暂停" />
+
+        <Button
+            android:id="@+id/btn_play_auto_finish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="自动退出" />
+
+        <Button
+            android:id="@+id/btn_play_ad_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="广告模式" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_8"
-        android:elevation="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
         android:text="Network Info"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_12"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        android:textSize="@dimen/sp_12" />
+</LinearLayout>

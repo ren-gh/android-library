@@ -5,11 +5,14 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.rengh.library.common.dialog.RDialog;
@@ -35,14 +38,15 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class DemoActivity extends AppCompatActivity {
+public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "DemoActivity";
     private RxPermissions mRxPermissions;
     private Context mContext;
     private TextView mTvInfo;
+    private Button mBtnPlayNormal, mBtnPlayCover, mBtnPlayDouble, mBtnPlayFinish, mBtnPlayAd;
 
-    private String VIDEO_NAME = "王牌对王牌 第6期 完整版";
-    private String VIDEO_URL = "";
+    private String VIDEO_NAME = "测试视频";
+    private String VIDEO_URL = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
     private String VIDEO_URL_2 = "/sdcard/ad.ts";
 
     @Override
@@ -54,6 +58,17 @@ public class DemoActivity extends AppCompatActivity {
         mRxPermissions = new RxPermissions(this);
 
         mTvInfo = findViewById(R.id.tv_info);
+        mBtnPlayNormal = findViewById(R.id.btn_play_normal);
+        mBtnPlayCover = findViewById(R.id.btn_play_cover_view);
+        mBtnPlayDouble = findViewById(R.id.btn_play_double_click);
+        mBtnPlayFinish = findViewById(R.id.btn_play_auto_finish);
+        mBtnPlayAd = findViewById(R.id.btn_play_ad_mode);
+
+        mBtnPlayNormal.setOnClickListener(this);
+        mBtnPlayCover.setOnClickListener(this);
+        mBtnPlayDouble.setOnClickListener(this);
+        mBtnPlayFinish.setOnClickListener(this);
+        mBtnPlayAd.setOnClickListener(this);
 
         Intent intent = getIntent();
         if (null != intent) {
@@ -65,6 +80,82 @@ public class DemoActivity extends AppCompatActivity {
         showDialog();
 
         rxJavaTest();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_play_normal: {
+                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setCoverDrawable(null);
+                PlayerHelper.setDoubleClick(false);
+                PlayerHelper.setAdVideo(false);
+                PlayerHelper.setAutoFinish(false);
+                PlayerHelper.setAutoFinishDelay(0);
+                PlayerHelper.setVideoTile(VIDEO_NAME);
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                Intent intent = new Intent();
+                intent.setClass(mContext, PlayerActivity.class);
+                startActivity(intent);
+            }
+                break;
+            case R.id.btn_play_cover_view: {
+                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setCoverDrawable(getResources().getDrawable(R.drawable.ic_desk_app_bg));
+                PlayerHelper.setDoubleClick(false);
+                PlayerHelper.setAdVideo(false);
+                PlayerHelper.setAutoFinish(false);
+                PlayerHelper.setAutoFinishDelay(0);
+                PlayerHelper.setVideoTile(VIDEO_NAME);
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                Intent intent = new Intent();
+                intent.setClass(mContext, PlayerActivity.class);
+                startActivity(intent);
+            }
+                break;
+            case R.id.btn_play_double_click: {
+                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setCoverDrawable(null);
+                PlayerHelper.setDoubleClick(true);
+                PlayerHelper.setAdVideo(false);
+                PlayerHelper.setAutoFinish(false);
+                PlayerHelper.setAutoFinishDelay(0);
+                PlayerHelper.setVideoTile(VIDEO_NAME);
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                Intent intent = new Intent();
+                intent.setClass(mContext, PlayerActivity.class);
+                startActivity(intent);
+            }
+                break;
+            case R.id.btn_play_auto_finish: {
+                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setCoverDrawable(null);
+                PlayerHelper.setDoubleClick(false);
+                PlayerHelper.setAdVideo(false);
+                PlayerHelper.setAutoFinish(true);
+                PlayerHelper.setAutoFinishDelay(3000);
+                PlayerHelper.setVideoTile(VIDEO_NAME);
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                Intent intent = new Intent();
+                intent.setClass(mContext, PlayerActivity.class);
+                startActivity(intent);
+            }
+                break;
+            case R.id.btn_play_ad_mode: {
+                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setCoverDrawable(null);
+                PlayerHelper.setDoubleClick(false);
+                PlayerHelper.setAdVideo(true);
+                PlayerHelper.setAutoFinish(true);
+                PlayerHelper.setAutoFinishDelay(0);
+                PlayerHelper.setVideoTile(VIDEO_NAME);
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                Intent intent = new Intent();
+                intent.setClass(mContext, PlayerActivity.class);
+                startActivity(intent);
+            }
+                break;
+        }
     }
 
     private PlayerListener mPlayerListener = new PlayerListener() {
@@ -130,7 +221,6 @@ public class DemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                startPlayVideo();
             }
         });
         dialog.setButtonYesClick(new View.OnClickListener() {
@@ -142,18 +232,6 @@ public class DemoActivity extends AppCompatActivity {
         });
         dialog.setContent("你好，欢迎使用R开发库！");
         dialog.show();
-    }
-
-    private void startPlayVideo() {
-        PlayerHelper.setPlayerListener(mPlayerListener);
-        PlayerHelper.setAutoFinish(false);
-        PlayerHelper.setDoubleClick(false);
-        PlayerHelper.setAutoFinishDelay(0);
-        Intent intent = new Intent();
-        intent.setClass(mContext, PlayerActivity.class);
-        intent.setData(Uri.parse(VIDEO_URL_2));
-        intent.putExtra(PlayerHelper.KEY_VIDEO_TITLE_SHOWED_ON_TOP, VIDEO_NAME);
-        startActivity(intent);
     }
 
     private void setDeviceInfo() {

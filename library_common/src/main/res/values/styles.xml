@@ -8,6 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- 黑色主题 -->
+    <style name="AppTheme.Black" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/ic_desk_app_bg</item>
+    </style>
+
     <!-- FullScreen主题 -->
     <style name="AppTheme.FullScreen" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="windowActionBar">false</item>
@@ -16,7 +21,7 @@
 
     <!-- FullScreen主题 -->
     <style name="AppTheme.FullScreen.Black" parent="AppTheme.FullScreen">
-        <item name="android:windowBackground">@color/colorDefaultBg</item>
+        <item name="android:windowBackground">@drawable/ic_desk_app_bg</item>
     </style>
 
     <!-- Trans主题 -->
