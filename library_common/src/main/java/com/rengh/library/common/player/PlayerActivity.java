@@ -406,7 +406,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 mPlayerController.showAndAutoHide();
             } else {
                 int duration = mVideoView.getDuration();
-                if (-1 != duration || mVideoView.canSeekForward()) {
+                if (-1 != duration && mVideoView.canSeekForward()) {
                     int current = mVideoView.getCurrentPosition();
                     current += TIME_FORWORD_OR_REWIND;
                     if (current > duration) {
@@ -429,7 +429,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 mPlayerController.showAndAutoHide();
             } else {
                 int duration = mVideoView.getDuration();
-                if (-1 != duration || mVideoView.canSeekBackward()) {
+                if (-1 != duration && mVideoView.canSeekBackward()) {
                     int current = mVideoView.getCurrentPosition();
                     current -= TIME_FORWORD_OR_REWIND;
                     if (current < 0) {
