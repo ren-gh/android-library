@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dp_120"
+    android:layout_height="@dimen/dp_30"
+    android:background="@drawable/dialog_btn_bg_narmal">
+
+    <TextView
+        android:id="@+id/btn_grid_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_12" />
+</LinearLayout>

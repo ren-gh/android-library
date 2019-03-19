@@ -23,4 +23,6 @@ public interface PlayerListener {
     void onClick();
 
     void onFinish();
+
+    void onSeekChanged(int progress);
 }

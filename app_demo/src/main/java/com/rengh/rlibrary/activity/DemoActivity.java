@@ -5,12 +5,10 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,12 +17,10 @@ import com.rengh.library.common.dialog.RDialog;
 import com.rengh.library.common.net.LocalNetHelper;
 import com.rengh.library.common.notification.NotificationHelper;
 import com.rengh.library.common.player.PlayerActivity;
-import com.rengh.library.common.player.PlayerController;
 import com.rengh.library.common.player.PlayerListener;
 import com.rengh.library.common.player.PlayerHelper;
-import com.rengh.library.common.util.FileUtils;
 import com.rengh.library.common.util.LogUtils;
-import com.rengh.library.common.util.StringUtils;
+import com.rengh.library.common.util.UIUtils;
 import com.rengh.rlibrary.R;
 import com.rengh.rlibrary.broadcast.NotificationClickReceiver;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -41,13 +37,14 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class DemoActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class DemoActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "DemoActivity";
     private RxPermissions mRxPermissions;
     private Context mContext;
     private TextView mTvInfo;
-    private Button mBtnPlayNormal, mBtnPlayCover, mBtnPlayDouble, mBtnPlayFinish, mBtnPlayAd;
+    private Button mBtnLiveActvity, mBtnPlayNormal, mBtnPlayCover, mBtnPlayDouble, mBtnPlayFinish, mBtnPlayAd;
 
+    private String VIDEO_URL_1 = "/sdcard/douyin.mp4";
     private String VIDEO_URL_2 = "/sdcard/ad.ts";
     private String VIDEO_URL_3 = "http://g3com.cp21.ott.cibntv.net/vod/v1/Mjc5LzQ1LzEwOC9sZXR2LWd1Zy8xNy8xMTIyODU4NzMyLWF2Yy03NzctYWFjLTc3LTYwMDAwLTI1ODM3MDI4LTYxMDdiY2RhMzBhY2Y5YmMxOTE4OWNjOGE4ZjI1Mzc1LTE1NTI2NDA1MzU1MDgudHM=?platid=100&splatid=10002&gugtype=6&mmsid=66929100&type=tv_1080p";
 
@@ -59,24 +56,20 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         mContext = this;
         mRxPermissions = new RxPermissions(this);
 
-        mTvInfo = findViewById(R.id.tv_info);
+        mBtnLiveActvity = findViewById(R.id.btn_play_live);
         mBtnPlayNormal = findViewById(R.id.btn_play_normal);
         mBtnPlayCover = findViewById(R.id.btn_play_cover_view);
         mBtnPlayDouble = findViewById(R.id.btn_play_double_click);
         mBtnPlayFinish = findViewById(R.id.btn_play_auto_finish);
         mBtnPlayAd = findViewById(R.id.btn_play_ad_mode);
+        mTvInfo = findViewById(R.id.tv_info);
 
+        mBtnLiveActvity.setOnClickListener(this);
         mBtnPlayNormal.setOnClickListener(this);
         mBtnPlayCover.setOnClickListener(this);
         mBtnPlayDouble.setOnClickListener(this);
         mBtnPlayFinish.setOnClickListener(this);
         mBtnPlayAd.setOnClickListener(this);
-
-        mBtnPlayNormal.setOnFocusChangeListener(this);
-        mBtnPlayCover.setOnFocusChangeListener(this);
-        mBtnPlayDouble.setOnFocusChangeListener(this);
-        mBtnPlayFinish.setOnFocusChangeListener(this);
-        mBtnPlayAd.setOnFocusChangeListener(this);
 
         Intent intent = getIntent();
         if (null != intent) {
@@ -93,6 +86,12 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_play_live: {
+                Intent intent = new Intent();
+                intent.setClass(mContext, LiveActivity.class);
+                startActivity(intent);
+            }
+                break;
             case R.id.btn_play_normal: {
                 PlayerHelper.setPlayerListener(mPlayerListener);
                 PlayerHelper.setCoverDrawable(null);
@@ -116,8 +115,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setAutoFinish(false);
                 PlayerHelper.setShowLoading(false);
                 PlayerHelper.setAutoFinishDelay(0);
-                PlayerHelper.setVideoTile("CCTV-6 直播");
-                PlayerHelper.setVideoUri(Uri.parse("http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8"));
+                PlayerHelper.setVideoTile("在线广告");
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_3));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -131,8 +130,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setAutoFinish(false);
                 PlayerHelper.setShowLoading(true);
                 PlayerHelper.setAutoFinishDelay(0);
-                PlayerHelper.setVideoTile("浙江卫视 直播");
-                PlayerHelper.setVideoUri(Uri.parse("http://ivi.bupt.edu.cn/hls/zjhd.m3u8"));
+                PlayerHelper.setVideoTile("在线广告");
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_3));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -145,9 +144,9 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setAdVideo(true);
                 PlayerHelper.setAutoFinish(true);
                 PlayerHelper.setShowLoading(false);
-                PlayerHelper.setAutoFinishDelay(3000);
-                PlayerHelper.setVideoTile("在线广告");
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_3));
+                PlayerHelper.setAutoFinishDelay(0);
+                PlayerHelper.setVideoTile("本地视频-竖屏");
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_1));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -161,30 +160,11 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setAutoFinish(true);
                 PlayerHelper.setAutoFinishDelay(0);
                 PlayerHelper.setShowLoading(false);
-                PlayerHelper.setVideoTile("本地广告");
+                PlayerHelper.setVideoTile("本地视频-横屏");
                 PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_2));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
-            }
-                break;
-        }
-    }
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        switch (v.getId()) {
-            case R.id.btn_play_normal:
-            case R.id.btn_play_cover_view:
-            case R.id.btn_play_double_click:
-            case R.id.btn_play_auto_finish:
-            case R.id.btn_play_ad_mode: {
-                Button btn = (Button) v;
-                if (hasFocus) {
-                    btn.setTextColor(getResources().getColor(R.color.colorRed));
-                } else {
-                    btn.setTextColor(getResources().getColor(R.color.black));
-                }
             }
                 break;
         }
@@ -244,6 +224,11 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onFinish() {
             LogUtils.i(TAG, "onFinish()");
+        }
+
+        @Override
+        public void onSeekChanged(int progress) {
+            LogUtils.i(TAG, "onSeekChanged() " + progress);
         }
     };
 

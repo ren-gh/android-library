@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".player.PlayerActivity">
 
-    <com.rengh.library.common.view.FullScreenVideoView
+    <VideoView
         android:id="@+id/videoView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
 
     <com.rengh.library.common.player.PlayerController
         android:id="@+id/playerController"

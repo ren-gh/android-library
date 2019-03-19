@@ -22,6 +22,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.InputStream;
@@ -31,6 +32,7 @@ public class PlayerController extends RelativeLayout {
 
     private Context mContext;
     private WeakHandler mWeakHandler;
+    private PlayerViewListener mViewListener;
 
     private TextView mTvTitle;
     private ImageView mIvCountDown, mIvStateCenter;
@@ -78,6 +80,42 @@ public class PlayerController extends RelativeLayout {
         mIvStateCenter.setVisibility(View.GONE);
         mLlBottom.setVisibility(View.GONE);
         mLlLoading.setVisibility(View.GONE);
+
+        mIvStateCenter.setClickable(true);
+        mIvStateCenter.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LogUtils.i(TAG, "onClick()");
+                if (null != mViewListener) {
+                    mViewListener.onCenterClicked();
+                }
+            }
+        });
+
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (null != mViewListener) {
+                    mViewListener.onSeekBarChanged(progress, fromUser);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        setClickable(true);
+        setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOrHide();
+            }
+        });
 
         mIsShowed = false;
         mIsStarted = false;
@@ -319,5 +357,10 @@ public class PlayerController extends RelativeLayout {
             animation.setFillAfter(true);
         }
         return animation;
+    }
+
+    public PlayerController setViewListener(PlayerViewListener viewListener) {
+        mViewListener = viewListener;
+        return this;
     }
 }

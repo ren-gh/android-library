@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">R开发库</string>
     <string name="action_settings">设置</string>
-
-    <string name="title_activity_ali_shop">AliShopActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="app_name_live">电视直播</string>
 </resources>

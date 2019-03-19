@@ -13,4 +13,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <application>
+        <activity
+            android:name="com.rengh.library.common.player.PlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="RPlayer"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme.FullScreen.Black" />
+    </application>
 </manifest>

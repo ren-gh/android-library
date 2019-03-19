@@ -213,17 +213,25 @@ public class FileUtils {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return getContent(in, start, number);
+        StringBuilder builder = getContent(in, start, number);
+        if (null != builder) {
+            return builder.toString();
+        }
+        return null;
     }
 
     /**
      * 读取文件内容
      */
     public static String getContent(InputStream in) {
-        return getContent(in, -1, -1);
+        StringBuilder builder = getContent(in, -1, -1);
+        if (null != builder) {
+            return builder.toString();
+        }
+        return null;
     }
 
-    public static String getContent(InputStream in, int start, int number) {
+    public static StringBuilder getContent(InputStream in, int start, int number) {
         if (in == null) {
             return null;
         }
@@ -266,7 +274,7 @@ public class FileUtils {
                 e.printStackTrace();
             }
         }
-        return builder.toString();
+        return builder;
     }
 
     /**

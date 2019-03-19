@@ -3,12 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/focused"
     android:orientation="vertical"
     tools:context=".activity.DemoActivity">
 
+    <Button
+        android:id="@+id/btn_play_live"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_30"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/dialog_btn_bg"
+        android:text="观看直播"
+        android:textSize="@dimen/sp_12" />
+
     <LinearLayout
-        android:id="@+id/ll_btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
@@ -17,33 +25,54 @@
 
         <Button
             android:id="@+id/btn_play_normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="正常播放" />
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_30"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="正常播放"
+            android:textSize="@dimen/sp_12" />
 
         <Button
             android:id="@+id/btn_play_cover_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="带启动图" />
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="带启动图"
+            android:textSize="@dimen/sp_12" />
 
         <Button
             android:id="@+id/btn_play_double_click"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="双击暂停" />
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="双击暂停"
+            android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_play_auto_finish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="自动退出" />
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_30"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="自动退出"
+            android:textSize="@dimen/sp_12" />
 
         <Button
             android:id="@+id/btn_play_ad_mode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="广告模式" />
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:background="@drawable/dialog_btn_bg"
+            android:text="广告模式"
+            android:textSize="@dimen/sp_12" />
     </LinearLayout>
 
     <TextView
@@ -53,6 +82,6 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:text="Network Info"
-        android:textColor="@color/black"
+        android:textColor="@color/focused"
         android:textSize="@dimen/sp_12" />
 </LinearLayout>

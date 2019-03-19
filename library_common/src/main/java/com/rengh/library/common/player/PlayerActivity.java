@@ -8,8 +8,8 @@ import com.rengh.library.common.util.LogUtils;
 import com.rengh.library.common.util.ThreadManager;
 import com.rengh.library.common.util.ThreadUtils;
 import com.rengh.library.common.util.ToastUtils;
-import com.rengh.library.common.view.FullScreenVideoView;
-import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.rengh.library.common.util.UIUtils;
+
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,22 +22,22 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-
-import io.reactivex.functions.Consumer;
+import android.widget.VideoView;
 
 public class PlayerActivity extends AppCompatActivity implements WeakHandlerListener {
     private final static String TAG = "PlayerActivity";
     private Context mContext;
     private WeakHandler mWeakHandler;
-    private RxPermissions mRxPermissions;
     private PlayerListener mPlayerListener;
 
-    private FullScreenVideoView mVideoView;
+    private VideoView mVideoView;
     private PlayerController mPlayerController;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
     private MediaPlayer.OnErrorListener mOnErrorListener;
     private MediaPlayer.OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnSeekCompleteListener mOnSeekCompletionListener;
+
+    private PlayerViewListener mViewListener;
 
     private final int MSG_WHAT_ON_PREPARED = 1;
     private final int MSG_WHAT_ON_ERROR = 2;
@@ -85,52 +85,29 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
 
         LogUtils.i(TAG, "onCreate()");
 
+        UIUtils.setTransStateBar(this);
+
         mContext = this;
         mWeakHandler = new WeakHandler(this);
-        mRxPermissions = new RxPermissions(this);
 
         mVideoView = findViewById(R.id.videoView);
         mPlayerController = findViewById(R.id.playerController);
 
         initVideoViewListener();
+        initValues();
+    }
 
-        Intent intent = getIntent();
-        if (null != intent) {
-            mVideoUri = PlayerHelper.getVideoUri();
-            mVideoName = PlayerHelper.getVideoTile();
-            mPlayerListener = PlayerHelper.getPlayerListener();
-            mDoubleClick = PlayerHelper.getDoubleClick();
-            mAutoFinish = PlayerHelper.getAutoFinish();
-            mAutoFinishDelay = PlayerHelper.getAutoFinishDelay();
-            mIsAdVideo = PlayerHelper.isAdVideo();
-            mCoverDrawable = PlayerHelper.getCoverDrawable();
-            mShowLoading = PlayerHelper.getShowLoading();
-            PlayerHelper.clearAll();
-            LogUtils.i(TAG, "title: " + mVideoName + ", uri: " + mVideoUri);
-        }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        UIUtils.setFullStateBar(this, hasFocus);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         LogUtils.i(TAG, "onResume()");
-        final String readSDCard = "android.permission.WRITE_EXTERNAL_STORAGE";
-        if (mRxPermissions.isGranted(readSDCard)) {
-            setVideoViewBase();
-        } else {
-            mRxPermissions.request(readSDCard)
-                    .subscribe(new Consumer<Boolean>() {
-                        @Override
-                        public void accept(Boolean granted) throws Exception {
-                            LogUtils.i(TAG, "request permission: " + granted);
-                            if (granted) {
-                                setVideoViewBase();
-                            } else {
-                                ToastUtils.showToast(mContext, "将无法播放SD卡内视频文件");
-                            }
-                        }
-                    });
-        }
+        initVideoView();
     }
 
     @Override
@@ -156,12 +133,27 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Message msg = new Message();
-        msg.what = MSG_WHAT_ON_CLICKED;
-        msg.arg1 = keyCode;
-        msg.obj = event;
-        mWeakHandler.sendMessage(msg);
-        return true;
+        if (KeyEvent.KEYCODE_MENU == keyCode
+                || KeyEvent.KEYCODE_BACK == keyCode
+                || KeyEvent.KEYCODE_DPAD_CENTER == keyCode
+                || KeyEvent.KEYCODE_DPAD_UP == keyCode
+                || KeyEvent.KEYCODE_DPAD_DOWN == keyCode
+                || KeyEvent.KEYCODE_DPAD_LEFT == keyCode
+                || KeyEvent.KEYCODE_DPAD_RIGHT == keyCode
+                || KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE == keyCode
+                || KeyEvent.KEYCODE_MEDIA_PLAY == keyCode
+                || KeyEvent.KEYCODE_MEDIA_PAUSE == keyCode
+                || KeyEvent.KEYCODE_MEDIA_STOP == keyCode
+                || KeyEvent.KEYCODE_MEDIA_FAST_FORWARD == keyCode
+                || KeyEvent.KEYCODE_MEDIA_REWIND == keyCode) {
+            Message msg = new Message();
+            msg.what = MSG_WHAT_ON_CLICKED;
+            msg.arg1 = keyCode;
+            msg.obj = event;
+            mWeakHandler.sendMessage(msg);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -285,9 +277,40 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 mWeakHandler.sendMessage(msg);
             }
         };
+        mViewListener = new PlayerViewListener() {
+            @Override
+            public void onCenterClicked() {
+                centerClicked();
+            }
+
+            @Override
+            public void onSeekBarChanged(int progress, boolean fromUser) {
+                if (!fromUser) {
+                    return;
+                }
+                onSeekBarChangedByUser(progress);
+            }
+        };
     }
 
-    private void setVideoViewBase() {
+    private void initValues() {
+        Intent intent = getIntent();
+        if (null != intent) {
+            mVideoUri = PlayerHelper.getVideoUri();
+            mVideoName = PlayerHelper.getVideoTile();
+            mPlayerListener = PlayerHelper.getPlayerListener();
+            mDoubleClick = PlayerHelper.getDoubleClick();
+            mAutoFinish = PlayerHelper.getAutoFinish();
+            mAutoFinishDelay = PlayerHelper.getAutoFinishDelay();
+            mIsAdVideo = PlayerHelper.isAdVideo();
+            mCoverDrawable = PlayerHelper.getCoverDrawable();
+            mShowLoading = PlayerHelper.getShowLoading();
+            PlayerHelper.clearAll();
+            LogUtils.i(TAG, "title: " + mVideoName + ", uri: " + mVideoUri);
+        }
+    }
+
+    private void initVideoView() {
         if (null == mVideoUri) {
             ToastUtils.showToast(mContext, R.string.player_toast_uri_be_null);
             mWeakHandler.sendEmptyMessage(MSG_WHAT_ON_FINISH);
@@ -304,6 +327,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
             }
             mPlayerController.setVideoType(mIsAdVideo);
             mPlayerController.setShowLoading(mShowLoading);
+            mPlayerController.setViewListener(mViewListener);
             if (Build.VERSION.SDK_INT >= 16) {
                 mPlayerController.setBackground(mCoverDrawable);
             } else {
@@ -343,126 +367,175 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         if (KeyEvent.KEYCODE_MENU == msg.arg1 // 82
                 || KeyEvent.KEYCODE_DPAD_UP == msg.arg1 // 19
                 || KeyEvent.KEYCODE_DPAD_DOWN == msg.arg1) { // 20
-            if (mVideoView.isPlaying()) {
-                mPlayerController.showOrHide(true);
-            } else {
-                mPlayerController.showOrHide(false);
-            }
+            showOrHideController();
         }
         // 播放/暂停
         else if (KeyEvent.KEYCODE_DPAD_CENTER == msg.arg1) { // 23
-            if (mDoubleClick) {
-                doubleClickCenterToPause();
-            } else {
-                msg = new Message();
-                msg.what = MSG_WHAT_ON_CLICKED;
-                msg.arg1 = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-                processMediaOnClick(msg);
-            }
+            centerClicked();
         }
         // 播放/暂停
         else if (KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE == msg.arg1) { // 85
-            if (mVideoView.canPause()) {
-                if (mVideoView.isPlaying()) {
-                    mVideoView.pause();
-                    mPlayerController.onPause();
-                    if (null != mPlayerListener) {
-                        mPlayerListener.onPause();
-                    }
-                } else {
-                    mVideoView.start();
-                    mPlayerController.onPlaying();
-                    if (null != mPlayerListener) {
-                        mPlayerListener.onPlaying();
-                    }
-                }
-            } else {
-                ToastUtils.showToast(mContext, R.string.player_toast_not_support_pause);
-            }
+            playOrPauseVideo();
         }
         // 播放
         else if (KeyEvent.KEYCODE_MEDIA_PLAY == msg.arg1) { // 126
-            if (!mVideoView.isPlaying()) {
-                mVideoView.start();
-                mPlayerController.onPlaying();
-                if (null != mPlayerListener) {
-                    mPlayerListener.onPlaying();
-                }
-            } else {
-                if (TextUtils.isEmpty(mVideoName)) {
-                    ToastUtils.showToast(mContext, R.string.player_toast_playing);
-                } else {
-                    ToastUtils.showToast(mContext, getString(R.string.player_toast_playing_with_name, mVideoName));
-                }
-            }
+            playVideo();
         }
         // 暂停
         else if (KeyEvent.KEYCODE_MEDIA_PAUSE == msg.arg1) { // 127
-            if (mVideoView.isPlaying() && mVideoView.canPause()) {
+            pauseVideo();
+        }
+        // 快进
+        else if (KeyEvent.KEYCODE_DPAD_RIGHT == msg.arg1 // 22
+                || KeyEvent.KEYCODE_MEDIA_FAST_FORWARD == msg.arg1) { // 90
+            fastForWardVideo();
+        }
+        // 快退
+        else if (KeyEvent.KEYCODE_DPAD_LEFT == msg.arg1 // 21
+                || KeyEvent.KEYCODE_MEDIA_REWIND == msg.arg1) { // 89
+            rewindVideo();
+        }
+        // 停止
+        else if (KeyEvent.KEYCODE_MEDIA_STOP == msg.arg1) { // 86
+            stopVideo();
+        }
+    }
+
+    private void showOrHideController() {
+        if (mVideoView.isPlaying()) {
+            mPlayerController.showOrHide(true);
+        } else {
+            mPlayerController.showOrHide(false);
+        }
+    }
+
+    private void centerClicked() {
+        Message msg;
+        if (mDoubleClick) {
+            doubleClickCenterToPause();
+        } else {
+            msg = new Message();
+            msg.what = MSG_WHAT_ON_CLICKED;
+            msg.arg1 = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+            processMediaOnClick(msg);
+        }
+    }
+
+    private void playVideo() {
+        if (!mVideoView.isPlaying()) {
+            mVideoView.start();
+            mPlayerController.onPlaying();
+            if (null != mPlayerListener) {
+                mPlayerListener.onPlaying();
+            }
+        } else {
+            if (TextUtils.isEmpty(mVideoName)) {
+                ToastUtils.showToast(mContext, R.string.player_toast_playing);
+            } else {
+                ToastUtils.showToast(mContext, getString(R.string.player_toast_playing_with_name, mVideoName));
+            }
+        }
+    }
+
+    private void pauseVideo() {
+        if (mVideoView.isPlaying() && mVideoView.canPause()) {
+            mVideoView.pause();
+            mPlayerController.onPause();
+            if (null != mPlayerListener) {
+                mPlayerListener.onPause();
+            }
+        } else {
+            ToastUtils.showToast(mContext, R.string.player_toast_not_support_pause);
+        }
+    }
+
+    private void fastForWardVideo() {
+        if (!mPlayerController.isShowed()) {
+            mPlayerController.showAndAutoHide();
+        } else {
+            int duration = mVideoView.getDuration();
+            if (-1 != duration && mVideoView.canSeekForward()) {
+                int current = mVideoView.getCurrentPosition();
+                current += TIME_FORWORD_OR_REWIND;
+                if (current > duration) {
+                    current = duration;
+                }
+                mVideoView.seekTo(current);
+                mPlayerController.onFast();
+                if (null != mPlayerListener) {
+                    mPlayerListener.onFast();
+                }
+            } else {
+                mPlayerController.showAndAutoHide();
+                ToastUtils.showToast(mContext, R.string.player_toast_not_support_forward);
+            }
+        }
+    }
+
+    private void rewindVideo() {
+        if (!mPlayerController.isShowed()) {
+            mPlayerController.showAndAutoHide();
+        } else {
+            int duration = mVideoView.getDuration();
+            if (-1 != duration && mVideoView.canSeekBackward()) {
+                int current = mVideoView.getCurrentPosition();
+                current -= TIME_FORWORD_OR_REWIND;
+                if (current < 0) {
+                    current = 0;
+                }
+                mVideoView.seekTo(current);
+                mPlayerController.onRewind();
+                if (null != mPlayerListener) {
+                    mPlayerListener.onRewind();
+                }
+            } else {
+                mPlayerController.showAndAutoHide();
+                ToastUtils.showToast(mContext, R.string.player_toast_not_support_backward);
+            }
+        }
+    }
+
+    private void stopVideo() {
+        mVideoView.stopPlayback();
+        mPlayerController.onStop();
+        if (null != mPlayerListener) {
+            mPlayerListener.onStop();
+        }
+    }
+
+    private void playOrPauseVideo() {
+        if (mVideoView.canPause()) {
+            if (mVideoView.isPlaying()) {
                 mVideoView.pause();
                 mPlayerController.onPause();
                 if (null != mPlayerListener) {
                     mPlayerListener.onPause();
                 }
             } else {
-                ToastUtils.showToast(mContext, R.string.player_toast_not_support_pause);
-            }
-        }
-        // 快进
-        else if (KeyEvent.KEYCODE_DPAD_RIGHT == msg.arg1 // 22
-                || KeyEvent.KEYCODE_MEDIA_FAST_FORWARD == msg.arg1) { // 90
-            if (!mPlayerController.isShowed()) {
-                mPlayerController.showAndAutoHide();
-            } else {
-                int duration = mVideoView.getDuration();
-                if (-1 != duration && mVideoView.canSeekForward()) {
-                    int current = mVideoView.getCurrentPosition();
-                    current += TIME_FORWORD_OR_REWIND;
-                    if (current > duration) {
-                        current = duration;
-                    }
-                    mVideoView.seekTo(current);
-                    mPlayerController.onFast();
-                    if (null != mPlayerListener) {
-                        mPlayerListener.onFast();
-                    }
-                } else {
-                    mPlayerController.showAndAutoHide();
-                    ToastUtils.showToast(mContext, R.string.player_toast_not_support_forward);
+                mVideoView.start();
+                mPlayerController.onPlaying();
+                if (null != mPlayerListener) {
+                    mPlayerListener.onPlaying();
                 }
             }
+        } else {
+            ToastUtils.showToast(mContext, R.string.player_toast_not_support_pause);
         }
-        // 快退
-        else if (KeyEvent.KEYCODE_DPAD_LEFT == msg.arg1 // 21
-                || KeyEvent.KEYCODE_MEDIA_REWIND == msg.arg1) { // 89
-            if (!mPlayerController.isShowed()) {
-                mPlayerController.showAndAutoHide();
-            } else {
-                int duration = mVideoView.getDuration();
-                if (-1 != duration && mVideoView.canSeekBackward()) {
-                    int current = mVideoView.getCurrentPosition();
-                    current -= TIME_FORWORD_OR_REWIND;
-                    if (current < 0) {
-                        current = 0;
-                    }
-                    mVideoView.seekTo(current);
-                    mPlayerController.onRewind();
-                    if (null != mPlayerListener) {
-                        mPlayerListener.onRewind();
-                    }
-                } else {
-                    mPlayerController.showAndAutoHide();
-                    ToastUtils.showToast(mContext, R.string.player_toast_not_support_backward);
-                }
+    }
+
+    private void onSeekBarChangedByUser(int progress) {
+        int duration = mVideoView.getDuration();
+        if (-1 != duration && mVideoView.canSeekForward()) {
+            if (progress > duration) {
+                progress = duration;
             }
-        }
-        // 停止
-        else if (KeyEvent.KEYCODE_MEDIA_STOP == msg.arg1) { // 86
-            mVideoView.stopPlayback();
-            mPlayerController.onStop();
+            mVideoView.seekTo(progress);
             if (null != mPlayerListener) {
-                mPlayerListener.onStop();
+                mPlayerListener.onSeekChanged(progress);
             }
+        } else {
+            mPlayerController.showAndAutoHide();
+            ToastUtils.showToast(mContext, R.string.player_toast_not_support_forward);
         }
     }
 

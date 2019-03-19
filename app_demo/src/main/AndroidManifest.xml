@@ -37,6 +37,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.FullScreen" />
         <activity
@@ -46,6 +47,7 @@
             android:theme="@style/AppTheme.FullScreen" />
         <activity
             android:name=".activity.DemoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -70,9 +72,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.rengh.library.common.player.PlayerActivity"
-            android:label="RPlayer"
-            android:theme="@style/AppTheme.FullScreen.Black"></activity>
+            android:name=".activity.LiveActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name_live"
+            android:screenOrientation="sensorLandscape"></activity>
 
         <receiver android:name=".broadcast.NotificationClickReceiver">
             <intent-filter>
