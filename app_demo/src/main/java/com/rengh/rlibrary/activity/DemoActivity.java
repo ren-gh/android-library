@@ -143,7 +143,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setAutoFinish(true);
                 PlayerHelper.setAutoFinishDelay(3000);
                 PlayerHelper.setVideoTile(VIDEO_NAME);
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_2));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -157,7 +157,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setAutoFinish(true);
                 PlayerHelper.setAutoFinishDelay(0);
                 PlayerHelper.setVideoTile(VIDEO_NAME);
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_2));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
