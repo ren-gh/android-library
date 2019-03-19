@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">公共库</string>
+    <string name="dialog_btn_yes">是</string>
+    <string name="dialog_btn_no">否</string>
+    <string name="player_controller_title">标题</string>
+    <string name="player_controller_time">00:00:00</string>
+    <string name="player_text_loading_text">正在加载……</string>
+    <string name="player_text_left_top_tip">正在播放：%s</string>
+    <string name="player_text_video_title_unknow">未知</string>
+    <string name="player_toast_start">开始播放</string>
+    <string name="player_toast_completed">播放完成</string>
+    <string name="player_toast_not_support_pause">当前视频不支持暂停</string>
+    <string name="player_toast_not_support_forward">当前视频不支持快进</string>
+    <string name="player_toast_not_support_backward">当前视频不支持快退</string>
+    <string name="player_toast_uri_be_null">Uri不能为空</string>
+    <string name="player_toast_error_with_code">错误：%d 附加码：%d.</string>
+    <string name="player_toast_playing">正在播放</string>
+    <string name="player_toast_playing_with_name">正在播放：%s</string>
+    <string name="player_toast_double_click_to_pause">再按一次暂停</string>
+    <string name="player_toast_double_click_to_play">再按一次播放</string>
+    <string name="player_toast_double_click_to_exit">再按一次退出</string>
+</resources>

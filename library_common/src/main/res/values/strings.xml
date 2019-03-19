@@ -4,5 +4,19 @@
     <string name="dialog_btn_no">NO</string>
     <string name="player_controller_title">Video Title</string>
     <string name="player_controller_time">00:00:00</string>
-    <string name="player_loading_text">Loading……</string>
+    <string name="player_text_loading_text">Loading...</string>
+    <string name="player_text_left_top_tip">Playing: %s</string>
+    <string name="player_text_video_title_unknow">Unknow</string>
+    <string name="player_toast_start">Start...</string>
+    <string name="player_toast_completed">Completed.</string>
+    <string name="player_toast_not_support_pause">Not support pause.</string>
+    <string name="player_toast_not_support_forward">Not support forward.</string>
+    <string name="player_toast_not_support_backward">Not support backward.</string>
+    <string name="player_toast_uri_be_null">Uri is null...</string>
+    <string name="player_toast_error_with_code">Error! Code: %d Extra: %d.</string>
+    <string name="player_toast_playing">Playing...</string>
+    <string name="player_toast_playing_with_name">Playing: %s</string>
+    <string name="player_toast_double_click_to_pause">Double click to pause.</string>
+    <string name="player_toast_double_click_to_play">Double click to play.</string>
+    <string name="player_toast_double_click_to_exit">Double click to exit.</string>
 </resources>

@@ -19,6 +19,7 @@ import com.rengh.library.common.dialog.RDialog;
 import com.rengh.library.common.net.LocalNetHelper;
 import com.rengh.library.common.notification.NotificationHelper;
 import com.rengh.library.common.player.PlayerActivity;
+import com.rengh.library.common.player.PlayerController;
 import com.rengh.library.common.player.PlayerListener;
 import com.rengh.library.common.player.PlayerHelper;
 import com.rengh.library.common.util.FileUtils;
@@ -47,9 +48,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mTvInfo;
     private Button mBtnPlayNormal, mBtnPlayCover, mBtnPlayDouble, mBtnPlayFinish, mBtnPlayAd;
 
-    private String VIDEO_NAME = "CCTV-1";
-    private String VIDEO_URL = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
     private String VIDEO_URL_2 = "/sdcard/ad.ts";
+    private String VIDEO_URL_3 = "http://g3com.cp21.ott.cibntv.net/vod/v1/Mjc5LzQ1LzEwOC9sZXR2LWd1Zy8xNy8xMTIyODU4NzMyLWF2Yy03NzctYWFjLTc3LTYwMDAwLTI1ODM3MDI4LTYxMDdiY2RhMzBhY2Y5YmMxOTE4OWNjOGE4ZjI1Mzc1LTE1NTI2NDA1MzU1MDgudHM=?platid=100&splatid=10002&gugtype=6&mmsid=66929100&type=tv_1080p";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +99,10 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setDoubleClick(false);
                 PlayerHelper.setAdVideo(false);
                 PlayerHelper.setAutoFinish(false);
+                PlayerHelper.setShowLoading(true);
                 PlayerHelper.setAutoFinishDelay(0);
-                PlayerHelper.setVideoTile(VIDEO_NAME);
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                PlayerHelper.setVideoTile("CCTV-1 直播");
+                PlayerHelper.setVideoUri(Uri.parse("http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8"));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -109,13 +110,14 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_play_cover_view: {
                 PlayerHelper.setPlayerListener(mPlayerListener);
-                PlayerHelper.setCoverDrawable(getResources().getDrawable(R.drawable.ic_desk_app_bg));
+                PlayerHelper.setCoverDrawable(getResources().getDrawable(R.drawable.ic_letv_bg));
                 PlayerHelper.setDoubleClick(false);
                 PlayerHelper.setAdVideo(false);
                 PlayerHelper.setAutoFinish(false);
+                PlayerHelper.setShowLoading(false);
                 PlayerHelper.setAutoFinishDelay(0);
-                PlayerHelper.setVideoTile(VIDEO_NAME);
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                PlayerHelper.setVideoTile("CCTV-6 直播");
+                PlayerHelper.setVideoUri(Uri.parse("http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8"));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -127,9 +129,10 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setDoubleClick(true);
                 PlayerHelper.setAdVideo(false);
                 PlayerHelper.setAutoFinish(false);
+                PlayerHelper.setShowLoading(true);
                 PlayerHelper.setAutoFinishDelay(0);
-                PlayerHelper.setVideoTile(VIDEO_NAME);
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL));
+                PlayerHelper.setVideoTile("浙江卫视 直播");
+                PlayerHelper.setVideoUri(Uri.parse("http://ivi.bupt.edu.cn/hls/zjhd.m3u8"));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -137,13 +140,14 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_play_auto_finish: {
                 PlayerHelper.setPlayerListener(mPlayerListener);
-                PlayerHelper.setCoverDrawable(null);
+                PlayerHelper.setCoverDrawable(getResources().getDrawable(R.drawable.ic_letv_bg));
                 PlayerHelper.setDoubleClick(false);
-                PlayerHelper.setAdVideo(false);
+                PlayerHelper.setAdVideo(true);
                 PlayerHelper.setAutoFinish(true);
+                PlayerHelper.setShowLoading(false);
                 PlayerHelper.setAutoFinishDelay(3000);
-                PlayerHelper.setVideoTile(VIDEO_NAME);
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_2));
+                PlayerHelper.setVideoTile("在线广告");
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_3));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -151,12 +155,13 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_play_ad_mode: {
                 PlayerHelper.setPlayerListener(mPlayerListener);
-                PlayerHelper.setCoverDrawable(null);
+                PlayerHelper.setCoverDrawable(getResources().getDrawable(R.drawable.ic_letv_bg));
                 PlayerHelper.setDoubleClick(false);
                 PlayerHelper.setAdVideo(true);
                 PlayerHelper.setAutoFinish(true);
                 PlayerHelper.setAutoFinishDelay(0);
-                PlayerHelper.setVideoTile(VIDEO_NAME);
+                PlayerHelper.setShowLoading(false);
+                PlayerHelper.setVideoTile("本地广告");
                 PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_2));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
@@ -168,20 +173,21 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-switch (v.getId()){
-    case R.id.btn_play_normal:
-    case R.id.btn_play_cover_view:
-    case R.id.btn_play_double_click:
-    case R.id.btn_play_auto_finish:
-    case R.id.btn_play_ad_mode:{
-        Button btn = (Button)v;
-        if(hasFocus){
-            btn.setTextColor(getResources().getColor(R.color.colorRed));
-        }else{
-            btn.setTextColor(getResources().getColor(R.color.black));
+        switch (v.getId()) {
+            case R.id.btn_play_normal:
+            case R.id.btn_play_cover_view:
+            case R.id.btn_play_double_click:
+            case R.id.btn_play_auto_finish:
+            case R.id.btn_play_ad_mode: {
+                Button btn = (Button) v;
+                if (hasFocus) {
+                    btn.setTextColor(getResources().getColor(R.color.colorRed));
+                } else {
+                    btn.setTextColor(getResources().getColor(R.color.black));
+                }
+            }
+                break;
         }
-    }break;
-}
     }
 
     private PlayerListener mPlayerListener = new PlayerListener() {

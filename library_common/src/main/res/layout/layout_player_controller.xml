@@ -94,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_0"
-            android:text="@string/player_loading_text"
+            android:text="@string/player_text_loading_text"
             android:textColor="@color/white80"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>

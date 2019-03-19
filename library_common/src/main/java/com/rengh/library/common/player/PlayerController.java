@@ -41,7 +41,7 @@ public class PlayerController extends RelativeLayout {
 
     private Drawable bakDrawable = null;
 
-    private boolean mIsStarted, mIsShowed, mIsAdVideo;
+    private boolean mIsStarted, mIsShowed, mIsAdVideo, mShowLoading;
     private Integer mDuration = -1;
 
     public PlayerController(Context context) {
@@ -77,7 +77,7 @@ public class PlayerController extends RelativeLayout {
 
         mIvStateCenter.setVisibility(View.GONE);
         mLlBottom.setVisibility(View.GONE);
-        mLlLoading.setVisibility(View.VISIBLE);
+        mLlLoading.setVisibility(View.GONE);
 
         mIsShowed = false;
         mIsStarted = false;
@@ -89,6 +89,15 @@ public class PlayerController extends RelativeLayout {
             mTvTitle.setVisibility(View.GONE);
             mIvStateCenter.setVisibility(View.GONE);
             mLlBottom.setVisibility(View.GONE);
+        }
+        return this;
+    }
+
+    public PlayerController setShowLoading(boolean show) {
+        mShowLoading = show;
+        if (mShowLoading) {
+            mLlLoading.setVisibility(View.VISIBLE);
+        } else {
             mLlLoading.setVisibility(View.GONE);
         }
         return this;
@@ -252,10 +261,19 @@ public class PlayerController extends RelativeLayout {
     }
 
     public PlayerController showOrHide() {
+        showOrHide(true);
+        return this;
+    }
+
+    public PlayerController showOrHide(boolean autoHide) {
         if (mIsShowed) {
             hide();
         } else {
-            showAndAutoHide();
+            if (autoHide) {
+                showAndAutoHide();
+            } else {
+                show();
+            }
         }
         return this;
     }
