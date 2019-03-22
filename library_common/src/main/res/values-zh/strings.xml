@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">公共库</string>
     <string name="dialog_btn_yes">是</string>
     <string name="dialog_btn_no">否</string>
     <string name="player_controller_title">标题</string>
@@ -16,7 +15,8 @@
     <string name="player_toast_error_with_code">错误：%d 附加码：%d.</string>
     <string name="player_toast_playing">正在播放</string>
     <string name="player_toast_playing_with_name">正在播放：%s</string>
-    <string name="player_toast_double_click_to_pause">再按一次暂停</string>
-    <string name="player_toast_double_click_to_play">再按一次播放</string>
-    <string name="player_toast_double_click_to_exit">再按一次退出</string>
+    <string name="player_toast_double_click_to_play_or_pause">按两次【确定】键播放/暂停</string>
+    <string name="player_toast_double_click_to_pause">按两次【确定】键暂停</string>
+    <string name="player_toast_double_click_to_play">按两次【确定】键播放</string>
+    <string name="player_toast_double_click_to_exit">按两次【返回】键退出</string>
 </resources>

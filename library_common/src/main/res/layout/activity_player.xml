@@ -12,6 +12,18 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
 
+    <FrameLayout
+        android:id="@+id/fl_float_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/fl_float_view_2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
     <com.rengh.library.common.player.PlayerController
         android:id="@+id/playerController"
         android:layout_width="match_parent"

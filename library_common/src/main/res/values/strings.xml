@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">library_common</string>
     <string name="dialog_btn_yes">YES</string>
     <string name="dialog_btn_no">NO</string>
     <string name="player_controller_title">Video Title</string>
@@ -16,7 +15,8 @@
     <string name="player_toast_error_with_code">Error! Code: %d Extra: %d.</string>
     <string name="player_toast_playing">Playing...</string>
     <string name="player_toast_playing_with_name">Playing: %s</string>
-    <string name="player_toast_double_click_to_pause">Double click to pause.</string>
-    <string name="player_toast_double_click_to_play">Double click to play.</string>
-    <string name="player_toast_double_click_to_exit">Double click to exit.</string>
+    <string name="player_toast_double_click_to_play_or_pause">Double click [OK] to play/pause.</string>
+    <string name="player_toast_double_click_to_pause">Double click [OK] to pause.</string>
+    <string name="player_toast_double_click_to_play">Double click [OK] to play.</string>
+    <string name="player_toast_double_click_to_exit">Double click [Back] to exit.</string>
 </resources>

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.rengh.library.common.dialog.RDialog;
@@ -93,22 +94,22 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             }
                 break;
             case R.id.btn_play_normal: {
-                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setPlayerListener(null);
                 PlayerHelper.setCoverDrawable(null);
                 PlayerHelper.setDoubleClick(false);
                 PlayerHelper.setAdVideo(false);
                 PlayerHelper.setAutoFinish(false);
                 PlayerHelper.setShowLoading(true);
                 PlayerHelper.setAutoFinishDelay(0);
-                PlayerHelper.setVideoTile("CCTV-1 直播");
-                PlayerHelper.setVideoUri(Uri.parse("http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8"));
+                PlayerHelper.setVideoTile("测试视频");
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_2));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
             }
                 break;
             case R.id.btn_play_cover_view: {
-                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setPlayerListener(null);
                 PlayerHelper.setCoverDrawable(getResources().getDrawable(R.drawable.ic_letv_bg));
                 PlayerHelper.setDoubleClick(false);
                 PlayerHelper.setAdVideo(false);
@@ -123,12 +124,13 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             }
                 break;
             case R.id.btn_play_double_click: {
-                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setPlayerListener(null);
                 PlayerHelper.setCoverDrawable(null);
                 PlayerHelper.setDoubleClick(true);
                 PlayerHelper.setAdVideo(false);
                 PlayerHelper.setAutoFinish(false);
                 PlayerHelper.setShowLoading(true);
+                PlayerHelper.setShowCenterClickToast(true);
                 PlayerHelper.setAutoFinishDelay(0);
                 PlayerHelper.setVideoTile("在线广告");
                 PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_3));
@@ -138,7 +140,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             }
                 break;
             case R.id.btn_play_auto_finish: {
-                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setPlayerListener(null);
                 PlayerHelper.setCoverDrawable(getResources().getDrawable(R.drawable.ic_letv_bg));
                 PlayerHelper.setDoubleClick(false);
                 PlayerHelper.setAdVideo(true);
@@ -153,7 +155,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             }
                 break;
             case R.id.btn_play_ad_mode: {
-                PlayerHelper.setPlayerListener(mPlayerListener);
+                PlayerHelper.setPlayerListener(null);
                 PlayerHelper.setCoverDrawable(getResources().getDrawable(R.drawable.ic_letv_bg));
                 PlayerHelper.setDoubleClick(false);
                 PlayerHelper.setAdVideo(true);
@@ -169,68 +171,6 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
-
-    private PlayerListener mPlayerListener = new PlayerListener() {
-        @Override
-        public void onStart() {
-            LogUtils.i(TAG, "onStart()");
-        }
-
-        @Override
-        public void onPlaying() {
-            LogUtils.i(TAG, "onPlaying()");
-        }
-
-        @Override
-        public void onPause() {
-            LogUtils.i(TAG, "onPause()");
-        }
-
-        @Override
-        public void onFast() {
-            LogUtils.i(TAG, "onFast()");
-        }
-
-        @Override
-        public void onRewind() {
-            LogUtils.i(TAG, "onRewind()");
-        }
-
-        @Override
-        public void onSeekCommpleted() {
-            LogUtils.i(TAG, "onSeekCommpleted()");
-        }
-
-        @Override
-        public void onError() {
-            LogUtils.i(TAG, "onError()");
-        }
-
-        @Override
-        public void onCompleted() {
-            LogUtils.i(TAG, "onCompleted()");
-        }
-
-        @Override
-        public void onStop() {
-            LogUtils.i(TAG, "onStop()");
-        }
-
-        @Override
-        public void onClick() {
-            LogUtils.i(TAG, "onClick()");
-        }
-
-        @Override
-        public void onFinish() {
-            LogUtils.i(TAG, "onFinish()");
-        }
-
-        @Override
-        public void onSeekChanged(int progress) {
-            LogUtils.i(TAG, "onSeekChanged() " + progress);
-        }
-    };
 
     private void showDialog() {
         final RDialog dialog = new RDialog(this);
@@ -299,7 +239,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = NotificationHelper.getInstance()
-                .getDefBuilder(getString(R.string.app_name),
+                .getDefBuilder("测试",
                         "本机信息",
                         "恭喜您，本机信息已获取成功！",
                         pendingIntent,

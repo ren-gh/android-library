@@ -18,15 +18,15 @@ public class RLibraryApplication extends Application {
     public void onCreate() {
         super.onCreate();
         String rootTag = "RLibraryDemo";
-        String appName = getString(R.string.app_name);
+        String heartTag = "RLibraryDemoHeart";
 
         LogUtils.setAutoSave(false);
         LogUtils.setRootTag(rootTag);
         LogUtils.i(TAG, "onCreate()");
 
-        NotificationHelper.getInstance().init(this).initChannelId(appName);
+        NotificationHelper.getInstance().init(this).initChannelId(heartTag);
         CrashHandler.getInstance().init(this);
-        HeartRunnable.init(appName, 0, 30);
+        HeartRunnable.init(heartTag, 0, 30);
     }
 
     @Override

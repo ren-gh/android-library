@@ -10,7 +10,6 @@ import com.rengh.library.common.util.ThreadUtils;
 import com.rengh.library.common.util.ToastUtils;
 import com.rengh.library.common.util.UIUtils;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -22,22 +21,22 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.widget.FrameLayout;
 import android.widget.VideoView;
 
 public class PlayerActivity extends AppCompatActivity implements WeakHandlerListener {
     private final static String TAG = "PlayerActivity";
     private Context mContext;
     private WeakHandler mWeakHandler;
-    private PlayerListener mPlayerListener;
+    private PlayerViewListener mViewListener; // 当前界面监听触摸滑动进度条实现快进/快退
 
     private VideoView mVideoView;
+    private FrameLayout mFlFloatView, mFlFloatView2;
     private PlayerController mPlayerController;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
     private MediaPlayer.OnErrorListener mOnErrorListener;
     private MediaPlayer.OnCompletionListener mOnCompletionListener;
     private MediaPlayer.OnSeekCompleteListener mOnSeekCompletionListener;
-
-    private PlayerViewListener mViewListener;
 
     private final int MSG_WHAT_ON_PREPARED = 1;
     private final int MSG_WHAT_ON_ERROR = 2;
@@ -46,15 +45,9 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     private final int MSG_WHAT_ON_CLICKED = 5;
     private final int MSG_WHAT_ON_FINISH = 6;
 
-    private final int TIME_FORWORD_OR_REWIND = 5000;
-    private final int TIME_DOUBLE_CLICK_DELAY = 1000;
-    private final int TIME_UPDATE_PROGRESS = 200;
-
-    private boolean mDoubleClick = false; // 双击暂停模式
-    private boolean mAutoFinish = false; // 播放完成关闭当前界面
-    private int mAutoFinishDelay = 0; // 播放完成或者出错时，延时自动关闭当前界面
-    private boolean mIsAdVideo = false; // 是否是广告
-    private boolean mShowLoading = false; // 显示加载图
+    private final int TIME_FORWORD_OR_REWIND = 10000; // 快进快退的时间间隔
+    private final int TIME_DOUBLE_CLICK_DELAY = 1000; // 双击事件的间隔时间
+    private final int TIME_UPDATE_PROGRESS = 50; // 更新播放时间的间隔时间
 
     private boolean mCenterKeyPressed = false; // 记录是否有首次按键
     private Runnable mCenterKeyRunnable = new Runnable() {
@@ -64,6 +57,13 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
             if (null != mPlayerListener) {
                 mPlayerListener.onClick();
             }
+            if (mShowCenterClickToast) {
+                if (mVideoView.isPlaying()) {
+                    ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_pause);
+                } else {
+                    ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_play);
+                }
+            }
         }
     };
     private boolean mBackKeyPressed = false; // 记录是否有首次按键
@@ -71,12 +71,31 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         @Override
         public void run() {
             mBackKeyPressed = false;
+            if (null != mPlayerListener) {
+                mPlayerListener.onBackClicked();
+            }
+            ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_exit);
         }
     };
 
-    private String mVideoName = null;
-    private Uri mVideoUri = null;
-    private Drawable mCoverDrawable = null;
+    /**
+     * Start: 需要调用方设置的参数
+     */
+
+    private PlayerListener mPlayerListener; // 播放状态监听
+    private boolean mDoubleClick = false; // 双击暂停模式
+    private boolean mAutoFinish = false; // 播放完成关闭当前界面
+    private int mAutoFinishDelay = 0; // 播放完成或者出错时，延时自动关闭当前界面
+    private boolean mIsAdVideo = false; // 是否是广告
+    private boolean mShowLoading = false; // 显示加载图
+    private boolean mShowCenterClickToast = true; // 双击模式下，单击是否提示
+    private String mVideoName = null; // 视频名称
+    private Uri mVideoUri = null; // 视频地址
+    private Drawable mCoverDrawable = null; // 播放前封面
+
+    /**
+     * End: 需要调用方设置的参数
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +110,8 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         mWeakHandler = new WeakHandler(this);
 
         mVideoView = findViewById(R.id.videoView);
+        mFlFloatView = findViewById(R.id.fl_float_view);
+        mFlFloatView2 = findViewById(R.id.fl_float_view_2);
         mPlayerController = findViewById(R.id.playerController);
 
         initVideoViewListener();
@@ -160,14 +181,15 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     public void process(Message msg) {
         switch (msg.what) {
             case MSG_WHAT_ON_PREPARED: {
-                if (!mIsAdVideo) {
-                    ToastUtils.showToast(mContext, R.string.player_toast_start);
-                }
                 mVideoView.start();
                 updateVideoViewInfo();
                 mPlayerController.onStarted();
                 if (null != mPlayerListener) {
-                    mPlayerListener.onStart();
+                    mPlayerListener.onStart(mFlFloatView, mFlFloatView2);
+                }
+                if (!mIsAdVideo && mDoubleClick) {
+                    ToastUtils.showToast(mContext,
+                            R.string.player_toast_double_click_to_play_or_pause);
                 }
             }
                 break;
@@ -181,7 +203,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 }
                 if (mAutoFinish) {
                     mWeakHandler.sendEmptyMessageDelayed(MSG_WHAT_ON_FINISH,
-                            TIME_FORWORD_OR_REWIND);
+                            mAutoFinishDelay);
                 }
             }
                 break;
@@ -305,6 +327,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
             mIsAdVideo = PlayerHelper.isAdVideo();
             mCoverDrawable = PlayerHelper.getCoverDrawable();
             mShowLoading = PlayerHelper.getShowLoading();
+            mShowCenterClickToast = PlayerHelper.getShowCenterClickToast();
             PlayerHelper.clearAll();
             LogUtils.i(TAG, "title: " + mVideoName + ", uri: " + mVideoUri);
         }
@@ -421,6 +444,26 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         }
     }
 
+    private void playOrPauseVideo() {
+        if (mVideoView.canPause()) {
+            if (mVideoView.isPlaying()) {
+                mVideoView.pause();
+                mPlayerController.onPause();
+                if (null != mPlayerListener) {
+                    mPlayerListener.onPause();
+                }
+            } else {
+                mVideoView.start();
+                mPlayerController.onPlaying();
+                if (null != mPlayerListener) {
+                    mPlayerListener.onPlaying();
+                }
+            }
+        } else {
+            ToastUtils.showToast(mContext, R.string.player_toast_not_support_pause);
+        }
+    }
+
     private void playVideo() {
         if (!mVideoView.isPlaying()) {
             mVideoView.start();
@@ -503,26 +546,6 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         }
     }
 
-    private void playOrPauseVideo() {
-        if (mVideoView.canPause()) {
-            if (mVideoView.isPlaying()) {
-                mVideoView.pause();
-                mPlayerController.onPause();
-                if (null != mPlayerListener) {
-                    mPlayerListener.onPause();
-                }
-            } else {
-                mVideoView.start();
-                mPlayerController.onPlaying();
-                if (null != mPlayerListener) {
-                    mPlayerListener.onPlaying();
-                }
-            }
-        } else {
-            ToastUtils.showToast(mContext, R.string.player_toast_not_support_pause);
-        }
-    }
-
     private void onSeekBarChangedByUser(int progress) {
         int duration = mVideoView.getDuration();
         if (-1 != duration && mVideoView.canSeekForward()) {
@@ -541,7 +564,6 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
 
     private void doubleClickBackToFinish() {
         if (!mBackKeyPressed) {
-            ToastUtils.showToast(this, R.string.player_toast_double_click_to_exit);
             mBackKeyPressed = true;
             mWeakHandler.postDelayed(mBackKeyRunnable, TIME_DOUBLE_CLICK_DELAY);
         } else {
@@ -553,11 +575,6 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
 
     private void doubleClickCenterToPause() {
         if (!mCenterKeyPressed) {
-            if (mVideoView.isPlaying()) {
-                ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_pause);
-            } else {
-                ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_play);
-            }
             mCenterKeyPressed = true;
             mWeakHandler.postDelayed(mCenterKeyRunnable, TIME_DOUBLE_CLICK_DELAY);
         } else {

@@ -1,8 +1,10 @@
 
 package com.rengh.library.common.player;
 
+import android.widget.FrameLayout;
+
 public interface PlayerListener {
-    void onStart();
+    void onStart(FrameLayout frameLayout, FrameLayout frameLayout2);
 
     void onPlaying();
 
@@ -25,4 +27,6 @@ public interface PlayerListener {
     void onFinish();
 
     void onSeekChanged(int progress);
+
+    void onBackClicked();
 }

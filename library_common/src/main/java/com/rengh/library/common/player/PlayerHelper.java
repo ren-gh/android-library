@@ -14,6 +14,7 @@ public class PlayerHelper {
     private static Boolean sAutoFinish = false;
     private static Integer sAutoFinishDelay = 0;
     private static Boolean sShowLoading = false;
+    private static Boolean sShowCenterClickToast = true;
 
     public static String getVideoTile() {
         return sVideoTile;
@@ -87,6 +88,14 @@ public class PlayerHelper {
         PlayerHelper.sShowLoading = sShowLoading;
     }
 
+    public static Boolean getShowCenterClickToast() {
+        return sShowCenterClickToast;
+    }
+
+    public static void setShowCenterClickToast(Boolean sShowCenterClickToast) {
+        PlayerHelper.sShowCenterClickToast = sShowCenterClickToast;
+    }
+
     public static void clearAll() {
         setVideoTile(null);
         setVideoUri(null);
@@ -96,5 +105,6 @@ public class PlayerHelper {
         setDoubleClick(false);
         setAutoFinishDelay(0);
         setShowLoading(false);
+        setShowCenterClickToast(true);
     }
 }
