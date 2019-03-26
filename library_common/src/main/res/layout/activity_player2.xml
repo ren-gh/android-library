@@ -4,36 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".player.PlayerActivity">
+    tools:context=".player.PlayerActivity2">
 
-    <RelativeLayout
-        android:id="@+id/rl_parent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black">
-
-        <SurfaceView
-            android:id="@+id/sv_video"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true" />
-
-    </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/fl_float_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <FrameLayout
-        android:id="@+id/fl_float_view_2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <com.rengh.library.common.player.PlayerController
-        android:id="@+id/playerController"
+    <com.rengh.library.common.player.PlayerView
+        android:id="@+id/pv_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

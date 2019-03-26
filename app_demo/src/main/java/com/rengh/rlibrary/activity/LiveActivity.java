@@ -19,6 +19,7 @@ import com.rengh.library.common.player.PlayerActivity;
 import com.rengh.library.common.player.PlayerActivity2;
 import com.rengh.library.common.player.PlayerHelper;
 import com.rengh.library.common.player.PlayerItem;
+import com.rengh.library.common.player.PlayerParams;
 import com.rengh.library.common.util.FileUtils;
 import com.rengh.library.common.util.LogUtils;
 import com.rengh.library.common.util.ThreadManager;
@@ -144,16 +145,18 @@ public class LiveActivity extends AppCompatActivity implements WeakHandlerListen
                     PlayerItem item = (PlayerItem) mGridItems.get(arg2).get("item");
                     LogUtils.i(TAG, "Item: " + item);
                     if (null != item) {
-                        PlayerHelper.setCoverDrawable(null);
-                        PlayerHelper.setDoubleClick(false);
-                        PlayerHelper.setAdVideo(false);
-                        PlayerHelper.setAutoFinish(false);
-                        PlayerHelper.setShowLoading(true);
-                        PlayerHelper.setAutoFinishDelay(0);
-                        PlayerHelper.setVideoTile(item.getName());
-                        PlayerHelper.setVideoUri(Uri.parse(item.getPath()));
+                        PlayerParams params = new PlayerParams();
+                        params.setCoverDrawable(null);
+                        params.setDoubleClick(false);
+                        params.setAdVideo(false);
+                        params.setAutoFinish(false);
+                        params.setShowLoading(true);
+                        params.setAutoFinishDelay(0);
+                        params.setVideoTile(item.getName());
+                        params.setVideoUri(Uri.parse(item.getPath()));
+                        PlayerHelper.setPlayerParams(params);
                         Intent intent = new Intent();
-                        intent.setClass(mContext, PlayerActivity.class);
+                        intent.setClass(mContext, PlayerActivity2.class);
                         startActivity(intent);
                     }
                 }

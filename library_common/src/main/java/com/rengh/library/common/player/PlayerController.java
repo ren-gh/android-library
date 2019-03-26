@@ -64,7 +64,7 @@ public class PlayerController extends RelativeLayout {
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         mContext = context;
         mWeakHandler = new WeakHandler();
-        LayoutInflater.from(mContext).inflate(R.layout.layout_player_controller, this);
+        LayoutInflater.from(mContext).inflate(R.layout.view_player_controller, this);
         mTvTitle = findViewById(R.id.tv_player_title);
         mIvStateCenter = findViewById(R.id.iv_player_center);
         mLlBottom = findViewById(R.id.ll_player_bottom);

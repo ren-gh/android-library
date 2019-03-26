@@ -10,8 +10,8 @@ android {
         applicationId "com.rengh.rlibrary"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 3
-        versionName "1.0"
+        versionCode 20190326
+        versionName "1.1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {

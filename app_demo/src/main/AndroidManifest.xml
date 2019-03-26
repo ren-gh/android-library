@@ -75,7 +75,7 @@
             android:name=".activity.LiveActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name_live"
-            android:screenOrientation="sensorLandscape"></activity>
+            android:screenOrientation="sensorLandscape" />
 
         <receiver android:name=".broadcast.NotificationClickReceiver">
             <intent-filter>
