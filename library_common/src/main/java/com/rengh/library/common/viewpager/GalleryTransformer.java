@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.animation.Animation;
 
 import com.rengh.library.common.glide.GlideHelper;
-import com.rengh.library.common.handler.WeakHandler;
 import com.rengh.library.common.util.LogUtils;
+import com.rengh.library.common.handler.WeakHandler;
 
 public class GalleryTransformer implements ViewPager.PageTransformer {
     private final String TAG = "GalleryTransformer";

@@ -2,12 +2,12 @@
 package com.rengh.library.common.player;
 
 import com.rengh.library.common.R;
-import com.rengh.library.common.handler.WeakHandler;
-import com.rengh.library.common.handler.WeakHandlerListener;
 import com.rengh.library.common.util.LogUtils;
 import com.rengh.library.common.util.ThreadManager;
 import com.rengh.library.common.util.ThreadUtils;
 import com.rengh.library.common.util.ToastUtils;
+import com.rengh.library.common.handler.WeakHandler;
+import com.rengh.library.common.handler.WeakHandlerListener;
 
 import android.content.Context;
 import android.content.pm.ActivityInfo;

@@ -2,9 +2,9 @@
 package com.rengh.library.common.player;
 
 import com.rengh.library.common.R;
+import com.rengh.library.common.util.FileUtils;
 import com.rengh.library.common.handler.WeakHandler;
 import com.rengh.library.common.util.BitmapUtils;
-import com.rengh.library.common.util.FileUtils;
 import com.rengh.library.common.util.LogUtils;
 import com.rengh.library.common.util.TimeUtils;
 

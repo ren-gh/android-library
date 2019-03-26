@@ -27,9 +27,7 @@
     <dimen name="dp_4">4dp</dimen>
     <dimen name="dp_4_5">4.5dp</dimen>
     <dimen name="dp_5">5dp</dimen>
-    <dimen name="dp_5_5">5.5dp</dimen>
     <dimen name="dp_6">6dp</dimen>
-    <dimen name="dp_6_5">6.5dp</dimen>
     <dimen name="dp_7">7dp</dimen>
     <dimen name="dp_7_5">7.5dp</dimen>
     <dimen name="dp_8">8dp</dimen>
@@ -429,6 +427,5 @@
     <dimen name="sp_40">40sp</dimen>
     <dimen name="sp_42">42sp</dimen>
     <dimen name="sp_48">48sp</dimen>
-    <dimen name="sp_76">76sp</dimen>
 
 </resources>

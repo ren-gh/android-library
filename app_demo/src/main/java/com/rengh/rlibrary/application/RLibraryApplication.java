@@ -9,7 +9,6 @@ import com.rengh.library.common.application.CrashHandler;
 import com.rengh.library.common.application.HeartRunnable;
 import com.rengh.library.common.notification.NotificationHelper;
 import com.rengh.library.common.util.LogUtils;
-import com.rengh.rlibrary.R;
 
 public class RLibraryApplication extends Application {
     private final String TAG = "RLibraryApplication";

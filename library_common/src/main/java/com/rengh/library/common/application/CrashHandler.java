@@ -3,10 +3,8 @@ package com.rengh.library.common.application;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.net.URLEncoder;
 
 import com.rengh.library.common.net.LocalNetHelper;
 import com.rengh.library.common.util.LogUtils;
@@ -14,7 +12,6 @@ import com.rengh.library.common.util.ThreadUtils;
 
 import android.content.Context;
 import android.os.Build;
-import android.text.TextUtils;
 
 /**
  * Created by rengh on 17-5-29.
