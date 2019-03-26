@@ -16,6 +16,7 @@ import android.widget.SimpleAdapter;
 import com.rengh.library.common.handler.WeakHandler;
 import com.rengh.library.common.handler.WeakHandlerListener;
 import com.rengh.library.common.player.PlayerActivity;
+import com.rengh.library.common.player.PlayerActivity2;
 import com.rengh.library.common.player.PlayerHelper;
 import com.rengh.library.common.player.PlayerItem;
 import com.rengh.library.common.util.FileUtils;

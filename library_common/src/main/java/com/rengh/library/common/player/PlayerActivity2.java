@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -22,18 +23,22 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.VideoView;
 
-public class PlayerActivity extends AppCompatActivity implements WeakHandlerListener {
-    private final static String TAG = "PlayerActivity";
+public class PlayerActivity2 extends AppCompatActivity implements WeakHandlerListener {
+    private final static String TAG = "PlayerActivity2";
     private Context mContext;
     private WeakHandler mWeakHandler;
     private PlayerViewListener mViewListener; // 当前界面监听触摸滑动进度条实现快进/快退
 
+    private MediaPlayer mMediaPlayer;
+    private SurfaceHolder mSurfaceHolder;
+
     private RelativeLayout mParent;
-    private VideoView mVideoView;
+    private SurfaceView mSurfaceView;
     private FrameLayout mFlFloatView, mFlFloatView2;
     private PlayerController mPlayerController;
     private MediaPlayer.OnPreparedListener mOnPreparedListener;
@@ -62,7 +67,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 mPlayerListener.onClick();
             }
             if (mShowCenterClickToast) {
-                if (mVideoView.isPlaying()) {
+                if (mMediaPlayer.isPlaying()) {
                     ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_pause);
                 } else {
                     ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_play);
@@ -79,6 +84,28 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
                 mPlayerListener.onBackClicked();
             }
             ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_exit);
+        }
+    };
+
+    private SurfaceHolder.Callback2 mSurfaceCallback = new SurfaceHolder.Callback2() {
+        @Override
+        public void surfaceRedrawNeeded(SurfaceHolder holder) {
+
+        }
+
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+            mMediaPlayer.setDisplay(holder);
+        }
+
+        @Override
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder holder) {
+
         }
     };
 
@@ -104,7 +131,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player);
+        setContentView(R.layout.activity_player2);
 
         LogUtils.i(TAG, "onCreate()");
 
@@ -114,10 +141,15 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         mWeakHandler = new WeakHandler(this);
 
         mParent = findViewById(R.id.rl_parent);
-        mVideoView = findViewById(R.id.videoView);
+        mSurfaceView = findViewById(R.id.sv_video);
         mFlFloatView = findViewById(R.id.fl_float_view);
         mFlFloatView2 = findViewById(R.id.fl_float_view_2);
         mPlayerController = findViewById(R.id.playerController);
+
+        mSurfaceHolder = mSurfaceView.getHolder();
+        mSurfaceHolder.addCallback(mSurfaceCallback);
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         initVideoViewListener();
         initValues();
@@ -139,21 +171,22 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     @Override
     protected void onPause() {
         LogUtils.i(TAG, "onPause()");
-        mVideoView.pause();
+        mMediaPlayer.pause();
         super.onPause();
     }
 
     @Override
     protected void onStop() {
         LogUtils.i(TAG, "onStop()");
-        mVideoView.stopPlayback();
+        mMediaPlayer.stop();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
         LogUtils.i(TAG, "onDestroy()");
-        mVideoView = null;
+        mMediaPlayer.release();
+        mMediaPlayer = null;
         super.onDestroy();
     }
 
@@ -186,7 +219,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     public void process(Message msg) {
         switch (msg.what) {
             case MSG_WHAT_ON_PREPARED: {
-                mVideoView.start();
+                mMediaPlayer.start();
                 updateVideoViewInfo();
                 mPlayerController.onStarted();
                 if (null != mPlayerListener) {
@@ -199,7 +232,8 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
             }
                 break;
             case MSG_WHAT_ON_ERROR: {
-                mVideoView.stopPlayback();
+                mMediaPlayer.stop();
+                mMediaPlayer.release();
                 ToastUtils.showToast(mContext, getString(R.string.player_toast_error_with_code,
                         msg.arg1, msg.arg2));
                 mPlayerController.onError();
@@ -272,7 +306,6 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
             @Override
             public void onPrepared(MediaPlayer mp) {
                 LogUtils.i(TAG, "onPrepared()");
-                mp.setOnVideoSizeChangedListener(mOnVideoSizeChangeListener);
                 mp.setOnSeekCompleteListener(mOnSeekCompletionListener);
                 mp.setScreenOnWhilePlaying(true);
 
@@ -310,7 +343,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
             public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
                 RelativeLayout.LayoutParams params = changeVideoSize(mp);
                 params.addRule(RelativeLayout.CENTER_IN_PARENT, mParent.getId());
-                mVideoView.setLayoutParams(params);
+                mSurfaceView.setLayoutParams(params);
             }
         };
         mViewListener = new PlayerViewListener() {
@@ -352,9 +385,10 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
             ToastUtils.showToast(mContext, R.string.player_toast_uri_be_null);
             mWeakHandler.sendEmptyMessage(MSG_WHAT_ON_FINISH);
         } else {
-            mVideoView.setOnPreparedListener(mOnPreparedListener);
-            mVideoView.setOnErrorListener(mOnErrorListener);
-            mVideoView.setOnCompletionListener(mOnCompletionListener);
+            mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
+            mMediaPlayer.setOnErrorListener(mOnErrorListener);
+            mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
+            mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangeListener);
             if (TextUtils.isEmpty(mVideoName)) {
                 mPlayerController.setTitle(getString(R.string.player_text_left_top_tip,
                         getString(R.string.player_text_video_title_unknow)));
@@ -370,7 +404,12 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
             } else {
                 mPlayerController.setBackgroundDrawable(mCoverDrawable);
             }
-            mVideoView.setVideoURI(mVideoUri);
+            try {
+                mMediaPlayer.setDataSource(mContext, mVideoUri);
+                mMediaPlayer.prepareAsync();
+            } catch (Exception e) {
+                LogUtils.e(TAG, "setDataSource() Exception: " + e.getMessage());
+            }
         }
     }
 
@@ -379,8 +418,8 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         int videoWidth = mp.getVideoWidth();
         int videoHeight = mp.getVideoHeight();
 
-        int surfaceWidth = mVideoView.getWidth();
-        int surfaceHeight = mVideoView.getHeight();
+        int surfaceWidth = mSurfaceView.getWidth();
+        int surfaceHeight = mSurfaceView.getHeight();
 
         // 根据视频尺寸去计算->视频可以在sufaceView中放大的最大倍数。
         float max;
@@ -405,10 +444,10 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         ThreadManager.getInstance().excuteCached(new Runnable() {
             @Override
             public void run() {
-                while (null != mVideoView) {
+                while (null != mMediaPlayer) {
                     try {
-                        int duration = mVideoView.getDuration();
-                        int current = mVideoView.getCurrentPosition();
+                        int duration = mMediaPlayer.getDuration();
+                        int current = mMediaPlayer.getCurrentPosition();
                         Message msg = new Message();
                         msg.what = MSG_WHAT_ON_UPDATE;
                         msg.arg1 = duration;
@@ -466,7 +505,7 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     }
 
     private void showOrHideController() {
-        if (mVideoView.isPlaying()) {
+        if (mMediaPlayer.isPlaying()) {
             mPlayerController.showOrHide(true);
         } else {
             mPlayerController.showOrHide(false);
@@ -486,28 +525,24 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     }
 
     private void playOrPauseVideo() {
-        if (mVideoView.canPause()) {
-            if (mVideoView.isPlaying()) {
-                mVideoView.pause();
-                mPlayerController.onPause();
-                if (null != mPlayerListener) {
-                    mPlayerListener.onPause();
-                }
-            } else {
-                mVideoView.start();
-                mPlayerController.onPlaying();
-                if (null != mPlayerListener) {
-                    mPlayerListener.onPlaying();
-                }
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.pause();
+            mPlayerController.onPause();
+            if (null != mPlayerListener) {
+                mPlayerListener.onPause();
             }
         } else {
-            ToastUtils.showToast(mContext, R.string.player_toast_not_support_pause);
+            mMediaPlayer.start();
+            mPlayerController.onPlaying();
+            if (null != mPlayerListener) {
+                mPlayerListener.onPlaying();
+            }
         }
     }
 
     private void playVideo() {
-        if (!mVideoView.isPlaying()) {
-            mVideoView.start();
+        if (!mMediaPlayer.isPlaying()) {
+            mMediaPlayer.start();
             mPlayerController.onPlaying();
             if (null != mPlayerListener) {
                 mPlayerListener.onPlaying();
@@ -522,8 +557,8 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     }
 
     private void pauseVideo() {
-        if (mVideoView.isPlaying() && mVideoView.canPause()) {
-            mVideoView.pause();
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.pause();
             mPlayerController.onPause();
             if (null != mPlayerListener) {
                 mPlayerListener.onPause();
@@ -537,14 +572,14 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         if (!mPlayerController.isShowed()) {
             mPlayerController.showAndAutoHide();
         } else {
-            int duration = mVideoView.getDuration();
-            if (-1 != duration && mVideoView.canSeekForward()) {
-                int current = mVideoView.getCurrentPosition();
+            int duration = mMediaPlayer.getDuration();
+            if (-1 != duration) {
+                int current = mMediaPlayer.getCurrentPosition();
                 current += TIME_FORWORD_OR_REWIND;
                 if (current > duration) {
                     current = duration;
                 }
-                mVideoView.seekTo(current);
+                mMediaPlayer.seekTo(current);
                 mPlayerController.onFast();
                 if (null != mPlayerListener) {
                     mPlayerListener.onFast();
@@ -560,14 +595,14 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
         if (!mPlayerController.isShowed()) {
             mPlayerController.showAndAutoHide();
         } else {
-            int duration = mVideoView.getDuration();
-            if (-1 != duration && mVideoView.canSeekBackward()) {
-                int current = mVideoView.getCurrentPosition();
+            int duration = mMediaPlayer.getDuration();
+            if (-1 != duration) {
+                int current = mMediaPlayer.getCurrentPosition();
                 current -= TIME_FORWORD_OR_REWIND;
                 if (current < 0) {
                     current = 0;
                 }
-                mVideoView.seekTo(current);
+                mMediaPlayer.seekTo(current);
                 mPlayerController.onRewind();
                 if (null != mPlayerListener) {
                     mPlayerListener.onRewind();
@@ -580,7 +615,8 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     }
 
     private void stopVideo() {
-        mVideoView.stopPlayback();
+        mMediaPlayer.stop();
+        mMediaPlayer.release();
         mPlayerController.onStop();
         if (null != mPlayerListener) {
             mPlayerListener.onStop();
@@ -588,12 +624,12 @@ public class PlayerActivity extends AppCompatActivity implements WeakHandlerList
     }
 
     private void onSeekBarChangedByUser(int progress) {
-        int duration = mVideoView.getDuration();
-        if (-1 != duration && mVideoView.canSeekForward()) {
+        int duration = mMediaPlayer.getDuration();
+        if (-1 != duration) {
             if (progress > duration) {
                 progress = duration;
             }
-            mVideoView.seekTo(progress);
+            mMediaPlayer.seekTo(progress);
             if (null != mPlayerListener) {
                 mPlayerListener.onSeekChanged(progress);
             }

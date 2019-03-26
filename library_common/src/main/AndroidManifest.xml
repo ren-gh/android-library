@@ -21,5 +21,11 @@
             android:label="RPlayer"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.FullScreen.Black" />
+        <activity
+            android:name="com.rengh.library.common.player.PlayerActivity2"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="RPlayer"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme.FullScreen.Black" />
     </application>
 </manifest>

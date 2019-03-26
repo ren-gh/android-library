@@ -18,6 +18,7 @@ import com.rengh.library.common.dialog.RDialog;
 import com.rengh.library.common.net.LocalNetHelper;
 import com.rengh.library.common.notification.NotificationHelper;
 import com.rengh.library.common.player.PlayerActivity;
+import com.rengh.library.common.player.PlayerActivity2;
 import com.rengh.library.common.player.PlayerListener;
 import com.rengh.library.common.player.PlayerHelper;
 import com.rengh.library.common.util.LogUtils;
@@ -102,7 +103,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setShowLoading(true);
                 PlayerHelper.setAutoFinishDelay(0);
                 PlayerHelper.setVideoTile("测试视频");
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_2));
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_1));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -117,7 +118,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setShowLoading(false);
                 PlayerHelper.setAutoFinishDelay(0);
                 PlayerHelper.setVideoTile("在线广告");
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_3));
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_1));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
@@ -133,7 +134,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 PlayerHelper.setShowCenterClickToast(true);
                 PlayerHelper.setAutoFinishDelay(0);
                 PlayerHelper.setVideoTile("在线广告");
-                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_3));
+                PlayerHelper.setVideoUri(Uri.parse(VIDEO_URL_1));
                 Intent intent = new Intent();
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);

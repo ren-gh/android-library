@@ -12,11 +12,12 @@
         android:layout_height="match_parent"
         android:background="@color/black">
 
-        <VideoView
-            android:id="@+id/videoView"
+        <SurfaceView
+            android:id="@+id/sv_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true" />
+
     </RelativeLayout>
 
     <FrameLayout
