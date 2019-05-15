@@ -13,8 +13,6 @@
     <string name="player_toast_not_support_backward">Not support backward.</string>
     <string name="player_toast_uri_be_null">Uri is null...</string>
     <string name="player_toast_error_with_code">Error! Code: %d Extra: %d.</string>
-    <string name="player_toast_playing">Playing...</string>
-    <string name="player_toast_playing_with_name">Playing: %s</string>
     <string name="player_toast_double_click_to_play_or_pause">Double click [OK] to play/pause.</string>
     <string name="player_toast_double_click_to_pause">Double click [OK] to pause.</string>
     <string name="player_toast_double_click_to_play">Double click [OK] to play.</string>

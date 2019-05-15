@@ -1,87 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/ic_desk_app_bg"
     android:orientation="vertical"
     tools:context=".activity.DemoActivity">
 
-    <Button
-        android:id="@+id/btn_play_live"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_30"
-        android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_8"
-        android:background="@drawable/dialog_btn_bg"
-        android:text="观看直播"
-        android:textSize="@dimen/sp_12" />
-
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:orientation="horizontal">
+        android:scrollbars="none">
 
-        <Button
-            android:id="@+id/btn_play_normal"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_30"
-            android:background="@drawable/dialog_btn_bg"
-            android:text="正常播放"
-            android:textSize="@dimen/sp_12" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_6">
 
-        <Button
-            android:id="@+id/btn_play_cover_view"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_30"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:background="@drawable/dialog_btn_bg"
-            android:text="带启动图"
-            android:textSize="@dimen/sp_12" />
+            <Button
+                android:id="@+id/btn_update_own"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:background="@drawable/btn_bg_yellow"
+                android:shadowColor="@color/colorBlack"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="升级Demo"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12" />
 
-        <Button
-            android:id="@+id/btn_play_double_click"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_30"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:background="@drawable/dialog_btn_bg"
-            android:text="双击暂停"
-            android:textSize="@dimen/sp_12" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/btn_install_apk"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="@drawable/btn_bg_yellow"
+                android:shadowColor="@color/colorBlack"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="安装APK"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:orientation="horizontal">
+        android:scrollbars="none">
 
-        <Button
-            android:id="@+id/btn_play_auto_finish"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_30"
-            android:background="@drawable/dialog_btn_bg"
-            android:text="自动退出"
-            android:textSize="@dimen/sp_12" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dp_6">
 
-        <Button
-            android:id="@+id/btn_play_ad_mode"
-            android:layout_width="@dimen/dp_100"
-            android:layout_height="@dimen/dp_30"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:background="@drawable/dialog_btn_bg"
-            android:text="广告模式"
-            android:textSize="@dimen/sp_12" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/btn_play_live"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:background="@drawable/btn_bg_yellow"
+                android:shadowColor="@color/colorBlack"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="观看直播"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12" />
 
-    <TextView
-        android:id="@+id/tv_info"
-        android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btn_play_normal"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="@drawable/btn_bg_yellow"
+                android:shadowColor="@color/colorBlack"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="正常播放"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12" />
+
+            <Button
+                android:id="@+id/btn_play_cover_view"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="@drawable/btn_bg_yellow"
+                android:shadowColor="@color/colorBlack"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="带启动图"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12" />
+
+            <Button
+                android:id="@+id/btn_play_double_click"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="@drawable/btn_bg_yellow"
+                android:shadowColor="@color/colorBlack"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:text="双击暂停"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12" />
+
+            <Button
+                android:id="@+id/btn_play_auto_finish"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="@drawable/btn_bg_yellow"
+                android:shadowColor="@color/colorBlack"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="自动退出"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12" />
+
+            <Button
+                android:id="@+id/btn_play_ad_mode"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="@drawable/btn_bg_yellow"
+                android:shadowColor="@color/colorBlack"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="广告模式"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/sp_12" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="Network Info"
-        android:textColor="@color/focused"
-        android:textSize="@dimen/sp_12" />
+        android:layout_margin="@dimen/dp_6"
+        android:background="@color/colorDialogBgNormal"
+        android:nextFocusUp="@id/btn_play_live">
+
+        <TextView
+            android:id="@+id/tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_8"
+            android:shadowColor="@color/colorBlack"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="Network Info"
+            android:textColor="@color/focused"
+            android:textSize="@dimen/sp_12" />
+    </ScrollView>
 </LinearLayout>

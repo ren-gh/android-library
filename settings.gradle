@@ -1,1 +1,1 @@
-include ':app_demo', ':library_common', ':app_tv_demo', ':lib_java'
+include ':app_demo', ':library_common'

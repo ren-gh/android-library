@@ -13,8 +13,6 @@
     <string name="player_toast_not_support_backward">当前视频不支持快退</string>
     <string name="player_toast_uri_be_null">Uri不能为空</string>
     <string name="player_toast_error_with_code">错误：%d 附加码：%d.</string>
-    <string name="player_toast_playing">正在播放</string>
-    <string name="player_toast_playing_with_name">正在播放：%s</string>
     <string name="player_toast_double_click_to_play_or_pause">按两次【确定】键播放/暂停</string>
     <string name="player_toast_double_click_to_pause">按两次【确定】键暂停</string>
     <string name="player_toast_double_click_to_play">按两次【确定】键播放</string>

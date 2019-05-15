@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".player.PlayerActivity">
+    tools:context="com.r.library.common.player.PlayerActivity">
 
-    <com.rengh.library.common.player.PlayerView
+    <com.r.library.common.player.PlayerView
         android:id="@+id/pv_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

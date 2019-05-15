@@ -30,7 +30,7 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <com.rengh.library.common.player.PlayerController
+    <com.r.library.common.player.PlayerController
         android:id="@+id/playerController"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
