@@ -9,10 +9,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +31,7 @@ import com.r.library.common.util.KeyEventUtils;
 import com.r.library.common.util.LogUtils;
 import com.r.library.common.util.ThreadManager;
 import com.r.library.demo.R;
-import com.r.library.demo.util.BackgroundUtils;
+import com.r.library.demo.util.BgUtils;
 
 public class LiveActivity extends AppCompatActivity implements WeakHandlerListener {
     private final String TAG = "LiveActivity";
@@ -58,7 +55,7 @@ public class LiveActivity extends AppCompatActivity implements WeakHandlerListen
         mRootView = findViewById(R.id.root);
         mGridView = findViewById(R.id.gridview);
 
-        BackgroundUtils.autoUpdateBackground(mContext, mRootView);
+        BgUtils.autoUpdateBackground(mContext, mRootView);
 
         initGridView();
 

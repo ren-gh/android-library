@@ -1,7 +1,6 @@
 
 package com.r.library.demo.activity;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import com.r.library.common.player.PlayerHelper;
 import com.r.library.common.player.PlayerParams;
 import com.r.library.common.util.AppInfo;
 import com.r.library.common.util.AppInfoGetter;
-import com.r.library.common.util.BitmapUtils;
 import com.r.library.common.util.FileUtils;
 import com.r.library.common.util.LogUtils;
 import com.r.library.common.util.ThreadManager;
@@ -24,8 +22,7 @@ import com.r.library.common.util.ToastUtils;
 import com.r.library.common.util.UrlUtils;
 import com.r.library.demo.R;
 import com.r.library.demo.broadcast.NotificationClickReceiver;
-import com.r.library.demo.preference.PreferenceManager;
-import com.r.library.demo.util.BackgroundUtils;
+import com.r.library.demo.util.BgUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import android.Manifest;
@@ -33,8 +30,6 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -54,13 +49,14 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class DemoActivity extends AppCompatActivity implements View.OnClickListener, WeakHandlerListener {
+public class DemoActivity extends AppCompatActivity implements View.OnClickListener, WeakHandlerListener, View.OnFocusChangeListener {
     private final String TAG = "DemoActivity";
     private RxPermissions mRxPermissions;
     private Context mContext;
     private WeakHandler mHandler;
     private View mRootView;
     private TextView mTvInfo;
+    private Button mBtnChangeBg;
     private Button mBtnUpdateDemo;
     private Button mBtnLiveActvity;
     private Button mBtnPlayNormal;
@@ -89,7 +85,9 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         mRxPermissions = new RxPermissions(this);
 
         mRootView = findViewById(R.id.root);
+        BgUtils.autoUpdateBackground(mContext, mRootView);
 
+        mBtnChangeBg = findViewById(R.id.btn_change_bg);
         mBtnUpdateDemo = findViewById(R.id.btn_update_own);
         mBtnInstallApk = findViewById(R.id.btn_install_apk);
 
@@ -101,6 +99,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         mBtnPlayAd = findViewById(R.id.btn_play_ad_mode);
         mTvInfo = findViewById(R.id.tv_info);
 
+        mBtnChangeBg.setOnClickListener(this);
         mBtnUpdateDemo.setOnClickListener(this);
         mBtnInstallApk.setOnClickListener(this);
 
@@ -111,7 +110,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         mBtnPlayFinish.setOnClickListener(this);
         mBtnPlayAd.setOnClickListener(this);
 
-        BackgroundUtils.autoUpdateBackground(mContext, mRootView);
+        mBtnUpdateDemo.setOnFocusChangeListener(this);
+        mBtnInstallApk.setOnFocusChangeListener(this);
 
         Intent intent = getIntent();
         if (null != intent) {
@@ -124,69 +124,62 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
 
         rxJavaTest();
 
+        initHideView(mRootView, R.anim.slide_out_fade);
+        initHideView(mBtnUpdateDemo, R.anim.slide_out_top);
+        initHideView(mBtnInstallApk, R.anim.slide_out_top);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startAnimation(mRootView, R.anim.slide_in_fade);
+            }
+        }, 1000);
+
         UrlUtils.UrlEntity entity = UrlUtils.parse(VIDEO_URL_2);
         if (null != entity.params) {
             LogUtils.i(TAG, "mmsid: " + entity.params.get("mmsid"));
         }
+    }
 
-        initHideButtion();
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        LogUtils.i(TAG, "keyCode: " + keyCode);
-        if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && mBtnUpdateDemo.hasFocus()) {
-            inHideButton();
-        } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && mBtnInstallApk.hasFocus()) {
-            outHideButtion();
-        }
         return super.onKeyDown(keyCode, event);
     }
 
-    private void outHideButtion() {
-        mBtnInstallApk.startAnimation(getAnimation(this, R.anim.slide_out_top));
-    }
-
-    private void inHideButton() {
-        mBtnInstallApk.startAnimation(getAnimation(this, R.anim.slide_in_top));
-    }
-
-    private void initHideButtion() {
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.slide_out_top);
-        if (animation != null) {
-            animation.setFillAfter(true);
-            animation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        switch (v.getId()) {
+            case R.id.btn_update_own: {
+                if (hasFocus) {
+                    startAnimation(mBtnUpdateDemo, R.anim.slide_in_top);
+                } else {
+                    startAnimation(mBtnUpdateDemo, R.anim.slide_out_top);
                 }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mBtnInstallApk.setAlpha(1.0f);
+            }
+                break;
+            case R.id.btn_install_apk: {
+                if (hasFocus) {
+                    startAnimation(mBtnInstallApk, R.anim.slide_in_top);
+                } else {
+                    startAnimation(mBtnInstallApk, R.anim.slide_out_top);
                 }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            mBtnInstallApk.setAlpha(0.0f);
-            mBtnInstallApk.startAnimation(animation);
+            }
+                break;
         }
-    }
-
-    private Animation getAnimation(Context context, int resId) {
-        Animation animation = AnimationUtils.loadAnimation(context, resId);
-        if (animation != null) {
-            animation.setFillAfter(true);
-        }
-        return animation;
     }
 
     @SuppressLint("CheckResult")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_change_bg: {
+                BgUtils.nextBackground(mContext, mRootView);
+            }
+                break;
             case R.id.btn_update_own: {
                 // noinspection ResultOfMethodCallIgnored
                 checkAndInstallDemo();
@@ -217,15 +210,8 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             }
                 break;
             case R.id.btn_play_cover_view: {
-                Bitmap coverDrawable = null;
-                int bgIndex = PreferenceManager.getInstance(mContext).getBgIndex();
-                if (bgIndex != 0) {
-                    String path = "background/bg_jianyue_" + bgIndex + ".jpeg";
-                    InputStream inputStream = FileUtils.getAssetsFileInputStream(mContext, path);
-                    coverDrawable = BitmapUtils.readBitMap(mContext, inputStream);
-                }
                 PlayerParams params = new PlayerParams();
-                params.setCoverDrawable(new BitmapDrawable(mContext.getResources(), coverDrawable));
+                params.setCoverDrawable(BgUtils.getCoverDrawable(mContext));
                 params.setVideoTile("轩尼诗");
                 params.setVideoUri(Uri.parse(VIDEO_URL_2));
                 PlayerHelper.setPlayerParams(params);
@@ -251,7 +237,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 mRxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .subscribe(granted -> {
                             PlayerParams params = new PlayerParams();
-                            params.setCoverDrawable(BackgroundUtils.getCoverDrawable(mContext));
+                            params.setCoverDrawable(BgUtils.getCoverDrawable(mContext));
                             params.setAdVideo(true);
                             params.setIgnoreBackKey(true);
                             params.setAutoFinish(true);
@@ -269,7 +255,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 mRxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .subscribe(granted -> {
                             PlayerParams params = new PlayerParams();
-                            params.setCoverDrawable(BackgroundUtils.getCoverDrawable(mContext));
+                            params.setCoverDrawable(BgUtils.getCoverDrawable(mContext));
                             params.setAdVideo(true);
                             params.setIgnoreBackKey(true);
                             params.setAutoFinish(true);
@@ -344,7 +330,9 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
 
     private void showDialog() {
         final RDialog dialog = new RDialog(this);
-        dialog.setButtonNoClick(v -> dialog.dismiss());
+        dialog.setButtonNoClick(v -> {
+            dialog.dismiss();
+        });
         dialog.setButtonYesClick(v -> {
             dialog.dismiss();
             ThreadManager.getInstance().excuteCached(() -> {
@@ -489,4 +477,41 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
     }
+
+    private void initHideView(View view, int animOutId) {
+        Animation animation = AnimationUtils.loadAnimation(this, animOutId);
+        if (animation != null) {
+            animation.setFillAfter(true);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    view.setAlpha(1.0f);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            view.setAlpha(0.0f);
+            view.startAnimation(animation);
+        }
+    }
+
+    private void startAnimation(View view, int animOutId) {
+        view.startAnimation(getAnimation(this, animOutId));
+    }
+
+    private Animation getAnimation(Context context, int resId) {
+        Animation animation = AnimationUtils.loadAnimation(context, resId);
+        if (animation != null) {
+            animation.setFillAfter(true);
+        }
+        return animation;
+    }
+
 }

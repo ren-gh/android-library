@@ -10,15 +10,44 @@ import android.view.View;
 
 import com.r.library.common.util.BitmapUtils;
 import com.r.library.common.util.FileUtils;
+
+import com.r.library.common.util.LogUtils;
 import com.r.library.demo.preference.PreferenceManager;
 
 import java.io.InputStream;
 
-public class BackgroundUtils {
+public class BgUtils {
+    private static final String TAG = "BgUtils";
+
     public static void autoUpdateBackground(Context context, View view) {
         int bgIndex = PreferenceManager.getInstance(context).getBgIndex();
+        LogUtils.i(TAG, "autoUpdateBackground() bg index: " + bgIndex);
         if (bgIndex != 0) {
-            String path = "background/bg_jianyue_" + bgIndex + ".jpeg";
+            String path = getPath(bgIndex);
+            InputStream inputStream = FileUtils.getAssetsFileInputStream(context, path);
+            Bitmap bgBmp = BitmapUtils.readBitMap(context, inputStream);
+            if (null != bgBmp) {
+                if (Build.VERSION.SDK_INT >= 16) {
+                    view.setBackground(new BitmapDrawable(context.getResources(), bgBmp));
+                } else {
+                    view.setBackgroundDrawable(new BitmapDrawable(context.getResources(), bgBmp));
+                }
+            }
+        }
+    }
+
+    public static void nextBackground(Context context, View view) {
+        int bgIndex = PreferenceManager.getInstance(context).getBgIndex();
+        if (bgIndex != 0) {
+            if (20 == bgIndex) {
+                bgIndex = 1;
+            } else {
+                bgIndex += 1;
+            }
+            PreferenceManager.getInstance(context).putBgIndex(bgIndex);
+            bgIndex = PreferenceManager.getInstance(context).getBgIndex();
+            LogUtils.i(TAG, "nextBackground() bg index: " + bgIndex);
+            String path = getPath(bgIndex);
             InputStream inputStream = FileUtils.getAssetsFileInputStream(context, path);
             Bitmap bgBmp = BitmapUtils.readBitMap(context, inputStream);
             if (null != bgBmp) {
@@ -40,10 +69,15 @@ public class BackgroundUtils {
             } else {
                 bgIndex += 1;
             }
-            String path = "background/bg_jianyue_" + bgIndex + ".jpeg";
+            LogUtils.i(TAG, "getCoverDrawable() bg index: " + bgIndex);
+            String path = getPath(bgIndex);
             InputStream inputStream = FileUtils.getAssetsFileInputStream(context, path);
             coverDrawable = BitmapUtils.readBitMap(context, inputStream);
         }
         return new BitmapDrawable(context.getResources(), coverDrawable);
+    }
+
+    private static String getPath(int bgIndex) {
+        return "background/bg_jianyue_" + bgIndex + ".jpeg";
     }
 }
