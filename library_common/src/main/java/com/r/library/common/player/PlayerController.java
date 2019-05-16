@@ -83,13 +83,10 @@ public class PlayerController extends RelativeLayout {
         mLlLoading.setVisibility(View.GONE);
 
         mIvStateCenter.setClickable(true);
-        mIvStateCenter.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LogUtils.i(TAG, "onClick()");
-                if (null != mViewListener) {
-                    mViewListener.onCenterClicked();
-                }
+        mIvStateCenter.setOnClickListener(v -> {
+            LogUtils.i(TAG, "onClick()");
+            if (null != mViewListener) {
+                mViewListener.onCenterClicked();
             }
         });
 
@@ -148,7 +145,9 @@ public class PlayerController extends RelativeLayout {
             mIvStateCenter.setVisibility(View.GONE);
         } else {
             mLlLoading.setVisibility(View.GONE);
-            mIvStateCenter.setVisibility(View.VISIBLE);
+            if (!mIsAdVideo) {
+                mIvStateCenter.setVisibility(View.VISIBLE);
+            }
         }
         return this;
     }

@@ -55,6 +55,30 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
 
     private int mSavedTime = 0;
 
+    private int mDuration, mOldDuration;
+    private Runnable mLoadingRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (null == mVideoView) {
+                return;
+            }
+            mDuration = mVideoView.getCurrentPosition();
+            if (mOldDuration == mDuration && mVideoView.isPlaying()) {
+                mPlayerController.showLoading(true);
+                if (null != mPlayerListener) {
+                    mPlayerListener.onLoadingShow();
+                }
+            } else {
+                mPlayerController.showLoading(false);
+                if (null != mPlayerListener) {
+                    mPlayerListener.onLoadingClose();
+                }
+            }
+            mOldDuration = mDuration;
+            mWeakHandler.postDelayed(mLoadingRunnable, 1000);
+        }
+    };
+
     private boolean mCenterKeyPressed = false; // 记录是否有首次按键
     private Runnable mCenterKeyRunnable = new Runnable() {
         @Override
@@ -135,12 +159,11 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     public void onRestart() {
-        LogUtils.i(TAG, "onResume()");
-        initVideoView();
+        LogUtils.i(TAG, "onRestart()");
     }
 
     public void onStart() {
-        LogUtils.i(TAG, "onResume()");
+        LogUtils.i(TAG, "onStart()");
     }
 
     public void onResume() {
@@ -150,20 +173,23 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
 
     public void onPause() {
         LogUtils.i(TAG, "onPause()");
-    }
-
-    public void onStop() {
-        LogUtils.i(TAG, "onStop()");
         try {
-            mSavedTime = mVideoView.getCurrentPosition();
+            if (0 < mVideoView.getDuration()) {
+                mSavedTime = mVideoView.getCurrentPosition();
+            }
         } catch (Exception e) {
         }
         pauseVideo();
     }
 
+    public void onStop() {
+        LogUtils.i(TAG, "onStop()");
+    }
+
     public void onDestroy() {
         LogUtils.i(TAG, "onDestroy()");
         stopVideo();
+        mSavedTime = 0;
         mVideoView = null;
     }
 
@@ -197,6 +223,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
             case MSG_WHAT_ON_PREPARED: {
                 updateVideoViewInfo();
                 mPlayerController.onStarted();
+                mWeakHandler.postDelayed(mLoadingRunnable, 3000);
                 if (null != mPlayerListener) {
                     mPlayerListener.onStart(mFlFloatView, mFlFloatView2);
                 }
@@ -294,17 +321,6 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         mOnInfoListener = new MediaPlayer.OnInfoListener() {
             @Override
             public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                int currentPosition = mp.getCurrentPosition();
-                if (0 == currentPosition || currentPosition <= 3000) {
-                    return false;
-                }
-                // if (what == MediaPlayer.MEDIA_INFO_BUFFERING_START) {
-                // mPlayerController.showLoading(true);
-                // return true;
-                // } else if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END) {
-                // mPlayerController.showLoading(false);
-                // return true;
-                // }
                 return false;
             }
         };
@@ -364,6 +380,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     public void initValues() {
+        LogUtils.i(TAG, "initValues()");
         PlayerParams params = PlayerHelper.getPlayerParams();
         if (null != params) {
             mVideoUri = params.getVideoUri();
@@ -384,6 +401,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void initVideoView() {
+        LogUtils.i(TAG, "initVideoView()");
         if (null == mVideoUri) {
             ToastUtils.showToast(mContext, R.string.player_toast_uri_be_null);
             mWeakHandler.sendEmptyMessage(MSG_WHAT_ON_FINISH);
@@ -411,6 +429,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private LayoutParams changeVideoSize(MediaPlayer mp) {
+        LogUtils.i(TAG, "changeVideoSize()");
         // 改变视频的尺寸自适应。
         int videoWidth = mp.getVideoWidth();
         int videoHeight = mp.getVideoHeight();
@@ -438,6 +457,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void updateVideoViewInfo() {
+        LogUtils.i(TAG, "updateVideoViewInfo()");
         ThreadManager.getInstance().excuteCached(new Runnable() {
             @Override
             public void run() {
@@ -460,6 +480,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void processMediaOnClick(Message msg) {
+        LogUtils.i(TAG, "updateVideoViewInfo()");
         if (mIsAdVideo) {
             return;
         }
@@ -483,9 +504,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         }
         // 暂停
         else if (KeyEvent.KEYCODE_MEDIA_PAUSE == msg.arg1) { // 127
-            if (!pauseVideo()) {
-                ToastUtils.showToast(mContext, R.string.player_toast_not_support_pause);
-            }
+            pauseVideo();
         }
         // 快进
         else if (KeyEvent.KEYCODE_DPAD_RIGHT == msg.arg1 // 22
@@ -504,6 +523,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void showOrHideController() {
+        LogUtils.i(TAG, "showOrHideController()");
         if (mVideoView.isPlaying()) {
             mPlayerController.showOrHide(true);
         } else {
@@ -512,6 +532,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void centerClicked() {
+        LogUtils.i(TAG, "centerClicked()");
         Message msg;
         if (mDoubleClickPause) {
             doubleClickCenterToPause();
@@ -524,26 +545,24 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void playOrPauseVideo() {
-        if (mVideoView.canPause()) {
-            if (mVideoView.isPlaying()) {
-                mVideoView.pause();
-                mPlayerController.onPause();
-                if (null != mPlayerListener) {
-                    mPlayerListener.onPause();
-                }
-            } else {
-                mVideoView.start();
-                mPlayerController.onPlaying();
-                if (null != mPlayerListener) {
-                    mPlayerListener.onPlaying();
-                }
+        LogUtils.i(TAG, "playOrPauseVideo()");
+        if (mVideoView.isPlaying()) {
+            mVideoView.pause();
+            mPlayerController.onPause();
+            if (null != mPlayerListener) {
+                mPlayerListener.onPause();
             }
         } else {
-            ToastUtils.showToast(mContext, R.string.player_toast_not_support_pause);
+            mVideoView.start();
+            mPlayerController.onPlaying();
+            if (null != mPlayerListener) {
+                mPlayerListener.onPlaying();
+            }
         }
     }
 
     private void playVideo() {
+        LogUtils.i(TAG, "playVideo()");
         if (!mVideoView.isPlaying()) {
             if (0 < mSavedTime) {
                 mVideoView.seekTo(mSavedTime);
@@ -558,7 +577,8 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private boolean pauseVideo() {
-        if (mVideoView.isPlaying() && mVideoView.canPause()) {
+        LogUtils.i(TAG, "pauseVideo()");
+        if (mVideoView.isPlaying()) {
             mVideoView.pause();
             mPlayerController.onPause();
             if (null != mPlayerListener) {
@@ -571,6 +591,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void fastForWardVideo() {
+        LogUtils.i(TAG, "fastForWardVideo()");
         if (!mPlayerController.isShowed()) {
             mPlayerController.showAndAutoHide();
         } else {
@@ -594,6 +615,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void rewindVideo() {
+        LogUtils.i(TAG, "fastForWardVideo()");
         if (!mPlayerController.isShowed()) {
             mPlayerController.showAndAutoHide();
         } else {
@@ -617,6 +639,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void stopVideo() {
+        LogUtils.i(TAG, "stopVideo()");
         mVideoView.stopPlayback();
         mPlayerController.onStop();
         if (null != mPlayerListener) {
@@ -625,6 +648,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void onSeekBarChangedByUser(int progress) {
+        LogUtils.i(TAG, "onSeekBarChangedByUser()");
         int duration = mVideoView.getDuration();
         if (-1 != duration && mVideoView.canSeekForward()) {
             if (progress > duration) {
@@ -641,6 +665,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void doubleClickBackToFinish() {
+        LogUtils.i(TAG, "doubleClickBackToFinish()");
         if (!mBackKeyPressed) {
             mBackKeyPressed = true;
             mWeakHandler.postDelayed(mBackKeyRunnable, TIME_DOUBLE_CLICK_DELAY);
@@ -652,6 +677,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void doubleClickCenterToPause() {
+        LogUtils.i(TAG, "doubleClickCenterToPause()");
         if (!mCenterKeyPressed) {
             mCenterKeyPressed = true;
             mWeakHandler.postDelayed(mCenterKeyRunnable, TIME_DOUBLE_CLICK_DELAY);

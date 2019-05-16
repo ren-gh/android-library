@@ -17,10 +17,14 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_black_top"
         android:padding="@dimen/dp_10"
+        android:shadowColor="@color/colorBlack"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="2"
         android:text="@string/player_controller_title"
-        android:textColor="@color/white60"
+        android:textColor="@color/white80"
         android:textSize="@dimen/sp_14"
-        android:textStyle="normal" />
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/iv_player_center"
@@ -57,8 +61,8 @@
             android:layout_weight="1"
             android:focusable="true"
             android:max="1000"
-            android:maxHeight="10dp"
-            android:minHeight="10dp"
+            android:maxHeight="6dp"
+            android:minHeight="6dp"
             android:progress="500"
             android:progressDrawable="@drawable/player_controller_bg_seekbar"
             android:thumbTint="@color/focused" />
