@@ -231,7 +231,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                             R.string.player_toast_double_click_to_play_or_pause);
                 }
             }
-            break;
+                break;
             case MSG_WHAT_ON_ERROR: {
                 mPlayFinished = true;
                 mVideoView.stopPlayback();
@@ -246,7 +246,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                             mAutoFinishDelay);
                 }
             }
-            break;
+                break;
             case MSG_WHAT_ON_COMPLETION: {
                 mPlayFinished = true;
                 if (!mIsAdVideo) {
@@ -261,7 +261,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                             mAutoFinishDelay);
                 }
             }
-            break;
+                break;
             case MSG_WHAT_ON_UPDATE: {
                 if (msg.arg2 > 0) {
                     if (Build.VERSION.SDK_INT >= 16) {
@@ -270,12 +270,13 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                         mPlayerController.setBackgroundDrawable(null);
                     }
                 }
-                if (0 < msg.arg1) {
+                // 切入后台后，部分机型长度大于0，Current值非常小，如小米6：116
+                if (0 < msg.arg1 && 1000 < msg.arg2) {
                     mSavedTime = msg.arg2;
                 }
                 mPlayerController.onUpdate(msg.arg1, msg.arg2);
             }
-            break;
+                break;
             case MSG_WHAT_ON_CLICKED: {
                 // 双击退出
                 if (KeyEvent.KEYCODE_BACK == msg.arg1 && !mIgnoreBackKey) { // 4
@@ -284,14 +285,14 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                     processMediaOnClick(msg);
                 }
             }
-            break;
+                break;
             case MSG_WHAT_ON_FINISH: {
                 if (null != mPlayerListener) {
                     mPlayerListener.onFinish();
                 }
                 PlayerHelper.clearAll();
             }
-            break;
+                break;
         }
     }
 

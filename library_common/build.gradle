@@ -6,7 +6,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 28
         versionCode 20190516
-        versionName "1.0.30"
+        versionName "1.0.31"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     sourceSets {
