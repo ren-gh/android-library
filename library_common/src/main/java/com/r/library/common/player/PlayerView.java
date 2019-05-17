@@ -1,14 +1,6 @@
 
 package com.r.library.common.player;
 
-import com.r.library.common.R;
-import com.r.library.common.handler.WeakHandler;
-import com.r.library.common.handler.WeakHandlerListener;
-import com.r.library.common.util.LogUtils;
-import com.r.library.common.util.ThreadManager;
-import com.r.library.common.util.ThreadUtils;
-import com.r.library.common.util.ToastUtils;
-
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
@@ -23,6 +15,14 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
+
+import com.r.library.common.R;
+import com.r.library.common.handler.WeakHandler;
+import com.r.library.common.handler.WeakHandlerListener;
+import com.r.library.common.util.LogUtils;
+import com.r.library.common.util.ThreadManager;
+import com.r.library.common.util.ThreadUtils;
+import com.r.library.common.util.ToastUtils;
 
 public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     private final static String TAG = "PlayerView";
@@ -54,6 +54,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     private final int TIME_UPDATE_PROGRESS = 50; // 更新播放时间的间隔时间
 
     private int mSavedTime = 0;
+    private boolean mPlayFinished = false;
 
     private int mDuration, mOldDuration;
     private Runnable mLoadingRunnable = new Runnable() {
@@ -149,6 +150,8 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         LayoutInflater.from(mContext).inflate(R.layout.view_player, this);
         LogUtils.i(TAG, "init()");
 
+        mPlayFinished = false;
+
         mParent = findViewById(R.id.rl_parent);
         mVideoView = findViewById(R.id.videoView);
         mFlFloatView = findViewById(R.id.fl_float_view);
@@ -163,23 +166,18 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     public void onStart() {
-        LogUtils.i(TAG, "onStart()");
+        LogUtils.i(TAG, "onStart() saved time: " + mSavedTime);
+        if (!mPlayFinished) {
+            playVideo();
+        }
     }
 
     public void onResume() {
-        LogUtils.i(TAG, "onResume() saved time: " + mSavedTime);
-        playVideo();
+        LogUtils.i(TAG, "onResume()");
     }
 
     public void onPause() {
         LogUtils.i(TAG, "onPause()");
-        try {
-            if (0 < mVideoView.getDuration()) {
-                mSavedTime = mVideoView.getCurrentPosition();
-            }
-        } catch (Exception e) {
-            LogUtils.i(TAG, "Save current position error: " + e.getMessage());
-        }
     }
 
     public void onStop() {
@@ -233,8 +231,9 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                             R.string.player_toast_double_click_to_play_or_pause);
                 }
             }
-                break;
+            break;
             case MSG_WHAT_ON_ERROR: {
+                mPlayFinished = true;
                 mVideoView.stopPlayback();
                 ToastUtils.showToast(mContext, mContext.getString(R.string.player_toast_error_with_code,
                         msg.arg1, msg.arg2));
@@ -247,8 +246,9 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                             mAutoFinishDelay);
                 }
             }
-                break;
+            break;
             case MSG_WHAT_ON_COMPLETION: {
+                mPlayFinished = true;
                 if (!mIsAdVideo) {
                     ToastUtils.showToast(mContext, R.string.player_toast_completed);
                 }
@@ -261,7 +261,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                             mAutoFinishDelay);
                 }
             }
-                break;
+            break;
             case MSG_WHAT_ON_UPDATE: {
                 if (msg.arg2 > 0) {
                     if (Build.VERSION.SDK_INT >= 16) {
@@ -270,9 +270,12 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                         mPlayerController.setBackgroundDrawable(null);
                     }
                 }
+                if (0 < msg.arg1) {
+                    mSavedTime = msg.arg2;
+                }
                 mPlayerController.onUpdate(msg.arg1, msg.arg2);
             }
-                break;
+            break;
             case MSG_WHAT_ON_CLICKED: {
                 // 双击退出
                 if (KeyEvent.KEYCODE_BACK == msg.arg1 && !mIgnoreBackKey) { // 4
@@ -281,14 +284,14 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                     processMediaOnClick(msg);
                 }
             }
-                break;
+            break;
             case MSG_WHAT_ON_FINISH: {
                 if (null != mPlayerListener) {
                     mPlayerListener.onFinish();
                 }
                 PlayerHelper.clearAll();
             }
-                break;
+            break;
         }
     }
 
@@ -554,6 +557,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                 mPlayerListener.onPause();
             }
         } else {
+            mPlayFinished = false;
             mVideoView.start();
             mPlayerController.onPlaying();
             if (null != mPlayerListener) {
@@ -570,6 +574,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
             } else {
                 mVideoView.start();
             }
+            mPlayFinished = false;
             mPlayerController.onPlaying();
             if (null != mPlayerListener) {
                 mPlayerListener.onPlaying();
