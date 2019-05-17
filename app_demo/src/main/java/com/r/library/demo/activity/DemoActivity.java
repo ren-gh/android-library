@@ -58,13 +58,13 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mTvInfo;
     private Button mBtnChangeBg;
     private Button mBtnUpdateDemo;
+    private Button mBtnInstallApk;
     private Button mBtnLiveActvity;
     private Button mBtnPlayNormal;
     private Button mBtnPlayCover;
     private Button mBtnPlayDouble;
     private Button mBtnPlayFinish;
     private Button mBtnPlayAd;
-    private Button mBtnInstallApk;
 
     private final int RESULT_CODE_PACKAGE_INSTALL_DEMO = 1000;
     private final int RESULT_CODE_PACKAGE_INSTALL_TEST = 1001;
