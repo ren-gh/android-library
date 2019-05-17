@@ -167,7 +167,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     public void onResume() {
-        LogUtils.i(TAG, "onResume()");
+        LogUtils.i(TAG, "onResume() saved time: " + mSavedTime);
         playVideo();
     }
 
@@ -178,12 +178,13 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                 mSavedTime = mVideoView.getCurrentPosition();
             }
         } catch (Exception e) {
+            LogUtils.i(TAG, "Save current position error: " + e.getMessage());
         }
-        pauseVideo();
     }
 
     public void onStop() {
-        LogUtils.i(TAG, "onStop()");
+        LogUtils.i(TAG, "onStop() saved time: " + mSavedTime);
+        pauseVideo();
     }
 
     public void onDestroy() {
