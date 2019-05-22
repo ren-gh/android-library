@@ -22,6 +22,7 @@ import com.r.library.common.util.ToastUtils;
 import com.r.library.common.util.UrlUtils;
 import com.r.library.demo.R;
 import com.r.library.demo.broadcast.NotificationClickReceiver;
+import com.r.library.demo.runnable.MyFileRunnable;
 import com.r.library.demo.util.BgUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -56,6 +57,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     private WeakHandler mHandler;
     private View mRootView;
     private TextView mTvInfo;
+    private Button mBtnFile;
     private Button mBtnChangeBg;
     private Button mBtnUpdateDemo;
     private Button mBtnInstallApk;
@@ -87,6 +89,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         mRootView = findViewById(R.id.root);
         BgUtils.autoUpdateBackground(mContext, mRootView);
 
+        mBtnFile = findViewById(R.id.btn_file);
         mBtnChangeBg = findViewById(R.id.btn_change_bg);
         mBtnUpdateDemo = findViewById(R.id.btn_update_own);
         mBtnInstallApk = findViewById(R.id.btn_install_apk);
@@ -99,6 +102,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         mBtnPlayAd = findViewById(R.id.btn_play_ad_mode);
         mTvInfo = findViewById(R.id.tv_info);
 
+        mBtnFile.setOnClickListener(this);
         mBtnChangeBg.setOnClickListener(this);
         mBtnUpdateDemo.setOnClickListener(this);
         mBtnInstallApk.setOnClickListener(this);
@@ -176,6 +180,10 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.btn_file: {
+                ThreadManager.getInstance().excuteCached(new MyFileRunnable(mContext));
+            }
+                break;
             case R.id.btn_change_bg: {
                 BgUtils.nextBackground(mContext, mRootView);
             }

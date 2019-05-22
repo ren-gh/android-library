@@ -200,7 +200,7 @@ public class FileUtils {
                 fileLength = randomFile.length();
             }
             randomFile.seek(fileLength);
-            randomFile.writeBytes(content + "\r\n");
+            randomFile.write((content + "\n").getBytes());
             randomFile.getFD().sync();
             success = true;
         } catch (Exception e) {
