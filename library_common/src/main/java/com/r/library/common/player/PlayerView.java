@@ -51,10 +51,11 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
 
     private final int TIME_FORWORD_OR_REWIND = 10000; // 快进快退的时间间隔
     private final int TIME_DOUBLE_CLICK_DELAY = 1000; // 双击事件的间隔时间
-    private final int TIME_UPDATE_PROGRESS = 50; // 更新播放时间的间隔时间
+    private final int TIME_UPDATE_PROGRESS = 100; // 更新播放时间的间隔时间
 
     private int mSavedTime = 0;
     private boolean mPlayFinished = false;
+    private boolean mUpdateThreadRunning = false;
 
     private int mDuration, mOldDuration;
     private Runnable mLoadingRunnable = new Runnable() {
@@ -108,6 +109,48 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
             ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_exit);
         }
     };
+
+    private int mTimeLength = 0;
+    private int mDelay = 1000;
+    private boolean mNeedUpdateProgress = true;
+    private FastRunnable mFastRunnable = new FastRunnable();
+    private RewindRunnable mRewindRunnable = new RewindRunnable();
+
+    private class FastRunnable implements Runnable {
+        private int mSeek;
+
+        public void setSeek(int seek) {
+            mSeek = seek;
+        }
+
+        @Override
+        public void run() {
+            mTimeLength = 0;
+            mVideoView.seekTo(mSeek);
+            if (null != mPlayerListener) {
+                mPlayerListener.onFast();
+            }
+            mNeedUpdateProgress = true;
+        }
+    }
+
+    private class RewindRunnable implements Runnable {
+        private int mSeek;
+
+        public void setSeek(int seek) {
+            mSeek = seek;
+        }
+
+        @Override
+        public void run() {
+            mTimeLength = 0;
+            mVideoView.seekTo(mSeek);
+            if (null != mPlayerListener) {
+                mPlayerListener.onRewind();
+            }
+            mNeedUpdateProgress = true;
+        }
+    }
 
     /**
      * Start: 需要调用方设置的参数
@@ -309,12 +352,12 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         mOnSeekCompletionListener = new MediaPlayer.OnSeekCompleteListener() {
             @Override
             public void onSeekComplete(MediaPlayer mp) {
+                LogUtils.i(TAG, "onSeekComplete()");
                 mPlayerController.rebackCenterImg();
+                mSavedTime = 0;
                 if (null != mPlayerListener) {
                     mPlayerListener.onSeekCommpleted();
                 }
-                mSavedTime = 0;
-                playVideo();
             }
         };
         mOnBufferingUpdateListener = new MediaPlayer.OnBufferingUpdateListener() {
@@ -462,24 +505,31 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void updateVideoViewInfo() {
+        if (mUpdateThreadRunning) {
+            return;
+        }
         LogUtils.i(TAG, "updateVideoViewInfo()");
+        mUpdateThreadRunning = true;
         ThreadManager.getInstance().excuteCached(new Runnable() {
             @Override
             public void run() {
                 while (null != mVideoView) {
-                    try {
-                        int duration = mVideoView.getDuration();
-                        int current = mVideoView.getCurrentPosition();
-                        Message msg = new Message();
-                        msg.what = MSG_WHAT_ON_UPDATE;
-                        msg.arg1 = duration;
-                        msg.arg2 = current;
-                        mWeakHandler.sendMessage(msg);
-                    } catch (Exception e) {
-                        LogUtils.d(TAG, "update exception: " + e.getMessage());
+                    if (mNeedUpdateProgress) {
+                        try {
+                            int duration = mVideoView.getDuration();
+                            int current = mVideoView.getCurrentPosition();
+                            Message msg = new Message();
+                            msg.what = MSG_WHAT_ON_UPDATE;
+                            msg.arg1 = duration;
+                            msg.arg2 = current;
+                            mWeakHandler.sendMessage(msg);
+                        } catch (Exception e) {
+                            LogUtils.d(TAG, "update exception: " + e.getMessage());
+                        }
                     }
                     ThreadUtils.sleep(TIME_UPDATE_PROGRESS);
                 }
+                mUpdateThreadRunning = false;
             }
         });
     }
@@ -501,10 +551,12 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         }
         // 播放/暂停
         else if (KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE == msg.arg1) { // 85
+            mPlayFinished = false;
             playOrPauseVideo();
         }
         // 播放
         else if (KeyEvent.KEYCODE_MEDIA_PLAY == msg.arg1) { // 126
+            mPlayFinished = false;
             playVideo();
         }
         // 暂停
@@ -551,6 +603,9 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
 
     private void playOrPauseVideo() {
         LogUtils.i(TAG, "playOrPauseVideo()");
+        if (mPlayFinished) {
+            return;
+        }
         if (mVideoView.isPlaying()) {
             mVideoView.pause();
             mPlayerController.onPause();
@@ -558,7 +613,6 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                 mPlayerListener.onPause();
             }
         } else {
-            mPlayFinished = false;
             mVideoView.start();
             mPlayerController.onPlaying();
             if (null != mPlayerListener) {
@@ -569,13 +623,15 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
 
     private void playVideo() {
         LogUtils.i(TAG, "playVideo()");
+        if (mPlayFinished) {
+            return;
+        }
         if (!mVideoView.isPlaying()) {
             if (0 < mSavedTime) {
                 mVideoView.seekTo(mSavedTime);
             } else {
                 mVideoView.start();
             }
-            mPlayFinished = false;
             mPlayerController.onPlaying();
             if (null != mPlayerListener) {
                 mPlayerListener.onPlaying();
@@ -598,22 +654,29 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void fastForWardVideo() {
-        LogUtils.i(TAG, "fastForWardVideo()");
         if (!mPlayerController.isShowed()) {
             mPlayerController.showAndAutoHide();
         } else {
+            LogUtils.i(TAG, "fastForWardVideo()");
             int duration = mVideoView.getDuration();
             if (-1 != duration && mVideoView.canSeekForward()) {
+                mTimeLength += TIME_FORWORD_OR_REWIND;
+                LogUtils.d(TAG, "time length: " + mTimeLength);
                 int current = mVideoView.getCurrentPosition();
-                current += TIME_FORWORD_OR_REWIND;
+                current += mTimeLength;
                 if (current > duration) {
                     current = duration;
                 }
-                mVideoView.seekTo(current);
+                Message msg = new Message();
+                msg.what = MSG_WHAT_ON_UPDATE;
+                msg.arg1 = duration;
+                msg.arg2 = current;
+                mWeakHandler.sendMessage(msg);
+                mNeedUpdateProgress = false;
                 mPlayerController.onFast();
-                if (null != mPlayerListener) {
-                    mPlayerListener.onFast();
-                }
+                mWeakHandler.removeCallbacks(mFastRunnable);
+                mFastRunnable.setSeek(current);
+                mWeakHandler.postDelayed(mFastRunnable, mDelay);
             } else {
                 mPlayerController.showAndAutoHide();
                 ToastUtils.showToast(mContext, R.string.player_toast_not_support_forward);
@@ -622,22 +685,29 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     }
 
     private void rewindVideo() {
-        LogUtils.i(TAG, "fastForWardVideo()");
         if (!mPlayerController.isShowed()) {
             mPlayerController.showAndAutoHide();
         } else {
+            LogUtils.i(TAG, "rewindVideo()");
             int duration = mVideoView.getDuration();
             if (-1 != duration && mVideoView.canSeekBackward()) {
+                mTimeLength += TIME_FORWORD_OR_REWIND;
+                LogUtils.d(TAG, "time length: " + mTimeLength);
                 int current = mVideoView.getCurrentPosition();
-                current -= TIME_FORWORD_OR_REWIND;
+                current -= mTimeLength;
                 if (current < 0) {
                     current = 0;
                 }
-                mVideoView.seekTo(current);
+                Message msg = new Message();
+                msg.what = MSG_WHAT_ON_UPDATE;
+                msg.arg1 = duration;
+                msg.arg2 = current;
+                mWeakHandler.sendMessage(msg);
+                mNeedUpdateProgress = false;
                 mPlayerController.onRewind();
-                if (null != mPlayerListener) {
-                    mPlayerListener.onRewind();
-                }
+                mWeakHandler.removeCallbacks(mRewindRunnable);
+                mRewindRunnable.setSeek(current);
+                mWeakHandler.postDelayed(mRewindRunnable, mDelay);
             } else {
                 mPlayerController.showAndAutoHide();
                 ToastUtils.showToast(mContext, R.string.player_toast_not_support_backward);
@@ -661,6 +731,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
             if (progress > duration) {
                 progress = duration;
             }
+            mPlayFinished = false;
             mVideoView.seekTo(progress);
             if (null != mPlayerListener) {
                 mPlayerListener.onSeekChanged(progress);

@@ -3,13 +3,6 @@ package com.r.library.common.player;
 
 import java.io.InputStream;
 
-import com.r.library.common.R;
-import com.r.library.common.handler.WeakHandler;
-import com.r.library.common.util.BitmapUtils;
-import com.r.library.common.util.FileUtils;
-import com.r.library.common.util.LogUtils;
-import com.r.library.common.util.TimeUtils;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -27,6 +20,13 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.r.library.common.R;
+import com.r.library.common.handler.WeakHandler;
+import com.r.library.common.util.BitmapUtils;
+import com.r.library.common.util.FileUtils;
+import com.r.library.common.util.LogUtils;
+import com.r.library.common.util.TimeUtils;
+
 public class PlayerController extends RelativeLayout {
     private final String TAG = "PlayerController";
 
@@ -43,8 +43,9 @@ public class PlayerController extends RelativeLayout {
 
     private Drawable bakDrawable = null;
 
-    private boolean mIsStarted, mIsShowed, mIsAdVideo, mShowLoading;
-    private Integer mDuration = -1;
+    private boolean mIsStarted, mIsShowed, mIsAdVideo, mShowLoading = false;
+    private int mCountBak = 0;
+    private int mDuration = -1;
 
     public PlayerController(Context context) {
         super(context);
@@ -207,12 +208,14 @@ public class PlayerController extends RelativeLayout {
     public PlayerController onPause() {
         mWeakHandler.removeCallbacks(autoHide);
         setIvStateCenter(R.drawable.ic_player_play_focus);
+        bakDrawable = mIvStateCenter.getBackground();
         show();
         return this;
     }
 
     public PlayerController onStop() {
         setIvStateCenter(R.drawable.ic_player_play_focus);
+        bakDrawable = mIvStateCenter.getBackground();
         show();
         return this;
     }
@@ -226,11 +229,10 @@ public class PlayerController extends RelativeLayout {
 
     public PlayerController onPlaying() {
         setIvStateCenter(R.drawable.ic_player_suspended_focus);
+        bakDrawable = mIvStateCenter.getBackground();
         showAndAutoHide();
         return this;
     }
-
-    private int mCountBak = 0;
 
     public PlayerController onUpdate(int duration, int current) {
         mDuration = duration;
@@ -241,16 +243,16 @@ public class PlayerController extends RelativeLayout {
         return this;
     }
 
-    public void rebackCenterImg() {
+    public PlayerController rebackCenterImg() {
         if (null != bakDrawable) {
             setIvStateCenter(bakDrawable);
         }
-        bakDrawable = null;
         if (-1 == mDuration) {
             show();
         } else {
             showAndAutoHide();
         }
+        return this;
     }
 
     public PlayerController onFast() {
@@ -276,12 +278,14 @@ public class PlayerController extends RelativeLayout {
         mIvStateCenter.setVisibility(View.VISIBLE);
         mLlBottom.setVisibility(View.VISIBLE);
         setIvStateCenter(R.drawable.ic_player_play_focus);
+        bakDrawable = mIvStateCenter.getBackground();
         show();
         return this;
     }
 
     public PlayerController onCompleted() {
         setIvStateCenter(R.drawable.ic_player_play_focus);
+        bakDrawable = mIvStateCenter.getBackground();
         show();
         return this;
     }
