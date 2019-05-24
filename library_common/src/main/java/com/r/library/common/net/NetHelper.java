@@ -97,14 +97,18 @@ public class NetHelper {
         try {
             URL httpUrl = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) httpUrl.openConnection();
+            connection.setChunkedStreamingMode(51200); // 128K
+            connection.setUseCaches(false);
             connection.setRequestMethod("POST");
+            connection.setRequestProperty("Charset", "UTF-8");
             connection.setDoOutput(true);
             connection.setDoInput(true);
+
             connection.setRequestProperty("Connection", "Keep-Alive");
             connection.setRequestProperty("Charset", "UTF-8");
             connection.setRequestProperty("Expect", "100-continue");
             connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARYSTR);
-            connection.setRequestProperty("User-Agent", "Letv Client");
+            connection.setRequestProperty("User-Agent", "Android Client");
 
             DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
             StringBuffer sb = new StringBuffer();
