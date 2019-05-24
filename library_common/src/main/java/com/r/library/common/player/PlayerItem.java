@@ -29,4 +29,13 @@ public class PlayerItem {
     public void setPath(String path) {
         this.path = path;
     }
+
+    @Override
+    public String toString() {
+        return "PlayerItem{" +
+                "isAd=" + isAd +
+                ", name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                '}';
+    }
 }

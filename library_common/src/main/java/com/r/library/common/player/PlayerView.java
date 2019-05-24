@@ -57,15 +57,15 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     private boolean mPlayFinished = false;
     private boolean mUpdateThreadRunning = false;
 
-    private int mDuration, mOldDuration;
+    private int mCurrentPosition, mOldCurrentPosition;
     private Runnable mLoadingRunnable = new Runnable() {
         @Override
         public void run() {
             if (null == mVideoView) {
                 return;
             }
-            mDuration = mVideoView.getCurrentPosition();
-            if (mOldDuration == mDuration && mVideoView.isPlaying()) {
+            mCurrentPosition = mVideoView.getCurrentPosition();
+            if (mOldCurrentPosition == mCurrentPosition && mVideoView.isPlaying()) {
                 mPlayerController.showLoading(true);
                 if (null != mPlayerListener) {
                     mPlayerListener.onLoadingShow();
@@ -76,7 +76,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                     mPlayerListener.onLoadingClose();
                 }
             }
-            mOldDuration = mDuration;
+            mOldCurrentPosition = mCurrentPosition;
             mWeakHandler.postDelayed(mLoadingRunnable, 1000);
         }
     };
