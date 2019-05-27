@@ -155,7 +155,7 @@ public class LiveActivity extends AppCompatActivity implements WeakHandlerListen
                     if (null != item) {
                         PlayerParams params = new PlayerParams();
                         params.setShowLoading(true);
-                        params.setVideoTile(item.getName());
+                        params.setVideoTitle(item.getName());
                         params.setVideoUri(Uri.parse(item.getPath()));
                         PlayerHelper.setPlayerParams(params);
                         Intent intent = new Intent();

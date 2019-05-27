@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 public class PlayerParams {
-    private String videoTile = null;
+    private String videoTitle = null;
     private Uri videoUri = null;
     private Drawable coverDrawable = null;
     private PlayerListener playerListener;
@@ -18,11 +18,11 @@ public class PlayerParams {
     private Boolean ignoreBackKey = false;
 
     public String getVideoTitle() {
-        return videoTile;
+        return videoTitle;
     }
 
-    public void setVideoTile(String sVideoTile) {
-        this.videoTile = sVideoTile;
+    public void setVideoTitle(String sVideoTile) {
+        this.videoTitle = sVideoTile;
     }
 
     public Uri getVideoUri() {

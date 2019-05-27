@@ -208,7 +208,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                         .subscribe(granted -> {
                             PlayerParams params = new PlayerParams();
                             params.setShowLoading(true);
-                            params.setVideoTile("乐融LeTV");
+                            params.setVideoTitle("乐融LeTV");
                             params.setVideoUri(Uri.parse(VIDEO_URL_1));
                             PlayerHelper.setPlayerParams(params);
                             Intent intent = new Intent();
@@ -220,7 +220,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_play_cover_view: {
                 PlayerParams params = new PlayerParams();
                 params.setCoverDrawable(BgUtils.getCoverDrawable(mContext));
-                params.setVideoTile("轩尼诗");
+                params.setVideoTitle("轩尼诗");
                 params.setVideoUri(Uri.parse(VIDEO_URL_2));
                 PlayerHelper.setPlayerParams(params);
                 Intent intent = new Intent();
@@ -233,7 +233,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 params.setDoubleClickPause(true);
                 params.setShowLoading(true);
                 params.setAutoFinishDelay(0);
-                params.setVideoTile("轩尼诗");
+                params.setVideoTitle("轩尼诗");
                 params.setVideoUri(Uri.parse(VIDEO_URL_2));
                 PlayerHelper.setPlayerParams(params);
                 Intent intent = new Intent();
@@ -250,7 +250,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                             params.setIgnoreBackKey(true);
                             params.setAutoFinish(true);
                             params.setAutoFinishDelay(1000);
-                            params.setVideoTile("乐融LeTV");
+                            params.setVideoTitle("乐融LeTV");
                             params.setVideoUri(Uri.parse(VIDEO_URL_1));
                             PlayerHelper.setPlayerParams(params);
                             Intent intent = new Intent();
@@ -267,7 +267,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                             params.setAdVideo(true);
                             params.setIgnoreBackKey(true);
                             params.setAutoFinish(true);
-                            params.setVideoTile("乐融LeTV");
+                            params.setVideoTitle("乐融LeTV");
                             params.setVideoUri(Uri.parse(VIDEO_URL_1));
                             PlayerHelper.setPlayerParams(params);
                             Intent intent = new Intent();
