@@ -10,12 +10,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.Window;
 import android.widget.FrameLayout;
 
 public class PlayerActivity extends AppCompatActivity {
     private final static String TAG = "PlayerActivity";
     private Context mContext;
     private WeakHandler mWeakHandler;
+    private Window mWindow;
     private PlayerView mPlayerView;
     private PlayerListener mVideoListenerFromHelper = null;
     private PlayerListener mVideoListener = new PlayerListener() {
@@ -137,6 +140,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         mContext = this;
         mWeakHandler = new WeakHandler();
+        mWindow = getWindow();
 
         mPlayerView = findViewById(R.id.pv_video);
 
@@ -146,6 +150,7 @@ public class PlayerActivity extends AppCompatActivity {
             params.setPlayerListener(mVideoListener);
         }
         mPlayerView.initValues();
+        mPlayerView.setWindow(mWindow);
     }
 
     @Override
@@ -156,10 +161,18 @@ public class PlayerActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (mPlayerView.onKeyClick(keyCode, event)) {
+        if (mPlayerView.onKeyDown(keyCode, event)) {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mPlayerView.onTouchEvent(event)) {
+            return true;
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override

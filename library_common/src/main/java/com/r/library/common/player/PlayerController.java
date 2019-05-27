@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -41,7 +42,7 @@ public class PlayerController extends RelativeLayout {
     private TextView mTvTimePlayed, mTvTimeTotal;
     private LinearLayout mLlLoading;
 
-    private Drawable bakDrawable = null;
+    private Drawable mBakDrawable = null;
 
     private boolean mIsStarted, mIsShowed, mIsAdVideo, mShowLoading = false;
     private int mCountBak = 0;
@@ -112,7 +113,10 @@ public class PlayerController extends RelativeLayout {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                showOrHide();
+                LogUtils.i(TAG, "onClick()");
+                if (null != mViewListener) {
+                    mViewListener.onClick();
+                }
             }
         });
 
@@ -208,14 +212,14 @@ public class PlayerController extends RelativeLayout {
     public PlayerController onPause() {
         mWeakHandler.removeCallbacks(autoHide);
         setIvStateCenter(R.drawable.ic_player_play_focus);
-        bakDrawable = mIvStateCenter.getBackground();
+        mBakDrawable = mIvStateCenter.getBackground();
         show();
         return this;
     }
 
     public PlayerController onStop() {
         setIvStateCenter(R.drawable.ic_player_play_focus);
-        bakDrawable = mIvStateCenter.getBackground();
+        mBakDrawable = mIvStateCenter.getBackground();
         show();
         return this;
     }
@@ -229,7 +233,7 @@ public class PlayerController extends RelativeLayout {
 
     public PlayerController onPlaying() {
         setIvStateCenter(R.drawable.ic_player_suspended_focus);
-        bakDrawable = mIvStateCenter.getBackground();
+        mBakDrawable = mIvStateCenter.getBackground();
         showAndAutoHide();
         return this;
     }
@@ -244,8 +248,8 @@ public class PlayerController extends RelativeLayout {
     }
 
     public PlayerController rebackCenterImg() {
-        if (null != bakDrawable) {
-            setIvStateCenter(bakDrawable);
+        if (null != mBakDrawable) {
+            setIvStateCenter(mBakDrawable);
         }
         if (-1 == mDuration) {
             show();
@@ -255,18 +259,18 @@ public class PlayerController extends RelativeLayout {
         return this;
     }
 
-    public PlayerController onFast() {
-        if (null == bakDrawable) {
-            bakDrawable = mIvStateCenter.getBackground();
+    public PlayerController onForward() {
+        if (null == mBakDrawable) {
+            mBakDrawable = mIvStateCenter.getBackground();
         }
-        setIvStateCenter(R.drawable.ic_player_fast);
+        setIvStateCenter(R.drawable.ic_player_forward);
         show();
         return this;
     }
 
     public PlayerController onRewind() {
-        if (null == bakDrawable) {
-            bakDrawable = mIvStateCenter.getBackground();
+        if (null == mBakDrawable) {
+            mBakDrawable = mIvStateCenter.getBackground();
         }
         setIvStateCenter(R.drawable.ic_player_rewind);
         show();
@@ -278,14 +282,14 @@ public class PlayerController extends RelativeLayout {
         mIvStateCenter.setVisibility(View.VISIBLE);
         mLlBottom.setVisibility(View.VISIBLE);
         setIvStateCenter(R.drawable.ic_player_play_focus);
-        bakDrawable = mIvStateCenter.getBackground();
+        mBakDrawable = mIvStateCenter.getBackground();
         show();
         return this;
     }
 
     public PlayerController onCompleted() {
         setIvStateCenter(R.drawable.ic_player_play_focus);
-        bakDrawable = mIvStateCenter.getBackground();
+        mBakDrawable = mIvStateCenter.getBackground();
         show();
         return this;
     }
@@ -383,4 +387,13 @@ public class PlayerController extends RelativeLayout {
         mViewListener = viewListener;
         return this;
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mViewListener.onTouchEvent(event)) {
+            return true;
+        }
+        return super.onTouchEvent(event);
+    }
+
 }

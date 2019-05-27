@@ -29,5 +29,5 @@ task clean(type: Delete) {
 }
 
 def releaseTime() {
-    return new Date().format("yyyyMMddHHmm", TimeZone.getTimeZone("Asia/Shanghai"))
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("Asia/Shanghai"))
 }

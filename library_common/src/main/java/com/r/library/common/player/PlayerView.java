@@ -12,6 +12,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
@@ -28,6 +31,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     private final static String TAG = "PlayerView";
     private Context mContext;
     private WeakHandler mWeakHandler;
+    private Window mWindow;
     private PlayerViewListener mViewListener; // 当前界面监听触摸滑动进度条实现快进/快退
 
     private RelativeLayout mParent;
@@ -49,8 +53,9 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     private final int MSG_WHAT_ON_CLICKED = 5;
     private final int MSG_WHAT_ON_FINISH = 6;
 
+    private final int FAST_REWIND_DELAY = 1000;
     private final int TIME_FORWORD_OR_REWIND = 10000; // 快进快退的时间间隔
-    private final int TIME_DOUBLE_CLICK_DELAY = 1000; // 双击事件的间隔时间
+    private final int TIME_DOUBLE_CLICK_DELAY = 600; // 双击事件的间隔时间
     private final int TIME_UPDATE_PROGRESS = 100; // 更新播放时间的间隔时间
 
     private int mSavedTime = 0;
@@ -80,6 +85,17 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         }
     };
 
+    private boolean mBackKeyPressed = false; // 记录是否有首次按键
+    private Runnable mBackKeyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mBackKeyPressed = false;
+            if (null != mPlayerListener) {
+                mPlayerListener.onBackClicked();
+            }
+            ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_exit);
+        }
+    };
     private boolean mCenterKeyPressed = false; // 记录是否有首次按键
     private Runnable mCenterKeyRunnable = new Runnable() {
         @Override
@@ -97,19 +113,18 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
             }
         }
     };
-    private boolean mBackKeyPressed = false; // 记录是否有首次按键
-    private Runnable mBackKeyRunnable = new Runnable() {
+    private boolean mControClicked = false; // 记录是否有首次按键
+    private Runnable mControClickRunnable = new Runnable() {
         @Override
         public void run() {
-            mBackKeyPressed = false;
+            mControClicked = false;
             if (null != mPlayerListener) {
-                mPlayerListener.onBackClicked();
+                mPlayerListener.onClick();
             }
-            ToastUtils.showToast(mContext, R.string.player_toast_double_click_to_exit);
+            mPlayerController.showOrHide();
         }
     };
 
-    private int FAST_REWIND_DELAY = 1000;
     private boolean mNeedUpdateProgress = true;
     private ForwardRewindRunnable mForwardOrRewindRunnable = new ForwardRewindRunnable();
 
@@ -182,6 +197,10 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         initVideoViewListener();
     }
 
+    public void setWindow(Window window) {
+        mWindow = window;
+    }
+
     public void onRestart() {
         LogUtils.i(TAG, "onRestart()");
     }
@@ -213,7 +232,8 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         mVideoView = null;
     }
 
-    public boolean onKeyClick(int keyCode, KeyEvent event) {
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (KeyEvent.KEYCODE_MENU == keyCode
                 || KeyEvent.KEYCODE_BACK == keyCode
                 || KeyEvent.KEYCODE_DPAD_CENTER == keyCode
@@ -234,7 +254,34 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
             mWeakHandler.sendMessage(msg);
             return true;
         }
-        return false;
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (mPlayerController.onTouchEvent(event)) {
+            return true;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    /*
+     * 设置屏幕亮度 0 最暗 1 最亮
+     */
+    private void setBrightness(float brightness) {
+        if (null == mWindow) {
+            return;
+        }
+        WindowManager.LayoutParams lp = mWindow.getAttributes();
+        lp.screenBrightness = lp.screenBrightness + brightness / 255.0f;
+        if (lp.screenBrightness > 1) {
+            lp.screenBrightness = 1;
+        } else if (lp.screenBrightness < 0.1) {
+            lp.screenBrightness = (float) 0.1;
+        }
+        mWindow.setAttributes(lp);
+        float sb = lp.screenBrightness;
+        LogUtils.d(TAG, "屏幕亮度：" + (int) Math.ceil(sb * 100) + "%");
     }
 
     @Override
@@ -252,7 +299,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                             R.string.player_toast_double_click_to_play_or_pause);
                 }
             }
-            break;
+                break;
             case MSG_WHAT_ON_ERROR: {
                 mPlayFinished = true;
                 mVideoView.stopPlayback();
@@ -267,7 +314,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                             mAutoFinishDelay);
                 }
             }
-            break;
+                break;
             case MSG_WHAT_ON_COMPLETION: {
                 mPlayFinished = true;
                 if (!mIsAdVideo) {
@@ -282,7 +329,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                             mAutoFinishDelay);
                 }
             }
-            break;
+                break;
             case MSG_WHAT_ON_UPDATE: {
                 if (msg.arg2 > 0) {
                     if (Build.VERSION.SDK_INT >= 16) {
@@ -297,7 +344,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                 }
                 mPlayerController.onUpdate(msg.arg1, msg.arg2);
             }
-            break;
+                break;
             case MSG_WHAT_ON_CLICKED: {
                 // 双击退出
                 if (KeyEvent.KEYCODE_BACK == msg.arg1 && !mIgnoreBackKey) { // 4
@@ -306,14 +353,14 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                     processMediaOnClick(msg);
                 }
             }
-            break;
+                break;
             case MSG_WHAT_ON_FINISH: {
                 if (null != mPlayerListener) {
                     mPlayerListener.onFinish();
                 }
                 PlayerHelper.clearAll();
             }
-            break;
+                break;
         }
     }
 
@@ -391,8 +438,18 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         };
         mViewListener = new PlayerViewListener() {
             @Override
+            public boolean onTouchEvent(MotionEvent event) {
+                return false;
+            }
+
+            @Override
             public void onCenterClicked() {
                 centerClicked();
+            }
+
+            @Override
+            public void onClick() {
+                doubleClickControToPause();
             }
 
             @Override
@@ -647,7 +704,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                 msg.arg2 = mCurrentPosition;
                 mWeakHandler.sendMessage(msg);
                 mNeedUpdateProgress = false;
-                mPlayerController.onFast();
+                mPlayerController.onForward();
                 mWeakHandler.removeCallbacks(mForwardOrRewindRunnable);
                 mForwardOrRewindRunnable.setSeek(mCurrentPosition);
                 mWeakHandler.postDelayed(mForwardOrRewindRunnable, FAST_REWIND_DELAY);
@@ -732,6 +789,21 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         } else {
             mCenterKeyPressed = false;
             mWeakHandler.removeCallbacks(mCenterKeyRunnable);
+            Message msg = new Message();
+            msg.what = MSG_WHAT_ON_CLICKED;
+            msg.arg1 = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+            processMediaOnClick(msg);
+        }
+    }
+
+    private void doubleClickControToPause() {
+        LogUtils.i(TAG, "doubleClickCenterToPause()");
+        if (!mControClicked) {
+            mControClicked = true;
+            mWeakHandler.postDelayed(mControClickRunnable, TIME_DOUBLE_CLICK_DELAY);
+        } else {
+            mControClicked = false;
+            mWeakHandler.removeCallbacks(mControClickRunnable);
             Message msg = new Message();
             msg.what = MSG_WHAT_ON_CLICKED;
             msg.arg1 = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
