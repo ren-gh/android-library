@@ -220,16 +220,18 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         LogUtils.i(TAG, "onPause()");
     }
 
-    public void onStop() {
-        LogUtils.i(TAG, "onStop() saved time: " + mSavedTime);
+    public void onStop(boolean isFinishing) {
+        LogUtils.i(TAG, "onStop() isFinishing: " + isFinishing + " saved time: " + mSavedTime);
         pauseVideo();
+        if (isFinishing) {
+            stopVideo();
+            mSavedTime = 0;
+            mVideoView = null;
+        }
     }
 
     public void onDestroy() {
         LogUtils.i(TAG, "onDestroy()");
-        stopVideo();
-        mSavedTime = 0;
-        mVideoView = null;
     }
 
     @Override
@@ -675,7 +677,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
 
     private boolean pauseVideo() {
         LogUtils.i(TAG, "pauseVideo()");
-        if (mVideoView.isPlaying()) {
+        if (null != mVideoView && mVideoView.isPlaying()) {
             mVideoView.pause();
             mPlayerController.onPause();
             if (null != mPlayerListener) {

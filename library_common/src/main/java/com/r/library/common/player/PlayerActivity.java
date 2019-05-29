@@ -202,7 +202,7 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        mPlayerView.onStop();
+        mPlayerView.onStop(isFinishing());
     }
 
     @Override
