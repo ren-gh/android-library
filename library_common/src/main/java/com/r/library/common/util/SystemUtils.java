@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -189,10 +190,14 @@ public class SystemUtils {
     private static boolean startActivity(Context context, Intent intent, Bundle options) {
         if (null != intent) {
             try {
-                intent.putExtra("from", context.getPackageName());
-                // context.startActivity(intent, options);
-                context.startActivity(intent);
-                return true;
+                ResolveInfo resolveInfo = context.getPackageManager()
+                        .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                if (null != resolveInfo) {
+                    intent.putExtra("from", context.getPackageName());
+                    // context.startActivity(intent, options);
+                    context.startActivity(intent);
+                    return true;
+                }
             } catch (ActivityNotFoundException e) {
             } catch (SecurityException e) {
             }

@@ -12,16 +12,33 @@ import android.os.Build.VERSION;
 import android.support.v4.app.NotificationCompat;
 
 public class ServiceHelper {
+    private static final String TAG = "ServiceHelper";
+
     public static ComponentName startService(Context context, Intent intent) {
-        ComponentName componentName;
+        ComponentName componentName = null;
         if (VERSION.SDK_INT >= 26) {
             try {
                 componentName = context.startService(intent);
-            } catch (IllegalStateException var4) {
-                componentName = context.startForegroundService(intent);
+                LogUtils.d(TAG, "startService() result: " + componentName);
+            } catch (IllegalStateException e) {
+                try {
+                    componentName = context.startForegroundService(intent);
+                    LogUtils.d(TAG, "startForegroundService() result: " + componentName);
+                } catch (SecurityException e1) {
+                    LogUtils.e(TAG, "startForegroundService() SecurityException: " + e1.getMessage());
+                }
+            } catch (SecurityException e) {
+                LogUtils.e(TAG, "startService() SecurityException: " + e.getMessage());
             }
         } else {
-            componentName = context.startService(intent);
+            try {
+                componentName = context.startService(intent);
+                LogUtils.d(TAG, "startService() result: " + componentName);
+            } catch (IllegalStateException e) {
+                LogUtils.e(TAG, "startService() IllegalStateException: " + e.getMessage());
+            } catch (SecurityException e) {
+                LogUtils.e(TAG, "startService() SecurityException: " + e.getMessage());
+            }
         }
 
         return componentName;
