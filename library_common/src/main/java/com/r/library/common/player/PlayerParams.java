@@ -9,13 +9,13 @@ public class PlayerParams {
     private Uri videoUri = null;
     private Drawable coverDrawable = null;
     private PlayerListener playerListener;
-    private Boolean isAdVideo = false;
-    private Boolean doubleClickPause = false;
-    private Boolean autoFinish = false;
-    private Integer autoFinishDelay = 0;
-    private Boolean showLoading = false;
-    private Boolean showCenterClickToast = true;
-    private Boolean ignoreBackKey = false;
+    private boolean isAdVideo = false;
+    private boolean doubleClickPause = false;
+    private boolean autoFinish = false;
+    private int autoFinishDelay = 0;
+    private boolean showLoading = false;
+    private boolean showCenterClickToast = true;
+    private boolean ignoreBackKey = false;
 
     public String getVideoTitle() {
         return videoTitle;
