@@ -79,7 +79,7 @@ public class LiveActivity extends AppCompatActivity implements WeakHandlerListen
                 KeyEventUtils.sendKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 100);
                 KeyEventUtils.sendKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, 110);
             }
-                break;
+            break;
         }
     }
 
@@ -132,9 +132,9 @@ public class LiveActivity extends AppCompatActivity implements WeakHandlerListen
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (null != view) {
                     if (null != mBakSelectedView) {
-                        mBakSelectedView.setBackgroundResource(R.drawable.btn_bg_yellow_normal);
+                        mBakSelectedView.setBackgroundResource(R.drawable.btn_bg_narmal);
                     }
-                    view.setBackgroundResource(R.drawable.btn_bg_yellow_focus);
+                    view.setBackgroundResource(R.drawable.btn_bg_focus);
                     mBakSelectedView = view;
                 }
             }
