@@ -1,5 +1,5 @@
 
-package com.r.library.common.viewpager;
+package com.r.library.common.view.viewpager;
 
 import com.r.library.common.glide.GlideHelper;
 import com.r.library.common.handler.WeakHandler;

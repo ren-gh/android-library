@@ -3,11 +3,11 @@
     <item>
         <shape>
             <!-- View填充颜色 -->
-            <corners android:radius="@dimen/dp_0" />
+            <corners android:radius="@dimen/dp_3" />
             <stroke
-                android:width="@dimen/dp_3"
+                android:width="@dimen/dp_1_5"
                 android:color="@color/focused" />
-            <solid android:color="@color/dialog_common_button_panel_bg_color" />
+            <solid android:color="@color/transparent" />
         </shape>
     </item>
 

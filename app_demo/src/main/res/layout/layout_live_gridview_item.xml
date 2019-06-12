@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/dp_120"
     android:layout_height="@dimen/dp_30"
-    android:background="@drawable/btn_bg_yellow_normal">
+    android:background="@drawable/btn_bg">
 
     <TextView
         android:id="@+id/btn_grid_item"

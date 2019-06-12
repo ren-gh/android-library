@@ -38,6 +38,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Black"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".recyclerview.RecyclerActivity"></activity>
+        <activity android:name=".recyclerview.ModuleFocusActivity"></activity>
+        <activity android:name=".recyclerview.ModuleFocusVerticalActivity"></activity>
         <activity
             android:name=".activity.DemoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -59,7 +62,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="com.rengh.rlibrary"
+                    android:host="com.r.rlibrary"
                     android:pathPrefix="/demo"
                     android:scheme="app" />
             </intent-filter>

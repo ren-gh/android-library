@@ -17,6 +17,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.RequiresPermission;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -54,6 +55,7 @@ public class LocalNetHelper {
         return imeis;
     }
 
+    @RequiresPermission("android.permission.READ_PHONE_STATE")
     public static List<String> getMEID(Context context) {
         ArrayList<String> meids = new ArrayList<>();
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
