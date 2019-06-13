@@ -3,7 +3,7 @@
     <item>
         <shape>
             <!-- View填充颜色 -->
-            <corners android:radius="@dimen/dp_0" />
+            <corners android:radius="@dimen/dp_3" />
             <stroke
                 android:width="@dimen/dp_0"
                 android:color="@color/transparent" />
