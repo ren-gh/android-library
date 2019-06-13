@@ -1,5 +1,5 @@
-package com.r.library.common.view.tvrecyclerview;
 
+package com.r.library.common.view.tvrecyclerview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,8 +25,9 @@ import android.widget.Scroller;
 
 import com.r.library.common.R;
 
-import static android.view.KeyEvent.KEYCODE_DPAD_RIGHT;
-
+/**
+ * https://github.com/henryblue/TvRecyclerView
+ */
 public class TvRecyclerView extends RecyclerView {
 
     public static final String TAG = "TvRecyclerView";
@@ -76,7 +77,6 @@ public class TvRecyclerView extends RecyclerView {
     private int mNumRows = 1;
     private boolean mIsNeedMoved = false;
     int mLayerType = View.LAYER_TYPE_SOFTWARE;
-
 
     public TvRecyclerView(Context context) {
         this(context, null);
@@ -210,10 +210,10 @@ public class TvRecyclerView extends RecyclerView {
             mOrientation = manager.getOrientation();
             mNumRows = manager.getSpanCount();
         } else if (layoutManager instanceof LinearLayoutManager) {
-            mOrientation = ((LinearLayoutManager)layoutManager).getOrientation();
+            mOrientation = ((LinearLayoutManager) layoutManager).getOrientation();
             mNumRows = 1;
         } else if (layoutManager instanceof ModuleLayoutManager) {
-            mOrientation = ((ModuleLayoutManager)layoutManager).getOrientation();
+            mOrientation = ((ModuleLayoutManager) layoutManager).getOrientation();
         }
         Log.i(TAG, "setLayoutManager: orientation==" + mOrientation);
         super.setLayoutManager(layoutManager);
@@ -227,6 +227,7 @@ public class TvRecyclerView extends RecyclerView {
 
     /**
      * note: if you set the property of isAutoProcessFocus is false, the listener will be invalid
+     * 
      * @param listener itemStateListener
      */
     public void setOnItemStateListener(OnItemStateListener listener) {
@@ -265,6 +266,7 @@ public class TvRecyclerView extends RecyclerView {
 
     /**
      * When call this method, you must ensure that the location of the view has been inflate
+     * 
      * @param position selected item position
      */
     public void setItemSelected(int position) {
@@ -307,6 +309,7 @@ public class TvRecyclerView extends RecyclerView {
 
     /**
      * fix issue: not have focus box when change focus
+     * 
      * @param child child view
      * @param focused the focused view
      */
@@ -352,7 +355,7 @@ public class TvRecyclerView extends RecyclerView {
         }
         return params.getViewAdapterPosition();
     }
-    
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -472,7 +475,7 @@ public class TvRecyclerView extends RecyclerView {
             try {
                 if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                     mNextFocused = FocusFinder.getInstance().findNextFocus(this, mSelectedItem, View.FOCUS_LEFT);
-                } else if (keyCode == KEYCODE_DPAD_RIGHT) {
+                } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                     mNextFocused = FocusFinder.getInstance().findNextFocus(this, mSelectedItem, View.FOCUS_RIGHT);
                 } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
                     mNextFocused = FocusFinder.getInstance().findNextFocus(this, mSelectedItem, View.FOCUS_UP);
@@ -561,7 +564,7 @@ public class TvRecyclerView extends RecyclerView {
                 if (mReceivedInvokeKeyDown) {
                     if ((getAdapter() != null) && (mSelectedItem != null)) {
                         if (mItemStateListener != null) {
-                            if (mFocusBorderView != null){
+                            if (mFocusBorderView != null) {
                                 mFocusBorderView.startClickAnim();
                             }
                             mItemStateListener.onItemViewClick(mSelectedItem, mSelectedPosition);
@@ -796,8 +799,7 @@ public class TvRecyclerView extends RecyclerView {
     }
 
     private int getDecoratedStart(View view) {
-        final LayoutParams params = (LayoutParams)
-                view.getLayoutParams();
+        final LayoutParams params = (LayoutParams) view.getLayoutParams();
         if (mOrientation == VERTICAL) {
             return getLayoutManager().getDecoratedTop(view) - params.topMargin;
         } else {
@@ -806,8 +808,7 @@ public class TvRecyclerView extends RecyclerView {
     }
 
     private int getDecoratedEnd(View view) {
-        final LayoutParams params = (LayoutParams)
-                view.getLayoutParams();
+        final LayoutParams params = (LayoutParams) view.getLayoutParams();
         if (mOrientation == VERTICAL) {
             return getLayoutManager().getDecoratedBottom(view) + params.bottomMargin;
         } else {
@@ -829,7 +830,7 @@ public class TvRecyclerView extends RecyclerView {
         int movement = View.FOCUS_LEFT;
 
         if (mOrientation == HORIZONTAL) {
-            switch(keyCode) {
+            switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_LEFT:
                     movement = PREV_ITEM;
                     break;
@@ -844,7 +845,7 @@ public class TvRecyclerView extends RecyclerView {
                     break;
             }
         } else if (mOrientation == VERTICAL) {
-            switch(keyCode) {
+            switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_LEFT:
                     movement = PREV_ROW;
                     break;
@@ -919,6 +920,7 @@ public class TvRecyclerView extends RecyclerView {
 
     /**
      * When the TvRecyclerView width is determined, the returned position is correct
+     * 
      * @return selected view position
      */
     public int getSelectedPosition() {
@@ -957,10 +959,8 @@ public class TvRecyclerView extends RecyclerView {
         }
     }
 
-
     /**
-     * The SmoothScroller that remembers pending DPAD keys and consume pending keys
-     * during scroll.
+     * The SmoothScroller that remembers pending DPAD keys and consume pending keys during scroll.
      */
     private final class PendingMoveSmoothScroller extends LinearSmoothScroller {
         private int mPendingMoves;
@@ -1026,7 +1026,7 @@ public class TvRecyclerView extends RecyclerView {
             int targetPosition = getTargetPosition();
             View targetView = findViewByPosition(targetPosition);
             Log.i(TAG, "PendingMoveSmoothScroller onStop: targetPos=" + targetPosition
-            + "==targetView=" + targetView);
+                    + "==targetView=" + targetView);
             if (targetView == null) {
                 super.onStop();
                 return;
@@ -1044,9 +1044,9 @@ public class TvRecyclerView extends RecyclerView {
         }
     }
 
-
     public interface OnItemStateListener {
         void onItemViewClick(View view, int position);
+
         void onItemViewFocusChanged(boolean gainFocus, View view, int position);
     }
 
@@ -1055,6 +1055,7 @@ public class TvRecyclerView extends RecyclerView {
      */
     public interface onScrollStateListener {
         void onScrollEnd(View view);
+
         void onScrollStart(View view);
     }
 }

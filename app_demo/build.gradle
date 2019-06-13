@@ -95,4 +95,21 @@ dependencies {
     implementation 'com.google.zxing:zxing-parent:3.3.3'
     implementation 'com.squareup.okio:okio:2.2.2'
     implementation 'com.squareup.okhttp3:okhttp:4.0.0-alpha01'
+
+
+    implementation 'com.owen:tv-recyclerview:2.0.3'
+
+    implementation('com.alibaba.android:tangram:3.3.6@aar') {
+        transitive = true
+    }
+    implementation('com.alibaba.android:vlayout:1.2.22@aar') {
+        transitive = true
+    }
+    implementation('com.alibaba.android:virtualview:1.4.6@aar') {
+        transitive = true
+    }
+    implementation('com.alibaba.android:ultraviewpager:1.0.7.7@aar') {
+        transitive = true
+    }
+
 }
