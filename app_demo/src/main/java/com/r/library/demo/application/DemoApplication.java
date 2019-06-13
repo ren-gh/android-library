@@ -12,6 +12,7 @@ import com.r.library.common.application.HeartRunnable;
 import com.r.library.common.notification.NotificationHelper;
 import com.r.library.common.util.LogUtils;
 import com.r.library.demo.preference.PreferenceManager;
+import com.r.library.demo.tangram.manager.TangramDemoManager;
 
 public class DemoApplication extends MultiDexApplication {
     private final String TAG = "DemoApplication";
@@ -38,6 +39,8 @@ public class DemoApplication extends MultiDexApplication {
 
         int bgIndex = (int) (1 + Math.random() * (20 - 1 + 1));
         PreferenceManager.getInstance(this).putBgIndex(bgIndex);
+
+        TangramDemoManager.init(this);
     }
 
     @Override

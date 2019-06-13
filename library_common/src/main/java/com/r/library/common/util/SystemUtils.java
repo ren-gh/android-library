@@ -15,7 +15,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.UserManager;
 import android.text.TextUtils;
 
 /**
@@ -27,6 +29,21 @@ import android.text.TextUtils;
  */
 public class SystemUtils {
     private static final String TAG = "SystemUtils";
+
+    /**
+     * 是否已解锁
+     *
+     * @param context 上下文
+     * @return true or false
+     */
+    public static boolean isUserUnlocked(Context context) {
+        boolean isUserUnlocked = true;
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            isUserUnlocked = context.getSystemService(UserManager.class).isUserUnlocked();
+        }
+        LogUtils.w(TAG, "isUserUnlocked: " + isUserUnlocked);
+        return isUserUnlocked;
+    }
 
     /**
      * 获取app version code

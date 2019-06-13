@@ -20,12 +20,12 @@
             android:padding="@dimen/dp_6">
 
             <Button
-                android:id="@+id/btn_agent_web"
+                android:id="@+id/btn_tangram"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="@dimen/dp_100"
                 android:layout_height="@dimen/dp_30"
                 android:background="@drawable/btn_bg"
-                android:text="AgentWeb"
+                android:text="TRANGRAM"
                 android:textSize="@dimen/sp_12" />
 
             <Button

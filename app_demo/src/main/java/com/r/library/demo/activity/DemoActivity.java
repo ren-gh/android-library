@@ -24,8 +24,8 @@ import com.r.library.demo.R;
 import com.r.library.demo.broadcast.NotificationClickReceiver;
 import com.r.library.demo.recyclerview.ModuleFocusVerticalActivity;
 import com.r.library.demo.runnable.MyFileRunnable;
+import com.r.library.demo.tangram.activity.TangramActivity;
 import com.r.library.demo.util.BgUtils;
-import com.r.library.demo.webview.AgentWebActivity;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import android.Manifest;
@@ -59,7 +59,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     private WeakHandler mHandler;
     private View mRootView;
     private TextView mTvInfo;
-    private Button mBtnAgentWeb;
+    private Button mBtnTangram;
     private Button mBtnRecycler;
     private Button mBtnFile;
     private Button mBtnChangeBg;
@@ -93,7 +93,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         mRootView = findViewById(R.id.root);
         // BgUtils.autoUpdateBackground(mContext, mRootView);
 
-        mBtnAgentWeb = findViewById(R.id.btn_agent_web);
+        mBtnTangram = findViewById(R.id.btn_tangram);
         mBtnRecycler = findViewById(R.id.btn_recycler);
         mBtnFile = findViewById(R.id.btn_file);
         mBtnChangeBg = findViewById(R.id.btn_change_bg);
@@ -108,7 +108,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         mBtnPlayAd = findViewById(R.id.btn_play_ad_mode);
         mTvInfo = findViewById(R.id.tv_info);
 
-        mBtnAgentWeb.setOnClickListener(this);
+        mBtnTangram.setOnClickListener(this);
         mBtnRecycler.setOnClickListener(this);
         mBtnFile.setOnClickListener(this);
         mBtnChangeBg.setOnClickListener(this);
@@ -188,31 +188,10 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_agent_web: {
-                if (mRootView.isInTouchMode()) {
-                    Intent intent = new Intent();
-                    intent.setClass(this, AgentWebActivity.class);
-                    startActivity(intent);
-                } else {
-                    final RDialog dialog = new RDialog(this);
-                    dialog.setContent("AgentWeb 对 TV 支持不好，检测到当前设备好像是 TV 设备，是否确认打开？")
-                            .setButtonYesClick(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                    Intent intent = new Intent();
-                                    intent.setClass(mContext, AgentWebActivity.class);
-                                    startActivity(intent);
-                                }
-                            })
-                            .setButtonNoClick(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .show();
-                }
+            case R.id.btn_tangram: {
+                Intent intent = new Intent();
+                intent.setClass(this, TangramActivity.class);
+                startActivity(intent);
             }
                 break;
             case R.id.btn_recycler: {
