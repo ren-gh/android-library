@@ -3,6 +3,7 @@ package com.r.library.common.player;
 
 public class PlayerItem {
     private boolean isAd = false;
+    private int number = 0;
     private String name = null;
     private String path = null;
 
@@ -12,6 +13,14 @@ public class PlayerItem {
 
     public void setAd(boolean ad) {
         isAd = ad;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getName() {
@@ -34,6 +43,7 @@ public class PlayerItem {
     public String toString() {
         return "PlayerItem{" +
                 "isAd=" + isAd +
+                ", number=" + number +
                 ", name='" + name + '\'' +
                 ", path='" + path + '\'' +
                 '}';

@@ -1,11 +1,9 @@
 
 package com.r.library.demo.recyclerview;
 
-import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.r.library.common.util.ToastUtils;
@@ -13,8 +11,8 @@ import com.r.library.common.view.tvrecyclerview.SpaceItemDecoration;
 import com.r.library.common.view.tvrecyclerview.TvRecyclerView;
 import com.r.library.demo.R;
 
-public class RecyclerActivity extends AppCompatActivity {
-    private final String TAG = "RecyclerActivity";
+public class NormalActivity extends AppCompatActivity {
+    private final String TAG = "NormalActivity";
     private TvRecyclerView mTvRecyclerView;
 
     @Override
@@ -40,7 +38,7 @@ public class RecyclerActivity extends AppCompatActivity {
         mTvRecyclerView.setOnItemStateListener(new TvRecyclerView.OnItemStateListener() {
             @Override
             public void onItemViewClick(View view, int position) {
-                ToastUtils.showToast(RecyclerActivity.this, ContantUtil.TEST_DATAS[position]);
+                ToastUtils.showToast(NormalActivity.this, ContantUtil.TEST_DATAS[position]);
             }
 
             @Override
@@ -51,12 +49,12 @@ public class RecyclerActivity extends AppCompatActivity {
         mTvRecyclerView.setOnScrollStateListener(new TvRecyclerView.onScrollStateListener() {
             @Override
             public void onScrollEnd(View view) {
-                ToastUtils.showToast(RecyclerActivity.this, "scroll at end");
+                ToastUtils.showToast(NormalActivity.this, "scroll at end");
             }
 
             @Override
             public void onScrollStart(View view) {
-                ToastUtils.showToast(RecyclerActivity.this, "scroll at start");
+                ToastUtils.showToast(NormalActivity.this, "scroll at start");
             }
         });
 

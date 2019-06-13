@@ -48,6 +48,13 @@
 -keep public class com.android.vending.licensing.ILicensingService
 -keep public class * extends java.lang.annotation.Annotation
 
+-keep class com.just.agentweb.** {
+    *;
+}
+-dontwarn com.just.agentweb.**
+-keepclassmembers class com.just.agentweb.sample.common.AndroidInterface{ *; }
+
+
 -keepclasseswithmembers class * {
     native <methods>;
 }

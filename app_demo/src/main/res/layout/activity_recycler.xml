@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".recyclerview.RecyclerActivity">
+    tools:context=".recyclerview.NormalActivity">
 
     <com.r.library.common.view.tvrecyclerview.TvRecyclerView
         android:id="@+id/tv_recycler_view"

@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 public class PlayerParams {
+    private int number = 0;
     private String videoTitle = null;
     private Uri videoUri = null;
     private Drawable coverDrawable = null;
@@ -16,6 +17,14 @@ public class PlayerParams {
     private boolean showLoading = false;
     private boolean showCenterClickToast = true;
     private boolean ignoreBackKey = false;
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     public String getVideoTitle() {
         return videoTitle;

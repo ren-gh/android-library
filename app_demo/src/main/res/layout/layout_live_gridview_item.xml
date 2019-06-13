@@ -4,15 +4,13 @@
     android:layout_height="@dimen/dp_30"
     android:background="@drawable/btn_bg">
 
-    <TextView
+    <Button
         android:id="@+id/btn_grid_item"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:shadowColor="@color/colorBlack"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="2"
-        android:textColor="@color/colorWhite"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_30"
+        android:clickable="false"
+        android:focusable="false"
         android:textSize="@dimen/sp_12" />
+
 </LinearLayout>

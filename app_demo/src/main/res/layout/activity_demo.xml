@@ -20,17 +20,22 @@
             android:padding="@dimen/dp_6">
 
             <Button
-                android:id="@+id/btn_recycler"
+                android:id="@+id/btn_agent_web"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="@dimen/dp_100"
                 android:layout_height="@dimen/dp_30"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
+                android:text="AgentWeb"
+                android:textSize="@dimen/sp_12" />
+
+            <Button
+                android:id="@+id/btn_recycler"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:background="@drawable/btn_bg"
                 android:text="Recycler"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
             <Button
@@ -40,12 +45,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:text="比对文本"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
             <Button
@@ -55,12 +55,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:text="切换背景"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
             <Button
@@ -70,12 +65,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:text="升级Demo"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
             <Button
@@ -85,12 +75,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:text="安装APK"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
         </LinearLayout>
     </HorizontalScrollView>
@@ -112,12 +97,7 @@
                 android:layout_width="@dimen/dp_100"
                 android:layout_height="@dimen/dp_30"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:text="观看直播"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
             <Button
@@ -127,12 +107,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:text="正常播放"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
             <Button
@@ -142,12 +117,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:text="带启动图"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
             <Button
@@ -157,12 +127,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="0"
-                android:shadowDy="1"
-                android:shadowRadius="1"
                 android:text="双击暂停"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
             <Button
@@ -172,12 +137,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:text="自动退出"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
             <Button
@@ -187,12 +147,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:background="@drawable/btn_bg"
-                android:shadowColor="@color/colorBlack"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
                 android:text="广告模式"
-                android:textColor="@color/colorWhite"
                 android:textSize="@dimen/sp_12" />
 
         </LinearLayout>

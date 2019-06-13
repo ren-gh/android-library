@@ -156,6 +156,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     private boolean mIsAdVideo = false; // 是否是广告
     private boolean mShowLoading = false; // 显示加载图
     private boolean mShowCenterClickToast = true; // 双击模式下，单击是否提示
+    private int mNumber = 0;
     private String mVideoName = null; // 视频名称
     private Uri mVideoUri = null; // 视频地址
     private Drawable mCoverDrawable = null; // 播放前封面
@@ -468,6 +469,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
         LogUtils.i(TAG, "initValues()");
         PlayerParams params = PlayerHelper.getPlayerParams();
         if (null != params) {
+            mNumber = params.getNumber();
             mVideoUri = params.getVideoUri();
             mVideoName = params.getVideoTitle();
             mPlayerListener = params.getPlayerListener();
@@ -498,8 +500,11 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                 mPlayerController.setTitle(mContext.getString(R.string.player_text_left_top_tip,
                         mContext.getString(R.string.player_text_video_title_unknow)));
             } else {
-                mPlayerController.setTitle(mContext.getString(R.string.player_text_left_top_tip,
-                        mVideoName));
+                String title = mContext.getString(R.string.player_text_left_top_tip, mVideoName);
+                if(0 != mNumber){
+                    title = mNumber+"."+title;
+                }
+                mPlayerController.setTitle(title);
             }
             mPlayerController.setVideoType(mIsAdVideo);
             mPlayerController.setShowLoading(mShowLoading);

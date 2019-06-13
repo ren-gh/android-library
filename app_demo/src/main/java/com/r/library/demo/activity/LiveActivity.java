@@ -55,7 +55,7 @@ public class LiveActivity extends AppCompatActivity implements WeakHandlerListen
         mRootView = findViewById(R.id.root);
         mGridView = findViewById(R.id.gridview);
 
-        BgUtils.autoUpdateBackground(mContext, mRootView);
+        // BgUtils.autoUpdateBackground(mContext, mRootView);
 
         initGridView();
 
@@ -79,7 +79,7 @@ public class LiveActivity extends AppCompatActivity implements WeakHandlerListen
                 KeyEventUtils.sendKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT, 100);
                 KeyEventUtils.sendKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT, 110);
             }
-            break;
+                break;
         }
     }
 
@@ -99,14 +99,15 @@ public class LiveActivity extends AppCompatActivity implements WeakHandlerListen
                             if (!TextUtils.isEmpty(line) && line.contains("移动端") && i >= 2) {
                                 number++;
                                 PlayerItem item = new PlayerItem();
-                                String name = number + ". " + lines[i - 2]
+                                String name = lines[i - 2]
                                         .replaceAll("<p>", "")
                                         .replaceAll("</p>", "")
                                         .trim();
                                 String url = "http://ivi.bupt.edu.cn/" + lines[i]
                                         .substring(lines[i].indexOf("href=\"") + 6,
                                                 lines[i].indexOf("\" target=\""));
-                                LogUtils.i(TAG, "name: " + name + " url: " + url);
+                                LogUtils.i(TAG, "number: " + number + " name: " + name + " url: " + url);
+                                item.setNumber(number);
                                 item.setName(name);
                                 item.setPath(url);
                                 item.setAd(false);
@@ -154,6 +155,7 @@ public class LiveActivity extends AppCompatActivity implements WeakHandlerListen
                     LogUtils.i(TAG, "Item: " + item);
                     if (null != item) {
                         PlayerParams params = new PlayerParams();
+                        params.setNumber(item.getNumber());
                         params.setShowLoading(true);
                         params.setVideoTitle(item.getName());
                         params.setVideoUri(Uri.parse(item.getPath()));
