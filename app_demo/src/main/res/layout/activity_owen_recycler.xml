@@ -9,8 +9,8 @@
 
     <com.owen.tvrecyclerview.widget.TvRecyclerView
         android:id="@+id/rv_owen_demo"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
