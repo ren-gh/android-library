@@ -23,6 +23,7 @@ import com.r.library.common.util.UrlUtils;
 import com.r.library.demo.R;
 import com.r.library.demo.broadcast.NotificationClickReceiver;
 import com.r.library.demo.recyclerview.ModuleFocusVerticalActivity;
+import com.r.library.demo.recyclerview.RecyclerDemoActivity;
 import com.r.library.demo.runnable.MyFileRunnable;
 import com.r.library.demo.tangram.activity.TangramActivity;
 import com.r.library.demo.util.BgUtils;
@@ -196,7 +197,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_recycler: {
                 Intent intent = new Intent();
-                intent.setClass(this, ModuleFocusVerticalActivity.class);
+                intent.setClass(this, RecyclerDemoActivity.class);
                 startActivity(intent);
             }
                 break;

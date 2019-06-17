@@ -34,11 +34,23 @@ public class ModuleFocusVerticalActivity extends AppCompatActivity {
     }
 
     private void init() {
+        int max = 40;
+        mStartIndex = new int[max];
+        mItemRowSizes = new int[max];
+        mItemColumnSizes = new int[max];
+        for (int i = 0; i < max; i++) {
+            mStartIndex[i] = i;
+            mItemRowSizes[i] = 1;
+            mItemColumnSizes[i] = 1;
+        }
+
+        mTvRecyclerView.setSelectedScale(1.1f);
+
         ModuleLayoutManager manager = new MyModuleLayoutManager(4, LinearLayoutManager.VERTICAL,
                 400, 260);
         mTvRecyclerView.setLayoutManager(manager);
 
-        int itemSpace = getResources().getDimensionPixelSize(R.dimen.dp_10);
+        int itemSpace = getResources().getDimensionPixelSize(R.dimen.dp_3);
         mTvRecyclerView.addItemDecoration(new SpaceItemDecoration(itemSpace));
         ModuleAdapter mAdapter = new ModuleAdapter(ModuleFocusVerticalActivity.this, mStartIndex.length);
         mTvRecyclerView.setAdapter(mAdapter);

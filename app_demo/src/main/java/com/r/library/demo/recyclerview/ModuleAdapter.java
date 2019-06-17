@@ -1,3 +1,4 @@
+
 package com.r.library.demo.recyclerview;
 
 import android.content.Context;
@@ -10,7 +11,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.r.library.demo.R;
-
 
 public class ModuleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
@@ -29,8 +29,8 @@ public class ModuleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final RecyclerViewHolder viewHolder = (RecyclerViewHolder) holder;
-        viewHolder.mName.setText(ContantUtil.TEST_DATAS[position]);
-        GradientDrawable drawable =(GradientDrawable)viewHolder.mFrameLayout.getBackground();
+        viewHolder.mName.setText("P: " + position);
+        GradientDrawable drawable = (GradientDrawable) viewHolder.mFrameLayout.getBackground();
         drawable.setColor(ContextCompat.getColor(mContext, ContantUtil.getRandColor()));
     }
 
