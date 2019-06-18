@@ -19,7 +19,7 @@ import kotlin.Unit;
 
 public class RecyclerDemoActivity extends AppCompatActivity {
     private Context mContext;
-    private Button mBtnOWen, mBtnNormal, mBtnModule, mBtnModuleVertical;
+    private Button mBtnRecycler, mBtnOWen, mBtnOWenNew, mBtnNormal, mBtnModule, mBtnModuleVertical;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +28,9 @@ public class RecyclerDemoActivity extends AppCompatActivity {
 
         mContext = this;
 
+        mBtnRecycler = findViewById(R.id.btn_recycler);
         mBtnOWen = findViewById(R.id.btn_owen);
+        mBtnOWenNew = findViewById(R.id.btn_owen_new);
         mBtnNormal = findViewById(R.id.btn_normal);
         mBtnModule = findViewById(R.id.btn_module);
         mBtnModuleVertical = findViewById(R.id.btn_module_vertical);
@@ -38,6 +40,16 @@ public class RecyclerDemoActivity extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void clickMethod() {
+        RxView.clicks(mBtnRecycler)
+                .throttleFirst(2, TimeUnit.SECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        Intent intent = new Intent();
+                        intent.setClass(mContext, RecyclerActivity.class);
+                        startActivity(intent);
+                    }
+                });
         RxView.clicks(mBtnOWen)
                 .throttleFirst(2, TimeUnit.SECONDS)
                 .subscribe(new Consumer<Unit>() {
@@ -45,6 +57,16 @@ public class RecyclerDemoActivity extends AppCompatActivity {
                     public void accept(Unit unit) throws Exception {
                         Intent intent = new Intent();
                         intent.setClass(mContext, OWenRecyclerActivity.class);
+                        startActivity(intent);
+                    }
+                });
+        RxView.clicks(mBtnOWenNew)
+                .throttleFirst(2, TimeUnit.SECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        Intent intent = new Intent();
+                        intent.setClass(mContext, OWenNewRecyclerActivity.class);
                         startActivity(intent);
                     }
                 });

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3F51B5">
+    tools:context=".recyclerview.OWenRecyclerActivity">
 
-    <com.r.library.common.view.tvrecyclerview.TvRecyclerView
-        android:id="@+id/tv_recycler_view"
+    <com.owen.tvrecyclerview.widget.TvRecyclerView
+        android:id="@+id/rv_owen_demo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp_20"
-        app:focusDrawable="@drawable/view_bg_focus_round" />
+        android:padding="@dimen/dp_20" />
 </RelativeLayout>

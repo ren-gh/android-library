@@ -15,13 +15,13 @@ import com.r.library.demo.R;
 
 import java.util.List;
 
-public class OWenAdapter extends RecyclerView.Adapter {
-    private String TAG = "OWenAdapter";
+public class RecyclerAdapter extends RecyclerView.Adapter {
+    private String TAG = "RecyclerAdapter";
     private Context mContext;
-    private List<OWenItem> mDataList;
+    private List<RecyclerItem> mDataList;
     private OnItemListener mOnItemListener;
 
-    public OWenAdapter(Context context) {
+    public RecyclerAdapter(Context context) {
         mContext = context;
     }
 
@@ -38,7 +38,7 @@ public class OWenAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int pos) {
         LogUtils.i(TAG, "onCreateViewHolder() pos=" + pos);
         View view = View.inflate(mContext, R.layout.item_owen_recycler, null);
-        return new OWenAdapter.RecyclerViewHolder(view);
+        return new RecyclerAdapter.RecyclerViewHolder(view);
     }
 
     @Override
@@ -98,6 +98,12 @@ public class OWenAdapter extends RecyclerView.Adapter {
                         mOnItemListener.onClick(v, mPosition);
                     }
                 });
+                mItemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        return mOnItemListener.onLongClick(v, mPosition);
+                    }
+                });
             } else {
                 mItemView.setOnFocusChangeListener(null);
                 mItemView.setOnClickListener(null);
@@ -120,5 +126,7 @@ public class OWenAdapter extends RecyclerView.Adapter {
         void onFocusChanged(View view, boolean hasFocus, int position);
 
         void onClick(View view, int position);
+
+        boolean onLongClick(View view, int position);
     }
 }

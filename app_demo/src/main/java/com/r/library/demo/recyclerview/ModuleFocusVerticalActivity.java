@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Toast;
 
+import com.r.library.common.util.LogUtils;
 import com.r.library.common.view.tvrecyclerview.ModuleLayoutManager;
 import com.r.library.common.view.tvrecyclerview.SpaceItemDecoration;
 import com.r.library.common.view.tvrecyclerview.TvRecyclerView;
@@ -16,13 +17,13 @@ public class ModuleFocusVerticalActivity extends AppCompatActivity {
 
     private TvRecyclerView mTvRecyclerView;
     public int[] mStartIndex = {
-            0, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 20, 22, 23
+            0, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20
     };
     public int[] mItemRowSizes = {
-            2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1
+            2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3
     };
     public int[] mItemColumnSizes = {
-            2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1
+            2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4
     };
 
     @Override
@@ -34,46 +35,50 @@ public class ModuleFocusVerticalActivity extends AppCompatActivity {
     }
 
     private void init() {
-        int max = 40;
-        mStartIndex = new int[max];
-        mItemRowSizes = new int[max];
-        mItemColumnSizes = new int[max];
-        for (int i = 0; i < max; i++) {
-            mStartIndex[i] = i;
-            mItemRowSizes[i] = 1;
-            mItemColumnSizes[i] = 1;
-        }
 
-        mTvRecyclerView.setSelectedScale(1.1f);
+        mTvRecyclerView.setSelectedScale(1.0f);
 
-        ModuleLayoutManager manager = new MyModuleLayoutManager(4, LinearLayoutManager.VERTICAL,
-                400, 260);
+        int colume = 4;
+        int width = getWindow().getWindowManager().getDefaultDisplay().getWidth();
+        int height = getWindow().getWindowManager().getDefaultDisplay().getHeight();
+        int itemSpace = getResources().getDimensionPixelSize(R.dimen.dp_3);
+        int sideW = 2 * getResources().getDimensionPixelSize(R.dimen.dp_20);
+        int spaceW = (colume - 1) * itemSpace;
+        int itemW = (width - sideW - spaceW) / colume;
+        int itemH = itemW * 9 / 16;
+        LogUtils.d("ModuleFocusVerticalActivity",
+                "item w: " + itemW + ", item h: " + itemH);
+        ModuleLayoutManager manager = new MyModuleLayoutManager(colume,
+                LinearLayoutManager.VERTICAL,
+                itemW,
+                itemH);
         mTvRecyclerView.setLayoutManager(manager);
 
-        int itemSpace = getResources().getDimensionPixelSize(R.dimen.dp_3);
         mTvRecyclerView.addItemDecoration(new SpaceItemDecoration(itemSpace));
-        ModuleAdapter mAdapter = new ModuleAdapter(ModuleFocusVerticalActivity.this, mStartIndex.length);
+        ModuleAdapter mAdapter = new ModuleAdapter(ModuleFocusVerticalActivity.this,
+                mStartIndex.length);
         mTvRecyclerView.setAdapter(mAdapter);
 
         mTvRecyclerView.setOnItemStateListener(new TvRecyclerView.OnItemStateListener() {
             @Override
             public void onItemViewClick(View view, int position) {
                 Toast.makeText(ModuleFocusVerticalActivity.this,
-                        ContantUtil.TEST_DATAS[position], Toast.LENGTH_SHORT).show();
+                        String.valueOf(mStartIndex[position]), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onItemViewFocusChanged(boolean gainFocus, View view, int position) {
             }
         });
-        int width = getResources().getDimensionPixelSize(R.dimen.dp_1_5);
-        mTvRecyclerView.setSelectPadding(width, width, width, width);
-        // mTvRecyclerView.setSelectPadding(35, 34, 35, 38);
+        int itemPadding = getResources().getDimensionPixelSize(R.dimen.dp_1_5);
+        mTvRecyclerView.setSelectPadding(itemPadding, itemPadding, itemPadding, itemPadding);
     }
 
     private class MyModuleLayoutManager extends ModuleLayoutManager {
-
-        MyModuleLayoutManager(int rowCount, int orientation, int baseItemWidth, int baseItemHeight) {
+        MyModuleLayoutManager(int rowCount,
+                int orientation,
+                int baseItemWidth,
+                int baseItemHeight) {
             super(rowCount, orientation, baseItemWidth, baseItemHeight);
         }
 

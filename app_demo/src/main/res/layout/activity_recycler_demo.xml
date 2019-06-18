@@ -9,12 +9,34 @@
 
 
     <Button
-        android:id="@+id/btn_owen"
+        android:id="@+id/btn_recycler"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="@dimen/dp_140"
         android:layout_height="@dimen/dp_30"
         android:background="@drawable/btn_bg"
+        android:text="Recycler"
+        android:textSize="@dimen/sp_12" />
+
+    <Button
+        android:id="@+id/btn_owen"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="@dimen/dp_140"
+        android:layout_height="@dimen/dp_30"
+        android:layout_below="@id/btn_recycler"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@drawable/btn_bg"
         android:text="OWen"
+        android:textSize="@dimen/sp_12" />
+
+    <Button
+        android:id="@+id/btn_owen_new"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="@dimen/dp_140"
+        android:layout_height="@dimen/dp_30"
+        android:layout_below="@id/btn_owen"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@drawable/btn_bg"
+        android:text="OWen New"
         android:textSize="@dimen/sp_12" />
 
 
@@ -23,7 +45,7 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="@dimen/dp_140"
         android:layout_height="@dimen/dp_30"
-        android:layout_below="@id/btn_owen"
+        android:layout_below="@id/btn_owen_new"
         android:layout_marginTop="@dimen/dp_10"
         android:background="@drawable/btn_bg"
         android:text="Normal"

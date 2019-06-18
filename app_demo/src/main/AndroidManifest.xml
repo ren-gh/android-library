@@ -41,8 +41,10 @@
         android:theme="@style/AppTheme.Black"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <activity android:name=".recyclerview.OWenRecyclerActivity"></activity>
         <activity android:name=".recyclerview.RecyclerDemoActivity" />
+        <activity android:name=".recyclerview.RecyclerActivity"></activity>
+        <activity android:name=".recyclerview.OWenRecyclerActivity"></activity>
+        <activity android:name=".recyclerview.OWenNewRecyclerActivity"></activity>
         <activity android:name=".tangram.activity.TangramActivity" />
         <activity android:name=".recyclerview.NormalActivity" />
         <activity android:name=".recyclerview.ModuleFocusActivity" />

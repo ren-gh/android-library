@@ -1,45 +1,67 @@
 
 package com.r.library.demo.recyclerview;
 
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.view.View;
-
-import com.owen.tvrecyclerview.widget.TvRecyclerView;
-import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
-import com.r.library.common.util.LogUtils;
-import com.r.library.common.util.ToastUtils;
-import com.r.library.common.util.UIUtils;
-import com.r.library.common.view.tvrecyclerview.SpaceItemDecoration;
-import com.r.library.demo.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWenRecyclerActivity extends AppCompatActivity {
-    private final String TAG = "OWenRecyclerActivity";
+import com.owen.tvrecyclerview.widget.TvRecyclerView;
+import com.r.library.common.util.LogUtils;
+import com.r.library.common.util.ToastUtils;
+import com.r.library.common.util.UIUtils;
+import com.r.library.common.view.tvrecyclerview.ModuleLayoutManager;
+import com.r.library.common.view.tvrecyclerview.SpaceItemDecoration;
+import com.r.library.demo.R;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
+
+public class OWenNewRecyclerActivity extends AppCompatActivity {
+    private final String TAG = "OWenNewRecyclerActivity";
     private Context mContext;
     private TvRecyclerView mTvRecyclerView;
-    private V7GridLayoutManager mLayoutManager;
+    private ModuleLayoutManager mLayoutManager;
     private RecyclerAdapter mRecyclerAdapter;
     private List<RecyclerItem> mDataList;
+
+    public int[] mStartIndex = {
+            0, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 20
+    };
+    public int[] mItemRowSizes = {
+            2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3
+    };
+    public int[] mItemColumnSizes = {
+            2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_owen_recycler);
+        setContentView(R.layout.activity_owen_new_recycler);
 
         mContext = this;
 
         mTvRecyclerView = findViewById(R.id.rv_owen_demo);
 
-        mLayoutManager = new V7GridLayoutManager(mContext, 2,
-                V7GridLayoutManager.VERTICAL, false);
+        int colume = 2;
+        int width = getWindow().getWindowManager().getDefaultDisplay().getWidth();
+        int height = getWindow().getWindowManager().getDefaultDisplay().getHeight();
+        int itemSpace = getResources().getDimensionPixelSize(R.dimen.dp_3);
+        int sideW = 2 * getResources().getDimensionPixelSize(R.dimen.dp_20);
+        int spaceW = (colume - 1) * itemSpace;
+        int itemW = (width - sideW - spaceW) / colume;
+        int itemH = itemW * 9 / 16;
+        LogUtils.d("ModuleFocusVerticalActivity",
+                "item w: " + itemW + ", item h: " + itemH);
+        mLayoutManager = new MyModuleLayoutManager(colume,
+                LinearLayoutManager.VERTICAL,
+                itemW,
+                itemH);
         mTvRecyclerView.setLayoutManager(mLayoutManager);
 
-        int itemSpace = getResources().getDimensionPixelSize(R.dimen.dp_2);
         mTvRecyclerView.addItemDecoration(new SpaceItemDecoration(itemSpace));
         mTvRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -82,7 +104,7 @@ public class OWenRecyclerActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
                 LogUtils.i(TAG, "onItemSelected() position=" + position);
-                UIUtils.scaleView(itemView, 1.1f);
+                UIUtils.scaleView(itemView, 1.0f);
             }
 
             @Override
@@ -123,7 +145,7 @@ public class OWenRecyclerActivity extends AppCompatActivity {
         if (null == mDataList) {
             mDataList = new ArrayList<>();
         }
-        for (int i = 0; i < 60; i++) {
+        for (int i = 0; i < mStartIndex.length; i++) {
             String url;
             int result = i % 5;
             switch (result) {
@@ -156,4 +178,49 @@ public class OWenRecyclerActivity extends AppCompatActivity {
         return mDataList;
     }
 
+    private class MyModuleLayoutManager extends ModuleLayoutManager {
+        MyModuleLayoutManager(int rowCount,
+                int orientation,
+                int baseItemWidth,
+                int baseItemHeight) {
+            super(rowCount, orientation, baseItemWidth, baseItemHeight);
+        }
+
+        @Override
+        protected int getItemStartIndex(int position) {
+            if (position < mStartIndex.length) {
+                return mStartIndex[position];
+            } else {
+                return 0;
+            }
+        }
+
+        @Override
+        protected int getItemRowSize(int position) {
+            if (position < mItemRowSizes.length) {
+                return mItemRowSizes[position];
+            } else {
+                return 1;
+            }
+        }
+
+        @Override
+        protected int getItemColumnSize(int position) {
+            if (position < mItemColumnSizes.length) {
+                return mItemColumnSizes[position];
+            } else {
+                return 1;
+            }
+        }
+
+        @Override
+        protected int getColumnSpacing() {
+            return getResources().getDimensionPixelSize(R.dimen.dp_10);
+        }
+
+        @Override
+        protected int getRowSpacing() {
+            return getResources().getDimensionPixelSize(R.dimen.dp_10);
+        }
+    }
 }

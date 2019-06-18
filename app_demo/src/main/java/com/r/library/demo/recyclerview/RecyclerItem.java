@@ -1,6 +1,6 @@
 package com.r.library.demo.recyclerview;
 
-public class OWenItem {
+public class RecyclerItem {
     private String type;
     private String picUrl;
     private String title;
@@ -40,7 +40,7 @@ public class OWenItem {
 
     @Override
     public String toString() {
-        return "OWenItem{" +
+        return "RecyclerItem{" +
                 "type='" + type + '\'' +
                 ", picUrl='" + picUrl + '\'' +
                 ", title='" + title + '\'' +
