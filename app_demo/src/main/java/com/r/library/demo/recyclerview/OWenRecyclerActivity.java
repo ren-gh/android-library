@@ -6,10 +6,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
+import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
+import com.owen.tvrecyclerview.widget.V7LinearLayoutManager;
+import com.owen.tvrecyclerview.widget.V7StaggeredGridLayoutManager;
 import com.r.library.common.util.LogUtils;
+import com.r.library.common.util.ToastUtils;
+import com.r.library.common.util.UIUtils;
 import com.r.library.common.view.tvrecyclerview.SpaceItemDecoration;
 import com.r.library.demo.R;
 
@@ -20,7 +26,7 @@ public class OWenRecyclerActivity extends AppCompatActivity {
     private final String TAG = "OWenRecyclerActivity";
     private Context mContext;
     private TvRecyclerView mTvRecyclerView;
-    private GridLayoutManager mLayoutManager;
+    private V7GridLayoutManager mLayoutManager;
     private OWenAdapter mOWenAdapter;
     private List<OWenItem> mDataList;
 
@@ -33,7 +39,8 @@ public class OWenRecyclerActivity extends AppCompatActivity {
 
         mTvRecyclerView = findViewById(R.id.rv_owen_demo);
 
-        mLayoutManager = new GridLayoutManager(mContext, 3);
+        mLayoutManager = new V7GridLayoutManager(mContext, 4,
+                V7GridLayoutManager.VERTICAL, false);
         mTvRecyclerView.setLayoutManager(mLayoutManager);
 
         int itemSpace = getResources().getDimensionPixelSize(R.dimen.dp_2);
@@ -42,6 +49,7 @@ public class OWenRecyclerActivity extends AppCompatActivity {
 
         mOWenAdapter = new OWenAdapter(this);
         getMoreData();
+        LogUtils.i(TAG, "data size: " + mDataList.size());
         mOWenAdapter.setData(mDataList);
         mTvRecyclerView.setAdapter(mOWenAdapter);
 
@@ -49,6 +57,9 @@ public class OWenRecyclerActivity extends AppCompatActivity {
             @Override
             public boolean onLoadMore() {
                 LogUtils.i(TAG, "onLoadMore() Load more...");
+                getMoreData();
+                mOWenAdapter.setData(mDataList);
+                mOWenAdapter.notifyDataSetChanged();
                 return true;
             }
         });
@@ -63,16 +74,19 @@ public class OWenRecyclerActivity extends AppCompatActivity {
             @Override
             public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
                 LogUtils.i(TAG, "onItemPreSelected() position=" + position);
+                UIUtils.scaleView(itemView, 1.0f);
             }
 
             @Override
             public void onItemSelected(TvRecyclerView parent, View itemView, int position) {
                 LogUtils.i(TAG, "onItemSelected() position=" + position);
+                UIUtils.scaleView(itemView, 1.1f);
             }
 
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
                 LogUtils.i(TAG, "onItemClick() position=" + position);
+                ToastUtils.showToast(mContext, "Clicked pos " + position);
             }
         });
     }
@@ -81,7 +95,7 @@ public class OWenRecyclerActivity extends AppCompatActivity {
         if (null == mDataList) {
             mDataList = new ArrayList<>();
         }
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 60; i++) {
             String url;
             int result = i % 5;
             switch (result) {
@@ -106,7 +120,7 @@ public class OWenRecyclerActivity extends AppCompatActivity {
             }
             OWenItem item = new OWenItem();
             item.setType("test");
-            item.setTitle("测试Title");
+            item.setTitle("测试 " + mDataList.size());
             item.setPicUrl(url);
             item.setParams("其他参数");
             mDataList.add(item);
