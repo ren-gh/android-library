@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.r.library.common.util.LogUtils;
-import com.r.library.common.util.ToastUtils;
-import com.r.library.common.util.UIUtils;
 import com.r.library.demo.R;
 
 import java.util.List;
@@ -21,6 +19,7 @@ public class OWenAdapter extends RecyclerView.Adapter {
     private String TAG = "OWenAdapter";
     private Context mContext;
     private List<OWenItem> mDataList;
+    private OnItemListener mOnItemListener;
 
     public OWenAdapter(Context context) {
         mContext = context;
@@ -30,26 +29,27 @@ public class OWenAdapter extends RecyclerView.Adapter {
         mDataList = list;
     }
 
+    public void setOnItemListener(OnItemListener listener) {
+        mOnItemListener = listener;
+    }
+
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        LogUtils.i(TAG, "onCreateViewHolder() pos=" + i);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int pos) {
+        LogUtils.i(TAG, "onCreateViewHolder() pos=" + pos);
         View view = View.inflate(mContext, R.layout.item_owen_recycler, null);
         return new OWenAdapter.RecyclerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        LogUtils.i(TAG, "onBindViewHolder() pos=" + i);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int pos) {
+        LogUtils.i(TAG, "onBindViewHolder() pos=" + pos);
         RecyclerViewHolder holder = (RecyclerViewHolder) viewHolder;
 
-        // holder.onBind(i);
-        // holder.setFocusable(true);
-        // holder.setClickable(true);
-        holder.setImageUrl(mDataList.get(i).getPicUrl());
-        holder.setTitle(mDataList.get(i).getTitle());
-        // holder.enableOnFocusChangeListener(true);
-        // holder.enableOnClickListener(true);
+        holder.onBind(pos);
+        holder.setImageUrl(mDataList.get(pos).getPicUrl());
+        holder.setTitle(mDataList.get(pos).getTitle());
+        holder.setOnItemListener();
     }
 
     @Override
@@ -74,42 +74,32 @@ public class OWenAdapter extends RecyclerView.Adapter {
             mPosition = position;
         }
 
-        public void setFocusable(boolean focusable) {
+        private void setFocusable(boolean focusable) {
             mItemView.setFocusable(focusable);
         }
 
-        public void setClickable(boolean clickable) {
+        private void setClickable(boolean clickable) {
             mItemView.setClickable(clickable);
         }
 
-        public void enableOnFocusChangeListener(boolean enable) {
-            if (enable) {
+        public void setOnItemListener() {
+            if (null != mOnItemListener) {
                 setFocusable(true);
                 mItemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
                     public void onFocusChange(View v, boolean hasFocus) {
-                        if (hasFocus) {
-                            UIUtils.scaleView(v, 1.1f);
-                        } else {
-                            UIUtils.scaleView(v, 1.0f);
-                        }
+                        mOnItemListener.onFocusChanged(v, hasFocus, mPosition);
                     }
                 });
-            } else {
-                mItemView.setOnFocusChangeListener(null);
-            }
-        }
-
-        public void enableOnClickListener(boolean enable) {
-            if (enable) {
                 setClickable(true);
                 mItemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ToastUtils.showToast(mContext, "Clicked pos " + mPosition);
+                        mOnItemListener.onClick(v, mPosition);
                     }
                 });
             } else {
+                mItemView.setOnFocusChangeListener(null);
                 mItemView.setOnClickListener(null);
             }
         }
@@ -124,5 +114,11 @@ public class OWenAdapter extends RecyclerView.Adapter {
         public void setTitle(String text) {
             mTitle.setText(text);
         }
+    }
+
+    public interface OnItemListener {
+        void onFocusChanged(View view, boolean hasFocus, int position);
+
+        void onClick(View view, int position);
     }
 }

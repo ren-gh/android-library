@@ -5,14 +5,10 @@ import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
-import com.owen.tvrecyclerview.widget.V7LinearLayoutManager;
-import com.owen.tvrecyclerview.widget.V7StaggeredGridLayoutManager;
 import com.r.library.common.util.LogUtils;
 import com.r.library.common.util.ToastUtils;
 import com.r.library.common.util.UIUtils;
@@ -48,18 +44,21 @@ public class OWenRecyclerActivity extends AppCompatActivity {
         mTvRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mOWenAdapter = new OWenAdapter(this);
+        setListener();
         getMoreData();
         LogUtils.i(TAG, "data size: " + mDataList.size());
         mOWenAdapter.setData(mDataList);
         mTvRecyclerView.setAdapter(mOWenAdapter);
+    }
 
+    private void setListener() {
         mTvRecyclerView.setOnLoadMoreListener(new TvRecyclerView.OnLoadMoreListener() {
             @Override
             public boolean onLoadMore() {
                 LogUtils.i(TAG, "onLoadMore() Load more...");
-                getMoreData();
-                mOWenAdapter.setData(mDataList);
-                mOWenAdapter.notifyDataSetChanged();
+                // getMoreData();
+                // mOWenAdapter.setData(mDataList);
+                // mOWenAdapter.notifyDataSetChanged();
                 return true;
             }
         });
@@ -70,6 +69,9 @@ public class OWenRecyclerActivity extends AppCompatActivity {
                 return false;
             }
         });
+        /**
+         * 与 Adapter 的 setOnItemListener 互斥，Adapter 优先
+         */
         mTvRecyclerView.setOnItemListener(new TvRecyclerView.OnItemListener() {
             @Override
             public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
@@ -86,6 +88,26 @@ public class OWenRecyclerActivity extends AppCompatActivity {
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
                 LogUtils.i(TAG, "onItemClick() position=" + position);
+                ToastUtils.showToast(mContext, "Clicked pos " + position);
+            }
+        });
+        /**
+         * 与 TvRecyclerView 的 setOnItemListener 互斥，Adapter 优先
+         */
+        mOWenAdapter.setOnItemListener(new OWenAdapter.OnItemListener() {
+            @Override
+            public void onFocusChanged(View view, boolean hasFocus, int position) {
+                LogUtils.i(TAG, "onFocusChanged() hasFocus: " + hasFocus + ", position: " + position);
+                if (hasFocus) {
+                    UIUtils.scaleView(view, 1.1f);
+                } else {
+                    UIUtils.scaleView(view, 1.0f);
+                }
+            }
+
+            @Override
+            public void onClick(View view, int position) {
+                LogUtils.i(TAG, "onClick() position: " + position);
                 ToastUtils.showToast(mContext, "Clicked pos " + position);
             }
         });
@@ -119,7 +141,7 @@ public class OWenRecyclerActivity extends AppCompatActivity {
                     break;
             }
             OWenItem item = new OWenItem();
-            item.setType("test");
+            item.setType("type");
             item.setTitle("测试 " + mDataList.size());
             item.setPicUrl(url);
             item.setParams("其他参数");
