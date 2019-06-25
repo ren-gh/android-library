@@ -4,6 +4,7 @@ package com.rengh.app.star.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
@@ -14,7 +15,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewStub;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.r.library.common.handler.WeakHandler;
 import com.r.library.common.handler.WeakHandlerListener;
 import com.r.library.common.util.LogUtils;
@@ -28,9 +36,6 @@ public class MainActivity extends AppCompatActivity implements WeakHandlerListen
     private final String TAG = "MainActivity";
 
     private final int MSG_WHAT_FINISH = 0;
-    private final int MSG_WHAT_SHOW_SPLASH = 1;
-    private final int MSG_WHAT_SHOW_LOGIN = 2;
-    private final int MSG_WHAT_SHOW_PIC = 3;
 
     private final long TOAST_LENGTH = 2000L;
 
@@ -39,13 +44,16 @@ public class MainActivity extends AppCompatActivity implements WeakHandlerListen
     private WeakHandler mHandler;
 
     private FragmentManager mFragmentManager;
-    private FragmentTransaction mFragmentTransaction;
 
     private SplashFragment mSplashFragment;
     private LoginFragment mLoginFragment;
     private PictureFragment mPicFragment;
 
+    private Fragment mLastFragment = null;
+
     private View mRootView;
+    private ViewStub mViewStub;
+    private ImageView mImgPic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,10 +69,22 @@ public class MainActivity extends AppCompatActivity implements WeakHandlerListen
         mHandler = new WeakHandler(this);
 
         mRootView = findViewById(R.id.fl_content);
+        mViewStub = findViewById(R.id.vs_pic);
+
+        initFragment();
+        showSplash();
+        getWindow().getDecorView().setBackgroundResource(R.color.colorWhite);
 
         getWindow().getDecorView().post(() -> {
-            initFragment();
-            showSplash();
+            // mViewStub.inflate();
+            // mImgPic = findViewById(R.id.img_pic);
+            // setImageUrl();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onPicLoaded();
+                }
+            }, 3000L);
         });
     }
 
@@ -158,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements WeakHandlerListen
     public void onLowMemory() {
         LogUtils.i(TAG, "onLowMemory()");
         super.onLowMemory();
+        Glide.with(mActivity).onDestroy();
     }
 
     @Override
@@ -168,26 +189,11 @@ public class MainActivity extends AppCompatActivity implements WeakHandlerListen
                 finish();
             }
                 break;
-            case MSG_WHAT_SHOW_SPLASH: {
-                showFragment(mSplashFragment);
-                LogUtils.i(TAG, "Show splash fragment.");
-            }
-                break;
-            case MSG_WHAT_SHOW_LOGIN: {
-                showFragment(mLoginFragment);
-                LogUtils.i(TAG, "Show login fragment.");
-            }
-                break;
-            case MSG_WHAT_SHOW_PIC: {
-                showFragment(mPicFragment);
-                LogUtils.i(TAG, "Show pic fragment.");
-            }
-                break;
         }
     }
 
     private void showSplash() {
-        mHandler.sendEmptyMessage(MSG_WHAT_SHOW_SPLASH);
+        showFragment(mSplashFragment);
     }
 
     private void initFragment() {
@@ -199,7 +205,13 @@ public class MainActivity extends AppCompatActivity implements WeakHandlerListen
             public void onLogin() {
                 if (null != mHandler) {
                     Snackbar.make(mRootView, "登录成功", Snackbar.LENGTH_LONG).show();
-                    mHandler.sendEmptyMessage(MSG_WHAT_SHOW_PIC);
+                    showFragment(mPicFragment);
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            hideFragment();
+                        }
+                    }, 5000L);
                 }
             }
 
@@ -207,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements WeakHandlerListen
             public void onLoginFailed() {
                 if (null != mHandler) {
                     Snackbar.make(mRootView, "登录失败", Snackbar.LENGTH_LONG).show();
-                    mHandler.sendEmptyMessage(MSG_WHAT_SHOW_PIC);
                 }
             }
         });
@@ -223,36 +234,63 @@ public class MainActivity extends AppCompatActivity implements WeakHandlerListen
             @Override
             public void onResourceReady() {
                 if (null != mHandler) {
-                    UIUtils.setTransStateBar(mActivity, getResources().getColor(R.color.colorTrans),
-                            true);
-                    LogUtils.i(TAG, "Update state bar's color.");
-
-                    mActivity.getWindow().getDecorView().setBackgroundResource(R.color.colorWhite);
-
                     Snackbar.make(mRootView, "图片加载成功", Snackbar.LENGTH_LONG).show();
-                    mHandler.sendEmptyMessage(MSG_WHAT_SHOW_LOGIN);
                 }
             }
         });
         mFragmentManager = getSupportFragmentManager();
-        mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.setCustomAnimations(R.anim.slide_in_fade, R.anim.slide_out_fade);
-        mFragmentTransaction.add(R.id.fl_content, mPicFragment);
-        mFragmentTransaction.add(R.id.fl_content, mLoginFragment);
-        mFragmentTransaction.add(R.id.fl_content, mSplashFragment);
-        mFragmentTransaction.commit();
-
-        showFragment(mSplashFragment);
     }
 
-    private Fragment lastFragment = null;
-
     private void showFragment(Fragment fragment) {
-        if (null != lastFragment) {
-            mFragmentTransaction.hide(lastFragment);
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(0, R.anim.slide_out_fade);
+        fragmentTransaction.replace(R.id.fl_content, fragment);
+        fragmentTransaction.commit();
+        mLastFragment = fragment;
+    }
+
+    private void hideFragment() {
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(0, R.anim.slide_out_fade);
+        if (null != mLastFragment) {
+            fragmentTransaction.remove(mLastFragment);
         }
-        mFragmentTransaction.show(fragment);
-        lastFragment = fragment;
+        fragmentTransaction.commit();
+        mLastFragment = null;
+    }
+
+    private void setImageUrl() {
+        final String url = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561451242506&di=ea34c472cdcbce97251f0cdb06bc9776&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01cffe5b485d25a8012036be383706.gif";
+        Glide.with(mActivity)
+                .load(url)
+                .placeholder(R.drawable.pic_default)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                            Target<Drawable> target,
+                            boolean isFirstResource) {
+                        LogUtils.e(TAG, "onLoadFailed()");
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model,
+                            Target<Drawable> target,
+                            DataSource dataSource,
+                            boolean isFirstResource) {
+                        LogUtils.i(TAG, "onResourceReady()");
+                        onPicLoaded();
+                        return false;
+                    }
+                })
+                .into(mImgPic);
+    }
+
+    private void onPicLoaded() {
+        UIUtils.setTransStateBar(mActivity, getResources().getColor(R.color.colorTrans),
+                true);
+        LogUtils.i(TAG, "Update state bar's color.");
+        showFragment(mLoginFragment);
     }
 
 }

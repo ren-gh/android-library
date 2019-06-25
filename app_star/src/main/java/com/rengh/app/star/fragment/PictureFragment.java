@@ -104,7 +104,7 @@ public class PictureFragment extends Fragment {
     }
 
     private void setImageUrl() {
-        final String url = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561451242506&di=ea34c472cdcbce97251f0cdb06bc9776&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01cffe5b485d25a8012036be383706.gif";
+        final String url = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1562071646&di=2875445d32a211fb0a87d4a78ed12ca5&imgtype=jpg&er=1&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201802%2F14%2F20180214181826_tcNih.jpeg";
         Glide.with(getActivity())
                 .load(url)
                 .placeholder(R.drawable.pic_default)
