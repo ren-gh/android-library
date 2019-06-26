@@ -40,8 +40,6 @@ public class SplashAdRequest {
                     public void subscribe(ObservableEmitter<AdBean> emitter) throws Exception {
                         LogUtils.i(TAG, "create() Observable thread: "
                                 + Thread.currentThread().getName());
-                        ThreadUtils.sleep(1000);
-
                         AdBean bean = new AdBean();
 
                         bean.setId(1);
