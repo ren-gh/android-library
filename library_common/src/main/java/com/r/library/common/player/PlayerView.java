@@ -154,6 +154,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
     private boolean mAutoFinish = false; // 播放完成关闭当前界面
     private int mAutoFinishDelay = 0; // 播放完成或者出错时，延时自动关闭当前界面
     private boolean mIsAdVideo = false; // 是否是广告
+    private boolean mDisableCountDown = false; // 禁用广告倒计时
     private boolean mShowLoading = false; // 显示加载图
     private boolean mShowCenterClickToast = true; // 双击模式下，单击是否提示
     private int mNumber = 0;
@@ -340,6 +341,9 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                     } else {
                         mPlayerController.setBackgroundDrawable(null);
                     }
+                    if (null != mPlayerListener) {
+                        mPlayerListener.onUpdate(msg.arg2);
+                    }
                 }
                 // 切入后台后，部分机型长度大于0，Current值非常小，如小米6：116
                 if (0 < msg.arg1 && 1000 < msg.arg2) {
@@ -477,6 +481,7 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
             mAutoFinish = params.getAutoFinish();
             mAutoFinishDelay = params.getAutoFinishDelay();
             mIsAdVideo = params.isAdVideo();
+            mDisableCountDown = params.isDisableCountDown();
             mCoverDrawable = params.getCoverDrawable();
             mShowLoading = params.getShowLoading();
             mShowCenterClickToast = params.getShowCenterClickToast();
@@ -501,12 +506,13 @@ public class PlayerView extends RelativeLayout implements WeakHandlerListener {
                         mContext.getString(R.string.player_text_video_title_unknow)));
             } else {
                 String title = mContext.getString(R.string.player_text_left_top_tip, mVideoName);
-                if(0 != mNumber){
-                    title = mNumber+"."+title;
+                if (0 != mNumber) {
+                    title = mNumber + "." + title;
                 }
                 mPlayerController.setTitle(title);
             }
             mPlayerController.setVideoType(mIsAdVideo);
+            mPlayerController.disableCountdown(mDisableCountDown);
             mPlayerController.setShowLoading(mShowLoading);
             mPlayerController.setViewListener(mViewListener);
             if (Build.VERSION.SDK_INT >= 16) {

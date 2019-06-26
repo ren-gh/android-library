@@ -11,6 +11,7 @@ public class PlayerParams {
     private Drawable coverDrawable = null;
     private PlayerListener playerListener;
     private boolean isAdVideo = false;
+    private boolean disableCountDown = false;
     private boolean doubleClickPause = false;
     private boolean autoFinish = false;
     private int autoFinishDelay = 0;
@@ -64,6 +65,14 @@ public class PlayerParams {
 
     public void setAdVideo(Boolean sIsAdVideo) {
         this.isAdVideo = sIsAdVideo;
+    }
+
+    public boolean isDisableCountDown() {
+        return disableCountDown;
+    }
+
+    public void setDisableCountDown(boolean disableCountDown) {
+        this.disableCountDown = disableCountDown;
     }
 
     public Boolean getDoubleClickPause() {

@@ -8,6 +8,8 @@ public interface PlayerListener {
 
     void onPlaying();
 
+    void onUpdate(int current);
+
     void onLoadingShow();
 
     void onLoadingClose();

@@ -44,7 +44,7 @@ public class PlayerController extends RelativeLayout {
 
     private Drawable mBakDrawable = null;
 
-    private boolean mIsStarted, mIsShowed, mIsAdVideo, mShowLoading = false;
+    private boolean mIsStarted, mIsShowed, mIsAdVideo, mDisableCountDown, mShowLoading = false;
     private int mCountBak = 0;
     private int mDuration = -1;
 
@@ -131,6 +131,11 @@ public class PlayerController extends RelativeLayout {
             mIvStateCenter.setVisibility(View.GONE);
             mLlBottom.setVisibility(View.GONE);
         }
+        return this;
+    }
+
+    public PlayerController disableCountdown(boolean disable) {
+        mDisableCountDown = disable;
         return this;
     }
 
@@ -295,6 +300,10 @@ public class PlayerController extends RelativeLayout {
     }
 
     private void setCountDown(int duration, int current) {
+        if (mDisableCountDown && View.GONE != mIvCountDown.getVisibility()) {
+            mIvCountDown.setVisibility(View.GONE);
+            return;
+        }
         if (mIsAdVideo) {
             int down = (duration - current) / 1000;
             if (down != mCountBak) {
@@ -390,7 +399,7 @@ public class PlayerController extends RelativeLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mViewListener.onTouchEvent(event)) {
+        if (null != mViewListener && mViewListener.onTouchEvent(event)) {
             return true;
         }
         return super.onTouchEvent(event);

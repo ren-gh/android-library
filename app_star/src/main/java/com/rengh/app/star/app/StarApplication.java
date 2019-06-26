@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.support.multidex.MultiDex;
 
+import com.bumptech.glide.Glide;
 import com.r.library.common.util.LogUtils;
 import com.rengh.app.star.service.StarIntentService;
 
@@ -56,14 +57,17 @@ public class StarApplication extends Application {
     public void onLowMemory() {
         super.onLowMemory();
         LogUtils.i(TAG, "onLowMemory()");
+        Glide.get(this).clearMemory();
     }
 
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
+        Glide.get(this).trimMemory(level);
         switch (level) {
             case TRIM_MEMORY_UI_HIDDEN: {
                 LogUtils.i(TAG, "onTrimMemory() TRIM_MEMORY_UI_HIDDEN");
+                Glide.get(this).clearMemory();
             }
                 break;
             case TRIM_MEMORY_BACKGROUND: {

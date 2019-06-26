@@ -38,6 +38,13 @@ public class PlayerActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onUpdate(int current) {
+            if (null != mVideoListenerFromHelper) {
+                mVideoListenerFromHelper.onUpdate(current);
+            }
+        }
+
+        @Override
         public void onLoadingShow() {
             if (null != mVideoListenerFromHelper) {
                 mVideoListenerFromHelper.onLoadingShow();
