@@ -1,6 +1,14 @@
 
 package com.rengh.app.star.player;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.net.HttpCookie;
+import java.util.List;
+import java.util.Map;
+
+import com.r.library.common.util.LogUtils;
+
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
@@ -9,20 +17,11 @@ import android.media.MediaDataSource;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
-
-import androidx.annotation.RequiresApi;
-
-import com.r.library.common.util.LogUtils;
-
-import java.io.FileDescriptor;
-import java.io.IOException;
-import java.net.HttpCookie;
-import java.util.List;
-import java.util.Map;
 
 public class VideoView extends SurfaceView {
     private static final String TAG = "VideoView";
@@ -229,6 +228,13 @@ public class VideoView extends SurfaceView {
             return player.isLooping();
         }
         return false;
+    }
+
+    public int getDuration() {
+        if (player != null) {
+            return player.getDuration();
+        }
+        return 0;
     }
 
     public int getCurrentPosition() {

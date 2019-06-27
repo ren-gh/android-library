@@ -3,17 +3,13 @@ package com.rengh.app.star.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,18 +30,18 @@ import com.rengh.app.star.player.VideoView;
 import com.rengh.app.star.util.LocalFileUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class SplashFragment extends Fragment implements View.OnClickListener {
+public class SplashFragment extends BaseFragment implements View.OnClickListener {
     private final String TAG = "SplashFragment";
     private RelativeLayout mParent;
     private VideoView mPvVideo;
@@ -53,7 +49,6 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     private TextView mTvTip;
     private Listener mListener;
     private AdBean mBean;
-    private Disposable mDisposable;
 
     public interface Listener {
         void onAdReady(AdBean bean);
@@ -63,18 +58,6 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
 
     public void setListener(Listener listener) {
         mListener = listener;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        LogUtils.i(TAG, "onAttach()");
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        LogUtils.i(TAG, "onCreate()");
-        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -113,48 +96,16 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onStart() {
-        LogUtils.i(TAG, "onStart()");
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        LogUtils.i(TAG, "onResume()");
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        LogUtils.i(TAG, "onPause()");
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        LogUtils.i(TAG, "onStop()");
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        LogUtils.i(TAG, "onDestroyView()");
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        LogUtils.i(TAG, "onDestroy()");
-        super.onDestroy();
-    }
-
-    @Override
     public void onDetach() {
         LogUtils.i(TAG, "onDetach()");
         cancelTimer();
         releaseVideo();
         super.onDetach();
     }
+
+    /*****************************
+     * Start 开屏资源准备、结束事件 *
+     *****************************/
 
     /**
      * 开屏资源准备就绪
@@ -178,6 +129,14 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /***************************
+     * End 开屏资源准备、结束事件 *
+     ***************************/
+
+    /************************
+     * Start 开屏资源请求事件 *
+     ************************/
+
     /**
      * 请求开屏资源
      */
@@ -190,12 +149,7 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void accept(Boolean granted) throws Exception {
                         if (granted) {
-                            String path = LocalFileUtils.getVideoPath(null);
-                            while (null == path) {
-                                path = LocalFileUtils.getVideoPath(null);
-                            }
-                            LogUtils.i(TAG, "Video path: " + path);
-                            new SplashAdRequest().setPath(path).request(getContext(), requestListener);
+                            findVideoPathAndReqeust();
                         } else {
                             LogUtils.i(TAG, "No permisstion.");
                             SplashFragment.this.onFinish();
@@ -204,6 +158,59 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
+    /**
+     * 查找本地相册的视频，随机选取一个后再进行开屏资源请求
+     */
+    @SuppressLint("CheckResult")
+    private void findVideoPathAndReqeust() {
+        Observable
+                .create(new ObservableOnSubscribe<String>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                        String path = LocalFileUtils.getVideoPath(null);
+                        int i = 30;
+                        while (null == path && i > 0) {
+                            path = LocalFileUtils.getVideoPath(null);
+                            i--;
+                        }
+                        if (null == path) {
+                            emitter.onError(new Throwable("path is null."));
+                        } else {
+                            emitter.onNext(path);
+                            emitter.onComplete();
+                        }
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        LogUtils.i(TAG, "onSubscribe() 开始...");
+                    }
+
+                    @Override
+                    public void onNext(String path) {
+                        LogUtils.i(TAG, "onNext() 完成：" + path);
+                        new SplashAdRequest().setPath(path).request(getContext(), requestListener);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        LogUtils.i(TAG, "onError() 错误：" + e.getMessage());
+                        new SplashAdRequest().request(getContext(), requestListener);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        LogUtils.i(TAG, "onComplete() 结束！");
+                    }
+                });
+    }
+
+    /**
+     * 开屏资源请求监听器
+     */
     private SplashAdRequest.Listener requestListener = new SplashAdRequest.Listener() {
         @Override
         public void onSuccess(AdBean bean) {
@@ -240,6 +247,17 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    /**********************
+     * End 开屏资源请求事件 *
+     **********************/
+
+    /***************************
+     * Start 开屏资源图片类型相关 *
+     ***************************/
+
+    /**
+     * 图片类型开屏资源展示
+     */
     private void setImageUrl() {
         LogUtils.i(TAG, "setImageUrl()");
         if (null == mBean) {
@@ -253,6 +271,9 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
                 .into(mIvSplash);
     }
 
+    /**
+     * 图片类型开屏资源展示监听器
+     */
     private RequestListener mGlideListener = new RequestListener<Drawable>() {
         @Override
         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -270,38 +291,34 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    /**
+     * 图片类型开屏资源展示定时器
+     */
+    private Disposable mDisposable;
+
+    /**
+     * 图片类型开屏资源展示定时器启动
+     */
     private void startTimer() {
         if (null == mBean) {
             onFinish();
             return;
         }
-        Observable.timer(mBean.getLength(), TimeUnit.MILLISECONDS)
+        mDisposable = Observable.timer(mBean.getLength(), TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Long>() {
+                .subscribe(new Consumer<Long>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable = d;
-                    }
-
-                    @Override
-                    public void onNext(Long aLong) {
-                        onFinish();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        onFinish();
-                    }
-
-                    @Override
-                    public void onComplete() {
+                    public void accept(Long aLong) throws Exception {
                         onFinish();
                     }
                 });
         LogUtils.i(TAG, "startTimer() Start timer: " + mBean.getLength() + "ms");
     }
 
+    /**
+     * 图片类型开屏资源展示时长定时器取消
+     */
     private void cancelTimer() {
         if (null != mDisposable && !mDisposable.isDisposed()) {
             mDisposable.dispose();
@@ -309,6 +326,17 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /*************************
+     * End 开屏资源图片类型相关 *
+     *************************/
+
+    /***************************
+     * Start 开屏资源视频类型相关 *
+     ***************************/
+
+    /**
+     * 视频类型开屏资源展示
+     */
     @SuppressLint("CheckResult")
     private void playVideo() {
         Uri uri = Uri.parse(TextUtils.isEmpty(mBean.getPath()) ? mBean.getUrl() : mBean.getPath());
@@ -340,6 +368,9 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
+    /**
+     * 视频类型开屏资源释放
+     */
     private void releaseVideo() {
         LogUtils.i(TAG, "releaseVideo()");
         if (mPvVideo.isPlaying()) {
@@ -347,8 +378,14 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /**
+     * 视屏类型开屏资源展示后移除遮屏推按的定时器
+     */
     private Disposable mPlayerTimer = null;
 
+    /**
+     * 视屏类型开屏资源播放监听器
+     */
     private MediaPlayer.OnPreparedListener mPlayerPreparedListener = new MediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(MediaPlayer mp) {
@@ -362,6 +399,9 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    /**
+     * 视屏类型开屏资源播放监听器
+     */
     private MediaPlayer.OnErrorListener mPlayerErrorListener = new MediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -371,6 +411,9 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    /**
+     * 视屏类型开屏资源播放监听器
+     */
     private MediaPlayer.OnCompletionListener mPlayerCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mp) {
@@ -378,5 +421,9 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
             SplashFragment.this.onFinish();
         }
     };
+
+    /*************************
+     * End 开屏资源视频类型相关 *
+     *************************/
 
 }

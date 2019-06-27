@@ -14,7 +14,7 @@ import android.widget.Button;
 import com.r.library.common.util.LogUtils;
 import com.rengh.app.star.R;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends BaseFragment {
     private final String TAG = "LoginFragment";
     private LoginListener mListener;
     private Button mBtnLogin;
@@ -27,18 +27,6 @@ public class LoginFragment extends Fragment {
 
     public void setListener(LoginListener listener) {
         mListener = listener;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        LogUtils.i(TAG, "onAttach()");
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        LogUtils.i(TAG, "onCreate()");
-        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -58,47 +46,5 @@ public class LoginFragment extends Fragment {
             }
         });
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        LogUtils.i(TAG, "onStart()");
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        LogUtils.i(TAG, "onResume()");
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        LogUtils.i(TAG, "onPause()");
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        LogUtils.i(TAG, "onStop()");
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        LogUtils.i(TAG, "onDestroyView()");
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        LogUtils.i(TAG, "onDestroy()");
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDetach() {
-        LogUtils.i(TAG, "onDetach()");
-        super.onDetach();
     }
 }
