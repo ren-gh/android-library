@@ -40,14 +40,33 @@ public class SplashAdRequest {
                     public void subscribe(ObservableEmitter<AdBean> emitter) throws Exception {
                         LogUtils.i(TAG, "create() Observable thread: "
                                 + Thread.currentThread().getName());
+                        int type = (int) (1 + Math.random() * (2 - 1 + 1));
                         AdBean bean = new AdBean();
-
-                        bean.setId(1);
-                        bean.setType(AdBean.AdType.TYPE_VIDEO);
-                        bean.setUrl(
-                                "http://g3com.cp21.ott.cibntv.net/vod/v1/Mjc0LzQ1LzIwL2xldHYtZ3VnLzE3LzExMjMzMzA0NTgtYXZjLTc3Ny1hYWMtNzctMTUwMDAtNjEwNjA1Mi04YWU0ZjQ4MGQ2NGI3MTc4N2NlNDMzZGUxMjNhZTg1MS0xNTU3Nzk5MTcwODc0LnRz?platid=100&splatid=10004&gugtype=1&mmsid=66981094&type=tv_1080p");
-                        if (!TextUtils.isEmpty(mPath)) {
-                            bean.setPath(mPath);
+                        switch (type) {
+                            case AdBean.AdType.TYPE_PIC: {
+                                /**
+                                 * 图片资源
+                                 */
+                                bean.setId(1);
+                                bean.setType(AdBean.AdType.TYPE_PIC);
+                                bean.setLength(5000L);
+                                bean.setUrl(
+                                        "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1561451242506&di=ea34c472cdcbce97251f0cdb06bc9776&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01cffe5b485d25a8012036be383706.gif");
+                            }
+                                break;
+                            case AdBean.AdType.TYPE_VIDEO: {
+                                /**
+                                 * 视频资源
+                                 */
+                                bean.setId(2);
+                                bean.setType(AdBean.AdType.TYPE_VIDEO);
+                                bean.setUrl(
+                                        "http://g3com.cp21.ott.cibntv.net/vod/v1/Mjc0LzQ1LzIwL2xldHYtZ3VnLzE3LzExMjMzMzA0NTgtYXZjLTc3Ny1hYWMtNzctMTUwMDAtNjEwNjA1Mi04YWU0ZjQ4MGQ2NGI3MTc4N2NlNDMzZGUxMjNhZTg1MS0xNTU3Nzk5MTcwODc0LnRz?platid=100&splatid=10004&gugtype=1&mmsid=66981094&type=tv_1080p");
+                                if (!TextUtils.isEmpty(mPath)) {
+                                    bean.setPath(mPath);
+                                }
+                            }
+                                break;
                         }
                         emitter.onNext(bean);
                         emitter.onComplete();

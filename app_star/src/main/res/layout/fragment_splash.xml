@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorBlack">
 
-    <VideoView
+    <com.rengh.app.star.player.VideoView
         android:id="@+id/pv_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,7 +28,7 @@
         android:shadowDx="3"
         android:shadowDy="3"
         android:shadowRadius="3"
-        android:text="点击切换下一个"
+        android:text="点击查看详情"
         android:textColor="@color/colorWhite"
         android:textStyle="bold" />
 </RelativeLayout>

@@ -12,30 +12,26 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.r.library.common.player.BasePlayerListener;
-import com.r.library.common.player.PlayerHelper;
-import com.r.library.common.player.PlayerParams;
 import com.r.library.common.util.LogUtils;
 import com.rengh.app.star.R;
 import com.rengh.app.star.bean.AdBean;
 import com.rengh.app.star.mode.SplashAdRequest;
+import com.rengh.app.star.player.VideoView;
+import com.rengh.app.star.util.LocalFileUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
@@ -100,6 +96,8 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         mTvTip.setClickable(true);
         mTvTip.setOnClickListener(this);
 
+        requestAdInfo();
+
         return view;
     }
 
@@ -107,7 +105,8 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_tip: {
-                requestAdInfo();
+                Snackbar.make(mParent, getString(R.string.app_name) + "：已点击", Snackbar.LENGTH_LONG).show();
+                onFinish();
             }
                 break;
         }
@@ -117,7 +116,6 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     public void onStart() {
         LogUtils.i(TAG, "onStart()");
         super.onStart();
-        requestAdInfo();
     }
 
     @Override
@@ -154,9 +152,35 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     public void onDetach() {
         LogUtils.i(TAG, "onDetach()");
         cancelTimer();
+        releaseVideo();
         super.onDetach();
     }
 
+    /**
+     * 开屏资源准备就绪
+     */
+    private void onReady() {
+        mTvTip.setVisibility(View.VISIBLE);
+        if (null != mListener) {
+            mListener.onAdReady(mBean);
+        }
+    }
+
+    /**
+     * 开屏资源展示结束
+     */
+    private void onFinish() {
+        mIvSplash.setImageDrawable(null);
+        if (null != mListener) {
+            mListener.onAdFinish();
+            mListener = null;
+            LogUtils.i(TAG, "onFinish()");
+        }
+    }
+
+    /**
+     * 请求开屏资源
+     */
     @SuppressLint("CheckResult")
     private void requestAdInfo() {
         // new SplashAdRequest().request(getContext(), requestListener);
@@ -166,40 +190,18 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void accept(Boolean granted) throws Exception {
                         if (granted) {
-                            String path = getVideoPath();
+                            String path = LocalFileUtils.getVideoPath(null);
                             while (null == path) {
-                                path = getVideoPath();
+                                path = LocalFileUtils.getVideoPath(null);
                             }
                             LogUtils.i(TAG, "Video path: " + path);
-                            new SplashAdRequest().setPath(path).request(getContext(),
-                                    requestListener);
+                            new SplashAdRequest().setPath(path).request(getContext(), requestListener);
                         } else {
                             LogUtils.i(TAG, "No permisstion.");
                             SplashFragment.this.onFinish();
                         }
                     }
                 });
-    }
-
-    private String getVideoPath() {
-        String path = null;
-        File dir = new File(Environment.getExternalStorageDirectory().getPath()
-                + "/DCIM/Camera");
-        if (dir.exists() && dir.isDirectory()) {
-            File[] files = dir.listFiles(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return name.endsWith(".mp4");
-                }
-            });
-            if (null != files && files.length > 0) {
-                int min = 0;
-                int max = files.length - 1;
-                int index = (int) (min + Math.random() * (max - 1 + 1));
-                path = files[index].getPath();
-            }
-        }
-        return path;
     }
 
     private SplashAdRequest.Listener requestListener = new SplashAdRequest.Listener() {
@@ -239,6 +241,7 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     };
 
     private void setImageUrl() {
+        LogUtils.i(TAG, "setImageUrl()");
         if (null == mBean) {
             onFinish();
             return;
@@ -309,27 +312,21 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("CheckResult")
     private void playVideo() {
         Uri uri = Uri.parse(TextUtils.isEmpty(mBean.getPath()) ? mBean.getUrl() : mBean.getPath());
+        LogUtils.i(TAG, "playVideo() uri=" + uri);
         if (null == uri) {
             onFinish();
             return;
         }
-        PlayerParams params = new PlayerParams();
-        params.setCoverDrawable(getResources().getDrawable(R.drawable.splash_bg_pic));
-        params.setVideoUri(uri);
-        params.setDisableCountDown(true);
-        params.setAdVideo(true);
-        params.setPlayerListener(playerListener);
-        PlayerHelper.setPlayerParams(params);
 
         if (mPvVideo.isPlaying()) {
-            mPvVideo.stopPlayback();
+            mPvVideo.stop();
         }
 
         mPvVideo.setOnPreparedListener(mPlayerPreparedListener);
         mPvVideo.setOnCompletionListener(mPlayerCompletionListener);
         mPvVideo.setOnErrorListener(mPlayerErrorListener);
         mPvVideo.setVisibility(View.VISIBLE);
-        mPvVideo.setVideoURI(uri);
+        mPvVideo.setVideoPath(uri);
         mPvVideo.start();
 
         mPlayerTimer = Observable.interval(0L, 100L, TimeUnit.MILLISECONDS)
@@ -343,6 +340,13 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
+    private void releaseVideo() {
+        LogUtils.i(TAG, "releaseVideo()");
+        if (mPvVideo.isPlaying()) {
+            mPvVideo.release();
+        }
+    }
+
     private Disposable mPlayerTimer = null;
 
     private MediaPlayer.OnPreparedListener mPlayerPreparedListener = new MediaPlayer.OnPreparedListener() {
@@ -351,9 +355,8 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
             mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
                 @Override
                 public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-                    // RelativeLayout.LayoutParams params = changeVideoSize(mp);
-                    // params.addRule(RelativeLayout.CENTER_IN_PARENT, mParent.getId());
-                    // mPvVideo.setLayoutParams(params);
+                    LogUtils.i(TAG, "onVideoSizeChanged()");
+                    mPvVideo.changeVideoSize();
                 }
             });
         }
@@ -363,8 +366,7 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         @Override
         public boolean onError(MediaPlayer mp, int what, int extra) {
             LogUtils.i(TAG, "onError()");
-            // SplashFragment.this.onFinish();
-            mTvTip.performClick();
+            SplashFragment.this.onFinish();
             return false;
         }
     };
@@ -373,78 +375,8 @@ public class SplashFragment extends Fragment implements View.OnClickListener {
         @Override
         public void onCompletion(MediaPlayer mp) {
             LogUtils.i(TAG, "onCompleted()");
-            // SplashFragment.this.onFinish();
-            mTvTip.performClick();
-        }
-    };
-
-    private BasePlayerListener playerListener = new BasePlayerListener() {
-        private boolean updated = false;
-
-        @Override
-        public void onUpdate(int current) {
-            if (current > 0 && !updated) {
-                LogUtils.i(TAG, "onPlaying()");
-                SplashFragment.this.onReady();
-                updated = true;
-            }
-        }
-
-        @Override
-        public void onError() {
-            LogUtils.i(TAG, "onError()");
-            SplashFragment.this.onFinish();
-        }
-
-        @Override
-        public void onCompleted() {
-            LogUtils.i(TAG, "onCompleted()");
             SplashFragment.this.onFinish();
         }
     };
-
-    private RelativeLayout.LayoutParams changeVideoSize(MediaPlayer mp) {
-        LogUtils.i(TAG, "changeVideoSize()");
-        // 改变视频的尺寸自适应。
-        int videoWidth = mp.getVideoWidth();
-        int videoHeight = mp.getVideoHeight();
-
-        int surfaceWidth = mPvVideo.getWidth();
-        int surfaceHeight = mPvVideo.getHeight();
-
-        // 根据视频尺寸去计算->视频可以在sufaceView中放大的最大倍数。
-        float max;
-        if (getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            // 竖屏模式下按视频宽度计算放大倍数值
-            max = Math.max((float) videoWidth / (float) surfaceWidth, (float) videoHeight / (float) surfaceHeight);
-        } else {
-            // 横屏模式下按视频高度计算放大倍数值
-            max = Math.max(((float) videoHeight / (float) surfaceHeight), (float) videoWidth / (float) surfaceWidth);
-        }
-
-        // 视频宽高分别/最大倍数值 计算出放大后的视频尺寸
-        videoWidth = (int) Math.ceil((float) videoWidth / max);
-        videoHeight = (int) Math.ceil((float) videoHeight / max);
-
-        // 无法直接设置视频尺寸，将计算出的视频尺寸设置到surfaceView 让视频自动填充。
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(videoWidth, videoHeight);
-        return params;
-    }
-
-    private void onReady() {
-        mTvTip.setVisibility(View.VISIBLE);
-        if (null != mListener) {
-            mListener.onAdReady(mBean);
-        }
-    }
-
-    private void onFinish() {
-        mIvSplash.setImageDrawable(null);
-        if (null != mListener) {
-            mListener.onAdFinish();
-            mListener = null;
-            LogUtils.i(TAG, "onFinish()");
-        }
-    }
 
 }
