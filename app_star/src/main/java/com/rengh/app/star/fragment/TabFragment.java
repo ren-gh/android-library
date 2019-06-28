@@ -5,7 +5,9 @@ import com.r.library.common.util.LogUtils;
 import com.r.library.common.util.ToastUtils;
 import com.r.library.common.util.UIUtils;
 import com.rengh.app.star.R;
+import com.rengh.app.star.activity.WebActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -82,6 +84,9 @@ public class TabFragment extends BaseFragment {
                                 drawerLayout.closeDrawers();
                             }
                         });
+                Intent intent = new Intent();
+                intent.setClass(activity, WebActivity.class);
+                startActivity(intent);
                 return false;
             }
         });
