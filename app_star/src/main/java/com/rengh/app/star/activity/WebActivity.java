@@ -80,8 +80,10 @@ public class WebActivity extends BaseActivity {
                             FileUtils.checkDirExists(path + "tessdata");
 
                             tessBaseAPI = new TessBaseAPI();
-                            tessBaseAPI.init(path, "chi_sim+eng", TessBaseAPI.OEM_DEFAULT);
-                            tessBaseAPI.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO);
+                            tessBaseAPI.init(path, "chi_sim");
+                            // tessBaseAPI.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"); // 识别白名单
+                            tessBaseAPI.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, "!@#$%^&*()_+=-[]}{;:'\"\\|~`,./<>?"); // 识别黑名单
+                            tessBaseAPI.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO_OSD);
                             tessBaseAPI.setImage(bitmap);
                             String result = tessBaseAPI.getUTF8Text();
                             if (TextUtils.isEmpty(result)) {
