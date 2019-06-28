@@ -53,15 +53,21 @@ public class UIUtils {
      * @param hasFocus
      */
     public static void setFullStateBar(AppCompatActivity appCompatActivity, boolean hasFocus) {
-        if (hasFocus && Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= 21) {
             View decorView = appCompatActivity.getWindow().getDecorView();
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            if (hasFocus) {
+                decorView.setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            } else {
+                int color = appCompatActivity.getWindow().getStatusBarColor();
+                int option = getOption(color, null);
+                decorView.setSystemUiVisibility(option);
+            }
         }
     }
 
@@ -70,23 +76,26 @@ public class UIUtils {
      *
      * @param appCompatActivity
      */
-    public static void setTransStateBar(AppCompatActivity appCompatActivity) {
-        setTransStateBar(appCompatActivity, Color.TRANSPARENT, null);
+    public static void setTranslationStatusBar(AppCompatActivity appCompatActivity) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            appCompatActivity.getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
     }
 
-    public static void setTransStateBar(AppCompatActivity appCompatActivity, int color, Boolean light) {
-        ActionBar actionBar = appCompatActivity.getSupportActionBar();
-        if (null == actionBar) {
-            return;
-        }
-        int option = getOption(color, light);
+    public static void setStateBarColorAndHideActionBar(AppCompatActivity appCompatActivity,
+            int color, Boolean light) {
         if (Build.VERSION.SDK_INT >= 21) {
+            int option = getOption(color, light);
             View decorView = appCompatActivity.getWindow().getDecorView();
             decorView.setSystemUiVisibility(option);
             appCompatActivity.getWindow().setNavigationBarColor(color);
             appCompatActivity.getWindow().setStatusBarColor(color);
         }
-        actionBar.hide();
+        ActionBar actionBar = appCompatActivity.getSupportActionBar();
+        if (null != actionBar) {
+            actionBar.hide();
+        }
+        return;
     }
 
     private static int getOption(int color, Boolean light) {

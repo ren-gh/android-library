@@ -145,7 +145,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         LogUtils.i(TAG, "onCreate()");
 
-        UIUtils.setTransStateBar(this);
+        UIUtils.setTranslationStatusBar(this);
 
         mContext = this;
         mWeakHandler = new WeakHandler();

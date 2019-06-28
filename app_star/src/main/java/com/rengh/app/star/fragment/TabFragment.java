@@ -2,25 +2,37 @@
 package com.rengh.app.star.fragment;
 
 import com.r.library.common.util.LogUtils;
+import com.r.library.common.util.ToastUtils;
+import com.r.library.common.util.UIUtils;
 import com.rengh.app.star.R;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class TabFragment extends BaseFragment {
     private final String TAG = "TabFragment";
@@ -28,6 +40,7 @@ public class TabFragment extends BaseFragment {
     private DrawerLayout drawerLayout;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private NavigationView navigationView;
 
     public void setActivity(AppCompatActivity activity) {
         this.activity = activity;
@@ -41,14 +54,50 @@ public class TabFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_tab, container, false);
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        // activity.setSupportActionBar(toolbar);
+        activity.setSupportActionBar(toolbar);
+        ActionBar actionBar = activity.getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(android.R.drawable.ic_dialog_map);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        UIUtils.setTranslationStatusBar(activity);
 
+        drawerLayout = view.findViewById(R.id.dl_root);
         tabLayout = view.findViewById(R.id.tabs);
         viewPager = view.findViewById(R.id.view_pager);
+        navigationView = view.findViewById(R.id.nv_slide_menu);
 
         initViewPager();
 
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                menuItem.setChecked(true);
+                ToastUtils.showToast(activity, String.valueOf(menuItem.getTitle()));
+                Observable.timer(200, TimeUnit.MILLISECONDS)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<Long>() {
+                            @Override
+                            public void accept(Long aLong) throws Exception {
+                                menuItem.setChecked(false);
+                                drawerLayout.closeDrawers();
+                            }
+                        });
+                return false;
+            }
+        });
+
         return view;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

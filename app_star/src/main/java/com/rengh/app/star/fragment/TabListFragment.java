@@ -2,6 +2,7 @@
 package com.rengh.app.star.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,8 +16,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.r.library.common.util.LogUtils;
-import com.r.library.common.util.ToastUtils;
 import com.rengh.app.star.R;
+import com.rengh.app.star.activity.WebActivity;
 
 public class TabListFragment extends BaseFragment {
     private final String TAG = "TabListFragment";
@@ -45,7 +46,7 @@ public class TabListFragment extends BaseFragment {
         @Override
         public ListViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             View view = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.layout_tag_list_fragment_item, viewGroup, false);
+                    .inflate(R.layout.layout_tab_list_fragment_item, viewGroup, false);
             return new ListViewHolder(view, i);
         }
 
@@ -57,7 +58,9 @@ public class TabListFragment extends BaseFragment {
                 @Override
                 public void onClick(View v) {
                     LogUtils.i(TAG, "onClick() pos=" + i);
-                    ToastUtils.showToast(context, "点击：" + i);
+                    Intent intent = new Intent();
+                    intent.setClass(context, WebActivity.class);
+                    context.startActivity(intent);
                 }
             });
         }

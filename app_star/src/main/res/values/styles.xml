@@ -1,10 +1,24 @@
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    <style name="AppTheme.SplashTheme" parent="AppTheme">
-        <item name="android:windowBackground">@drawable/splash_bg_pic</item>
+
+    <style name="AppTheme.Base.NoActionBar" parent="AppTheme.Base">
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="AppTheme.Base.SplashTheme" parent="AppTheme.Base.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_bg_pic</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>
