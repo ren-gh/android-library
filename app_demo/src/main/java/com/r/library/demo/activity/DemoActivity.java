@@ -1,3 +1,4 @@
+
 package com.r.library.demo.activity;
 
 import java.util.ArrayList;
@@ -16,14 +17,11 @@ import com.r.library.common.util.AppInfo;
 import com.r.library.common.util.AppInfoGetter;
 import com.r.library.common.util.FileUtils;
 import com.r.library.common.util.LogUtils;
-import com.r.library.common.util.ShutdownUtils;
-import com.r.library.common.util.SystemUtils;
 import com.r.library.common.util.ThreadManager;
 import com.r.library.common.util.ToastUtils;
 import com.r.library.common.util.UrlUtils;
 import com.r.library.demo.R;
 import com.r.library.demo.broadcast.NotificationClickReceiver;
-import com.r.library.demo.recyclerview.ModuleFocusVerticalActivity;
 import com.r.library.demo.recyclerview.RecyclerDemoActivity;
 import com.r.library.demo.runnable.MyFileRunnable;
 import com.r.library.demo.tangram.activity.TangramActivity;
@@ -35,13 +33,10 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
-import android.support.annotation.RequiresPermission;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -177,7 +172,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                     startAnimation(mBtnUpdateDemo, R.anim.slide_out_top);
                 }
             }
-            break;
+                break;
             case R.id.btn_install_apk: {
                 if (hasFocus) {
                     startAnimation(mBtnInstallApk, R.anim.slide_in_top);
@@ -185,7 +180,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                     startAnimation(mBtnInstallApk, R.anim.slide_out_top);
                 }
             }
-            break;
+                break;
         }
     }
 
@@ -198,35 +193,35 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 intent.setClass(this, TangramActivity.class);
                 startActivity(intent);
             }
-            break;
+                break;
             case R.id.btn_recycler: {
                 Intent intent = new Intent();
                 intent.setClass(this, RecyclerDemoActivity.class);
                 startActivity(intent);
             }
-            break;
+                break;
             case R.id.btn_file: {
                 ThreadManager.getInstance().excuteCached(new MyFileRunnable(mContext));
             }
-            break;
+                break;
             case R.id.btn_change_bg: {
                 BgUtils.nextBackground(mContext, mRootView);
             }
-            break;
+                break;
             case R.id.btn_update_own: {
                 checkAndInstallDemo();
             }
-            break;
+                break;
             case R.id.btn_install_apk: {
                 checkAndInstallTest();
             }
-            break;
+                break;
             case R.id.btn_play_live: {
                 Intent intent = new Intent();
                 intent.setClass(mContext, LiveActivity.class);
                 startActivity(intent);
             }
-            break;
+                break;
             case R.id.btn_play_normal: {
                 mRxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .subscribe(granted -> {
@@ -240,7 +235,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                             startActivity(intent);
                         });
             }
-            break;
+                break;
             case R.id.btn_play_cover_view: {
                 PlayerParams params = new PlayerParams();
                 params.setCoverDrawable(BgUtils.getCoverDrawable(mContext));
@@ -251,7 +246,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
             }
-            break;
+                break;
             case R.id.btn_play_double_click: {
                 PlayerParams params = new PlayerParams();
                 params.setDoubleClickPause(true);
@@ -264,7 +259,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                 intent.setClass(mContext, PlayerActivity.class);
                 startActivity(intent);
             }
-            break;
+                break;
             case R.id.btn_play_auto_finish: {
                 mRxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .subscribe(granted -> {
@@ -282,7 +277,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                             startActivity(intent);
                         });
             }
-            break;
+                break;
             case R.id.btn_play_ad_mode: {
                 mRxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         .subscribe(granted -> {
@@ -299,7 +294,7 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                             startActivity(intent);
                         });
             }
-            break;
+                break;
         }
     }
 
