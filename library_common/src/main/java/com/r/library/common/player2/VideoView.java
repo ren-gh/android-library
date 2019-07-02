@@ -1,5 +1,5 @@
 
-package com.rengh.app.star.player;
+package com.r.library.common.player2;
 
 import java.io.FileDescriptor;
 import java.io.IOException;

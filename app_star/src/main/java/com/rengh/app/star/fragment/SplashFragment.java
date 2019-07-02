@@ -22,11 +22,11 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.r.library.common.player2.VideoView;
 import com.r.library.common.util.LogUtils;
 import com.rengh.app.star.R;
 import com.rengh.app.star.bean.AdBean;
 import com.rengh.app.star.mode.SplashAdRequest;
-import com.rengh.app.star.player.VideoView;
 import com.rengh.app.star.util.LocalFileUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
