@@ -12,7 +12,7 @@ import com.rengh.app.star.service.StarIntentService;
 
 public class StarApplication extends Application {
     private final String TAG = "StarApplication";
-    private Context mContext;
+    private static Context mContext;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -30,6 +30,10 @@ public class StarApplication extends Application {
         mContext = this;
 
         StarIntentService.startIntentService(mContext, StarIntentService.ACTION_INIT, null);
+    }
+
+    public static Context getInstance() {
+        return mContext;
     }
 
     private void initLogUtil() {

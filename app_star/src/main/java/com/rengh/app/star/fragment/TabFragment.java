@@ -84,9 +84,6 @@ public class TabFragment extends BaseFragment {
                                 drawerLayout.closeDrawers();
                             }
                         });
-                Intent intent = new Intent();
-                intent.setClass(activity, WebActivity.class);
-                startActivity(intent);
                 return false;
             }
         });
