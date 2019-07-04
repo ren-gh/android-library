@@ -11,8 +11,6 @@ import java.util.concurrent.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
@@ -93,6 +91,47 @@ public class NetHelper2 {
             LogUtils.e(TAG, "request()", e);
         }
         return httpResponse;
+    }
+
+    public NetHelper2 requestAsync(String url, RequestCallback callback) {
+        return requestAsync(url, false, null, callback);
+    }
+
+    public NetHelper2 requestAsync(String url, boolean post, String postParams,
+            RequestCallback requestCallback) {
+        Callback callback = new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                requestCallback.onFailure(null, e);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (null == response) {
+                    requestCallback.onFailure(null, new Throwable("response is null."));
+                    return;
+                }
+                HttpResponse httpResponse = new HttpResponse();
+                httpResponse.responsCode = response.code();
+                ResponseBody body = response.body();
+                if (null != body) {
+                    httpResponse.response = response.body().string();
+                }
+                if (200 == httpResponse.responsCode) {
+                    httpResponse.success = true;
+                    requestCallback.onSuccess(httpResponse);
+                } else {
+                    httpResponse.errMsg = response.message();
+                    requestCallback.onFailure(httpResponse, new Throwable("respons code is not 200."));
+                }
+            }
+        };
+        if (!post) {
+            getAsync(url, callback);
+        } else {
+            postAsync(url, postParams, callback);
+        }
+        return this;
     }
 
     public Response get(String url) throws IOException {
@@ -236,7 +275,7 @@ public class NetHelper2 {
     }
 
     private void enqueueCall(Call call, Callback callback) {
-        call.enqueue(new OKHttpCallback(callback));
+        call.enqueue(callback);
     }
 
     @NotNull
@@ -286,36 +325,32 @@ public class NetHelper2 {
     }
 
     private HttpDownload downloadImpl(String url, String path, long downSpeed,
-            DownCallback downloadCallback) throws IOException {
+            DownCallback downCallback) throws IOException {
         LogUtils.d(TAG, "downloadImpl() Thread: " + Thread.currentThread().getName());
         File file = initFilePath(path);
         if (file == null) {
-            if (null != downloadCallback) {
-                downloadCallback.onFailure(new Throwable("Init dir or file failed."));
+            if (null != downCallback) {
+                downCallback.onFailure(new Throwable("Init dir or file failed."));
             }
             return null;
         }
-
         Request.Builder builder = new Request.Builder().url(url);
         Request request = builder.build();
         Call call = okHttpClient.newCall(request);
         Response response = call.execute();
         if (response.code() != 200) {
-            if (null != downloadCallback) {
-                downloadCallback.onFailure(new Throwable("Request failed, code: " + response.code()));
+            if (null != downCallback) {
+                downCallback.onFailure(new Throwable("Request failed, code: " + response.code()));
             }
             return null;
         }
-
-        if (null != downloadCallback && downloadCallback.isCancel()) {
-            downloadCallback.onCancel();
+        if (null != downCallback && downCallback.isCancel()) {
+            downCallback.onCancel();
             return null;
         }
-
         HttpDownload httpDownload = new HttpDownload();
         httpDownload.url = url;
         httpDownload.path = path;
-
         FileOutputStream fos = null;
         InputStream is = null;
         Exception ex = null;
@@ -325,28 +360,36 @@ public class NetHelper2 {
             httpDownload.responsCode = response.code();
             is = response.body().byteStream();
             fos = new FileOutputStream(file);
-            int num;
-            long totalSize = 0L;
-            long cursum = 0L;
+            long totalSize = response.body().contentLength();
+            LogUtils.d(TAG, "downloadImpl() body.length=" + totalSize);
+            if (null != downCallback && !downCallback.isCancel()) {
+                downCallback.onStart(totalSize);
+            }
+            long downSize = 0L;
+            long downSizeForSpeed = 0L;
             byte[] buf = new byte[1024 * 10];
             long speed = downSpeed == 0 ? 1024 * 1024 * 1000L : downSpeed;
             long startTime = SystemClock.elapsedRealtime();
+            int num;
             while ((num = is.read(buf)) != -1) {
-                if (null != downloadCallback && downloadCallback.isCancel()) {
+                if (null != downCallback && downCallback.isCancel()) {
                     break;
                 }
                 fos.write(buf, 0, num);
-                totalSize += num;
-                cursum += num;
-                if (cursum >= speed) {
+                downSize += num;
+                downSizeForSpeed += num;
+                if (null != downCallback) {
+                    downCallback.onDownload(downSize);
+                }
+                if (downSizeForSpeed >= speed) {
                     long endTime = SystemClock.elapsedRealtime();
                     LogUtils.i(TAG, "use " + (endTime - startTime) + "ms, download size: "
-                            + totalSize / 1024 + "KB");
+                            + downSize / 1024 + "KB");
                     ThreadUtils.sleep(1000L - (endTime - startTime));
-                    cursum = 0L;
+                    downSizeForSpeed = 0L;
                 }
                 startTime = SystemClock.elapsedRealtime();
-                if (null != downloadCallback && downloadCallback.isCancel()) {
+                if (null != downCallback && downCallback.isCancel()) {
                     break;
                 }
             }
@@ -354,12 +397,15 @@ public class NetHelper2 {
                 fos.getFD().sync();
             }
             fos.flush();
-            if (null != downloadCallback && downloadCallback.isCancel()) {
+            if (null != downCallback && downCallback.isCancel()) {
                 LogUtils.d(TAG, "download() cancel.");
             } else {
-                httpDownload.size = totalSize;
+                httpDownload.size = downSize;
                 httpDownload.localMd5 = MD5Utils.getFileMD5(path);
                 httpDownload.success = true;
+                if (null != downCallback && !downCallback.isCancel()) {
+                    downCallback.onDownload(1);
+                }
                 LogUtils.d(TAG, "download() success.");
             }
         } catch (Exception e) {
@@ -377,17 +423,15 @@ public class NetHelper2 {
                 }
             } catch (Exception e) {
             }
-
-            if (null != downloadCallback) {
-                if (downloadCallback.isCancel()) {
-                    downloadCallback.onCancel();
+            if (null != downCallback) {
+                if (downCallback.isCancel()) {
+                    downCallback.onCancel();
                 } else if (httpDownload.isSuccess()) {
-                    downloadCallback.onSuccess(httpDownload);
+                    downCallback.onSuccess(httpDownload);
                 } else {
-                    downloadCallback.onFailure(new Throwable(ex));
+                    downCallback.onFailure(new Throwable(ex));
                 }
             }
-
             return httpDownload;
         }
     }
@@ -416,73 +460,32 @@ public class NetHelper2 {
         return file;
     }
 
-    private static class OKHttpCallback implements Callback {
-        private Handler handler;
-        private UIRunable uiRunable;
+    public interface RequestCallback {
+        void onFailure(HttpResponse response, Throwable e);
 
-        public OKHttpCallback(Callback callback) {
-            this.handler = new Handler(Looper.getMainLooper());
-            this.uiRunable = new UIRunable(callback);
-        }
-
-        @Override
-        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-            this.handler.post(uiRunable.onFailure(call, e));
-        }
-
-        @Override
-        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            this.handler.post(uiRunable.onResponse(call, response));
-        }
+        void onSuccess(HttpResponse response);
     }
 
-    private static class UIRunable implements Runnable {
-        private Callback callback;
-        private Call call;
-        private Response response;
-        private IOException ioException;
+    public abstract static class DownCallback {
+        private volatile boolean canceled = false;
 
-        private UIRunable(@NotNull Callback callback) {
-            this.callback = callback;
+        public void cancel() {
+            canceled = true;
         }
 
-        public UIRunable onFailure(@NotNull Call call, @NotNull IOException e) {
-            this.call = call;
-            this.response = null;
-            this.ioException = e;
-            return this;
+        public boolean isCancel() {
+            return canceled;
         }
 
-        public UIRunable onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            this.call = call;
-            this.response = response;
-            this.ioException = null;
-            return this;
-        }
+        public abstract void onStart(long totalSize);
 
-        @Override
-        public void run() {
-            try {
-                if (response != null) {
-                    callback.onResponse(call, response);
-                } else {
-                    callback.onFailure(call, ioException);
-                }
-            } catch (Exception e) {
-            }
-        }
-    }
+        public abstract void onCancel();
 
-    public interface DownCallback {
-        void cancel();
+        public abstract void onDownload(long downSize);
 
-        boolean isCancel();
+        public abstract void onSuccess(HttpDownload httpDownload);
 
-        void onCancel();
-
-        void onSuccess(HttpDownload httpDownload);
-
-        void onFailure(Throwable e);
+        public abstract void onFailure(Throwable e);
     }
 
     public static class Builder {

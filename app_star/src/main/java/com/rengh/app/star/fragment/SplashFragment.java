@@ -173,7 +173,7 @@ public class SplashFragment extends BaseFragment implements View.OnClickListener
     private void requestAdInfo() {
         // new SplashAdRequest().request(getContext(), requestListener);
         new RxPermissions(this)
-                .request(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .request(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean granted) throws Exception {
