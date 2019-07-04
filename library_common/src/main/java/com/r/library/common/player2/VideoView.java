@@ -19,19 +19,26 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Scroller;
 
 public class VideoView extends SurfaceView {
     private static final String TAG = "VideoView";
     private Context context;
+    private Scroller scroller;
     private boolean isReady = false;
     private int position = 0;
     private Uri uri;
     private MediaPlayer player;
-
+    private boolean supportMove = false;
+    private boolean isMoveEvent = false;
+    private boolean isMoveUpEvent = false;
     private int width, height;
+    private int lastX, lastY;
 
     public VideoView(Context context) {
         super(context);
@@ -50,6 +57,7 @@ public class VideoView extends SurfaceView {
 
     private void init(Context context) {
         this.context = context;
+        this.scroller = new Scroller(this.context);
         if (null == this.player) {
             this.player = new MediaPlayer();
         }
@@ -57,8 +65,8 @@ public class VideoView extends SurfaceView {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
                 LogUtils.d(TAG, "surfaceCreated");
-                width = getRootView().getWidth();
-                height = getRootView().getHeight();
+                width = getWidth();
+                height = getHeight();
                 isReady = true;
                 if (player == null) {
                     return;
@@ -89,11 +97,85 @@ public class VideoView extends SurfaceView {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (supportMove) {
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+            LogUtils.i(TAG, "onTouchEvent() action=" + event.getAction());
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    lastX = x;
+                    lastY = y;
+                }
+                    break;
+                case MotionEvent.ACTION_UP: {
+                    if (isMoveEvent) {
+                        isMoveUpEvent = true;
+                    }
+                }
+                    break;
+                case MotionEvent.ACTION_MOVE: {
+                    int offsetX = x - lastX;
+                    int offsetY = y - lastY;
+                    LogUtils.i(TAG, "onTouchEvent() offsetX=" + offsetX + " offsetY=" + offsetY);
+                    if (0 != offsetX || 0 != offsetY) {
+                        isMoveEvent = true;
+                        // 方案一、
+                        offsetLeftAndRight(offsetX);
+                        offsetTopAndBottom(offsetY);
+                        // 方案二、
+                        // layout(getLeft() + offsetX, getTop() + offsetY,
+                        // getRight() + offsetX, getBottom() + offsetY);
+                    }
+                }
+                    break;
+            }
+            if (isMoveUpEvent) {
+                isMoveEvent = false;
+                isMoveUpEvent = false;
+                return true;
+            } else if (isMoveEvent) {
+                return true;
+            } else {
+                return super.onTouchEvent(event);
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         String message = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? "屏幕设置为：横屏" : "屏幕设置为：竖屏";
         LogUtils.d(TAG, "onConfigurationChanged() msg=" + message);
         changeVideoSize();
+    }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+        if (scroller.computeScrollOffset()) {
+            ((View) getParent()).scrollTo(scroller.getCurrX(), scroller.getCurrY());
+            invalidate();
+        }
+    }
+
+    public void setSupportMove(boolean support) {
+        supportMove = support;
+    }
+
+    public boolean isSupportMove() {
+        return supportMove;
+    }
+
+    public void smoothScrollTo(int destx, int desty, int duration) {
+        LogUtils.d(TAG, "smoothScrollTo() destx=" + destx + " desty=" + desty + " duration=" + duration);
+        int scrollX = getScrollX();
+        int scrollY = getScrollY();
+        int delatX = destx - scrollX;
+        int delatY = desty - scrollY;
+        scroller.startScroll(scrollX, scrollY, delatX, delatY, duration);
+        invalidate();
     }
 
     // 改变视频的尺寸自适应。

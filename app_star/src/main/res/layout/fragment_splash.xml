@@ -5,11 +5,12 @@
     android:layout_height="match_parent"
     android:background="@color/colorBlack">
 
-    <com.rengh.app.star.player.VideoView
+    <com.r.library.common.player2.VideoView
         android:id="@+id/pv_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/iv_splash"
@@ -19,16 +20,25 @@
         android:src="@drawable/splash_bg_pic" />
 
     <TextView
-        android:id="@+id/tv_tip"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/tv_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginRight="@dimen/dp_6"
+        android:background="@drawable/btn_bg"
         android:gravity="bottom|right"
-        android:padding="@dimen/dp_20"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_6"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingBottom="@dimen/dp_6"
         android:shadowColor="@color/colorBlack"
         android:shadowDx="3"
         android:shadowDy="3"
         android:shadowRadius="3"
-        android:text="点击查看详情"
+        android:text="跳过广告"
         android:textColor="@color/colorWhite"
-        android:textStyle="bold" />
+        android:textSize="@dimen/dp_10"
+        android:textStyle="normal" />
 </RelativeLayout>

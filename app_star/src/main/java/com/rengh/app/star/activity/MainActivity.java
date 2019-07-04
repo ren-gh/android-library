@@ -78,7 +78,6 @@ public class MainActivity extends BaseActivity {
         super.onDestroy();
         LogUtils.i(TAG, "onDestroy()");
         cancelDisposable();
-        removeFragment(mTabFragment);
     }
 
     private void initFragment() {

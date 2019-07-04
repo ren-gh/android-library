@@ -46,7 +46,7 @@ public class SplashFragment extends BaseFragment implements View.OnClickListener
     private RelativeLayout mParent;
     private VideoView mPvVideo;
     private ImageView mIvSplash;
-    private TextView mTvTip;
+    private TextView mTvSkip;
     private Listener mListener;
     private AdBean mBean;
 
@@ -70,14 +70,17 @@ public class SplashFragment extends BaseFragment implements View.OnClickListener
         mParent = view.findViewById(R.id.rl_parent);
         mPvVideo = view.findViewById(R.id.pv_video);
         mIvSplash = view.findViewById(R.id.iv_splash);
-        mTvTip = view.findViewById(R.id.tv_tip);
+        mTvSkip = view.findViewById(R.id.tv_skip);
 
         mIvSplash.setVisibility(View.VISIBLE);
-        mPvVideo.setVisibility(View.GONE);
-        mTvTip.setVisibility(View.GONE);
+        mIvSplash.setOnClickListener(this);
+        mIvSplash.setClickable(false);
 
-        mTvTip.setClickable(true);
-        mTvTip.setOnClickListener(this);
+        mPvVideo.setVisibility(View.GONE);
+        mPvVideo.setOnClickListener(this);
+
+        mTvSkip.setOnClickListener(this);
+        mTvSkip.setVisibility(View.GONE);
 
         requestAdInfo();
 
@@ -87,8 +90,18 @@ public class SplashFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_tip: {
-                Snackbar.make(mParent, getString(R.string.app_name) + "：已点击", Snackbar.LENGTH_LONG).show();
+            case R.id.iv_splash: {
+                Snackbar.make(mParent, getString(R.string.app_name) + "：图片详情", Snackbar.LENGTH_LONG).show();
+                onFinish();
+            }
+                break;
+            case R.id.pv_video: {
+                Snackbar.make(mParent, getString(R.string.app_name) + "：视频详情", Snackbar.LENGTH_LONG).show();
+                onFinish();
+            }
+                break;
+            case R.id.tv_skip: {
+                Snackbar.make(mParent, getString(R.string.app_name) + "：跳过", Snackbar.LENGTH_LONG).show();
                 onFinish();
             }
                 break;
@@ -111,7 +124,22 @@ public class SplashFragment extends BaseFragment implements View.OnClickListener
      * 开屏资源准备就绪
      */
     private void onReady() {
-        mTvTip.setVisibility(View.VISIBLE);
+        switch (mBean.getType()) {
+            case AdBean.AdType.TYPE_PIC: {
+                mTvSkip.setVisibility(View.VISIBLE);
+                mIvSplash.setClickable(true);
+            }
+                break;
+            case AdBean.AdType.TYPE_VIDEO: {
+                mTvSkip.setVisibility(View.VISIBLE);
+                mIvSplash.setImageDrawable(null);
+                mIvSplash.setVisibility(View.GONE);
+            }
+                break;
+            case AdBean.AdType.TYPE_ANIM: {
+            }
+                break;
+        }
         if (null != mListener) {
             mListener.onAdReady(mBean);
         }
@@ -121,6 +149,7 @@ public class SplashFragment extends BaseFragment implements View.OnClickListener
      * 开屏资源展示结束
      */
     private void onFinish() {
+        mTvSkip.setVisibility(View.GONE);
         mIvSplash.setImageDrawable(null);
         if (null != mListener) {
             mListener.onAdFinish();
@@ -362,8 +391,6 @@ public class SplashFragment extends BaseFragment implements View.OnClickListener
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
                     mPlayerTimer.dispose();
-                    mIvSplash.setImageDrawable(null);
-                    mIvSplash.setVisibility(View.GONE);
                     SplashFragment.this.onReady();
                 });
     }
