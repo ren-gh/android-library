@@ -40,8 +40,9 @@ import okhttp3.ResponseBody;
 public class NetHelper2 {
     private final String TAG = "NetHelper2";
     private OkHttpClient okHttpClient;
-    private static NetHelper2 instance;
     private Builder builder;
+
+    private volatile static NetHelper2 instance;
 
     public static NetHelper2 getInstance() {
         if (null == instance) {

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 public class ToastUtils {
-    private static Toast toast;
+    private volatile static Toast toast;
 
     public static void showToast(Context context, int resId) {
         show(context, context.getResources().getString(resId), Toast.LENGTH_LONG);
@@ -33,7 +33,6 @@ public class ToastUtils {
         try {
             toast.show();
         } catch (Exception e) {
-            // Empty
         }
     }
 

@@ -20,22 +20,30 @@ public class CrashHandler implements UncaughtExceptionHandler {
     public final String TAG = "CrashHandler";
     // 系统默认的UncaughtException处理类
     private UncaughtExceptionHandler mDefaultHandler;
-    // CrashHandler实例
-    private static CrashHandler INSTANCE = new CrashHandler();
     @SuppressWarnings("unused")
     private Context mContext = null;
 
-    /**
-     * 保证只有一个CrashHandler实例
-     */
-    private CrashHandler() {
-    }
+    // CrashHandler实例
+    private volatile static CrashHandler INSTANCE;
 
     /**
      * 获取CrashHandler实例 ,单例模式
      */
     public static CrashHandler getInstance() {
+        if (null == INSTANCE) {
+            synchronized (CrashHandler.class) {
+                if (null == INSTANCE) {
+                    INSTANCE = new CrashHandler();
+                }
+            }
+        }
         return INSTANCE;
+    }
+
+    /**
+     * 保证只有一个CrashHandler实例
+     */
+    private CrashHandler() {
     }
 
     /**

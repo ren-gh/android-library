@@ -60,7 +60,11 @@ public class ThreadManager {
 
     public static ThreadManager getInstance() {
         if (null == sInstance) {
-            sInstance = new ThreadManager();
+            synchronized (ThreadManager.class) {
+                if (null == sInstance) {
+                    sInstance = new ThreadManager();
+                }
+            }
         }
         return sInstance;
     }
@@ -93,7 +97,7 @@ public class ThreadManager {
         mFixedThreadPool.execute(command);
     }
 
-    //同时异步执行
+    // 同时异步执行
     public void excuteScheduled(Runnable command, long delay, TimeUnit unit) {
         mScheduledThreadPool.schedule(command, delay, unit);
     }
@@ -102,12 +106,12 @@ public class ThreadManager {
         mScheduledThreadPool.scheduleAtFixedRate(command, delay, reRun, unit);
     }
 
-    //延迟执行
+    // 延迟执行
     public void excuteScheduledSingle(Runnable command, long delay, TimeUnit unit) {
         mScheduledSingleThreadPool.schedule(command, delay, unit);
     }
 
-    //心跳使用
+    // 心跳使用
     public void excuteScheduledSingle(Runnable command, long delay, long reRun, TimeUnit unit) {
         mScheduledSingleThreadPool.scheduleAtFixedRate(command, delay, reRun, unit);
     }

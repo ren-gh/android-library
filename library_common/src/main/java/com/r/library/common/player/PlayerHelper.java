@@ -2,7 +2,7 @@
 package com.r.library.common.player;
 
 public class PlayerHelper {
-    private static PlayerParams playerParams = null;
+    private volatile static PlayerParams playerParams = null;
 
     public static PlayerParams getPlayerParams() {
         return playerParams;
