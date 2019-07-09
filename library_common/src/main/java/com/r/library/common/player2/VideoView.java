@@ -26,11 +26,10 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
 
-public class VideoView extends SurfaceView {
+public class VideoView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "VideoView";
     private Context context;
     private Scroller scroller;
-    private boolean isReady = false;
     private int position = 0;
     private Uri uri;
     private MediaPlayer player;
@@ -58,42 +57,38 @@ public class VideoView extends SurfaceView {
     private void init(Context context) {
         this.context = context;
         this.scroller = new Scroller(this.context);
-        if (null == this.player) {
-            this.player = new MediaPlayer();
+        this.player = new MediaPlayer();
+        getHolder().addCallback(this);
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        LogUtils.d(TAG, "surfaceCreated");
+        width = getWidth();
+        height = getHeight();
+        if (player == null) {
+            return;
         }
-        getHolder().addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder surfaceHolder) {
-                LogUtils.d(TAG, "surfaceCreated");
-                width = getWidth();
-                height = getHeight();
-                isReady = true;
-                if (player == null) {
-                    return;
-                }
-                player.setDisplay(getHolder());
-                onViewCreated();
-            }
+        player.setDisplay(getHolder());
+        onViewCreated();
+    }
 
-            @Override
-            public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-                LogUtils.d(TAG, "surfaceChanged");
-            }
+    @Override
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+        LogUtils.d(TAG, "surfaceChanged");
+    }
 
-            @Override
-            public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-                isReady = false;
-                LogUtils.d(TAG, "surfaceDestroyed");
-                if (player == null) {
-                    return;
-                }
-                if (player.isPlaying()) {
-                    position = player.getCurrentPosition();
-                    LogUtils.d(TAG, "当前播放时间：" + position);
-                    player.stop();
-                }
-            }
-        });
+    @Override
+    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        LogUtils.d(TAG, "surfaceDestroyed");
+        if (player == null) {
+            return;
+        }
+        if (player.isPlaying()) {
+            position = player.getCurrentPosition();
+            LogUtils.d(TAG, "当前播放时间：" + position);
+            player.stop();
+        }
     }
 
     @Override
@@ -223,15 +218,13 @@ public class VideoView extends SurfaceView {
             return;
         }
         this.uri = uri;
-        LogUtils.i(TAG, "ready=" + isReady + ", uri=" + uri);
-        if (isReady) {
-            try {
-                player.reset();
-                setDataSource(uri);
-                player.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        LogUtils.i(TAG, "uri=" + uri);
+        try {
+            player.reset();
+            setDataSource(uri);
+            player.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -333,7 +326,6 @@ public class VideoView extends SurfaceView {
                 setDataSource(uri);
                 player.prepare();
                 player.seekTo(position);
-                start();
                 LogUtils.d(TAG, "续播时间：" + position);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -385,7 +377,9 @@ public class VideoView extends SurfaceView {
 
     public void release() {
         if (player != null) {
-            player.stop();
+            if (player.isPlaying()) {
+                player.stop();
+            }
             player.release();
             player = null;
         }

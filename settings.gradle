@@ -1,1 +1,2 @@
 include ':app_demo', ':library_common', ':app_star'
+include ':library_opencv_346'
