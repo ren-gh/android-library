@@ -119,5 +119,4 @@ dependencies {
     implementation('com.alibaba.android:ultraviewpager:1.0.7.7@aar') {
         transitive = true
     }
-    implementation project(path: ':library_opencv_346')
 }

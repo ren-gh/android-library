@@ -44,7 +44,7 @@ public class OKHTTPHelper {
 
     private volatile static OKHTTPHelper instance;
 
-    public static OKHTTPHelper getInstance() {
+    public static OKHTTPHelper getDefault() {
         if (null == instance) {
             synchronized (OKHTTPHelper.class) {
                 if (null == instance) {

@@ -1,8 +1,14 @@
 
 package com.r.library.demo.activity;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.r.library.common.apk.ApkInstaller;
 import com.r.library.common.dialog.RDialog;
@@ -26,6 +32,8 @@ import com.r.library.demo.recyclerview.RecyclerDemoActivity;
 import com.r.library.demo.runnable.MyFileRunnable;
 import com.r.library.demo.tangram.activity.TangramActivity;
 import com.r.library.demo.util.BgUtils;
+import com.r.library.demo.util.FileType;
+import com.r.library.demo.util.FileTypeUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import android.Manifest;
@@ -46,10 +54,17 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class DemoActivity extends AppCompatActivity implements View.OnClickListener, WeakHandlerListener, View.OnFocusChangeListener {
@@ -149,6 +164,60 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
         UrlUtils.UrlEntity entity = UrlUtils.parse(VIDEO_URL_2);
         if (null != entity.params) {
             LogUtils.i(TAG, "mmsid: " + entity.params.get("mmsid"));
+        }
+
+        testUrlType();
+    }
+
+    @SuppressLint("CheckResult")
+    private void testUrlType() {
+        Observable
+                .create((ObservableOnSubscribe<String>) emitter -> {
+                    final String[] urlArr = {
+                            "http://h5.scloud.le.com/dm/game/fk/index",
+                            "https://www.baidu.com/img/baidu_resultlogo@2.png",
+                            "https://inews.gtimg.com/newsapp_ls/0/9648535553_640330/0",
+                            "http://i1.img.cp21.ott.cibntv.net/lc05_gugwl/201907/08/11/06/qichezhuomian.jpg"
+                    };
+                    for (String url : urlArr) {
+                        String type = getUrlType(url);
+                        if (null == type) {
+                            type = "Unknow";
+                        }
+                        emitter.onNext(type);
+                    }
+                    emitter.onComplete();
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
+    }
+
+    private String getUrlType(String urlStr) throws IOException {
+        String type = "Unknow Type";
+        BufferedInputStream inputStream = null;
+        try {
+            URL url = new URL(urlStr);
+            if ("https".equals(url.getProtocol().toLowerCase(Locale.getDefault()))) {
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+                httpsURLConnection.connect();
+                inputStream = new BufferedInputStream(httpsURLConnection.getInputStream());
+                type = HttpsURLConnection.guessContentTypeFromStream(inputStream);
+                if (null == type)
+                    type = httpsURLConnection.getHeaderField("Content-type");
+            } else {
+                URLConnection urlConnection = url.openConnection();
+                urlConnection.connect();
+                inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                type = URLConnection.guessContentTypeFromStream(inputStream);
+                if (null == type)
+                    type = urlConnection.getHeaderField("Content-type");
+            }
+        } catch (Exception e) {
+        } finally {
+            inputStream.close();
+            LogUtils.i(TAG, "url type: " + type + ", url: " + urlStr);
+            return type;
         }
     }
 
