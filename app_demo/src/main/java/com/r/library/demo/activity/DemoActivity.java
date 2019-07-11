@@ -7,14 +7,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.r.library.common.apk.ApkInstaller;
 import com.r.library.common.dialog.RDialog;
 import com.r.library.common.handler.WeakHandler;
 import com.r.library.common.handler.WeakHandlerListener;
 import com.r.library.common.net.LocalNetHelper;
+import com.r.library.common.net.OKHTTPHelper;
 import com.r.library.common.notification.NotificationHelper;
 import com.r.library.common.player.PlayerActivity;
 import com.r.library.common.player.PlayerHelper;
@@ -42,6 +45,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
@@ -51,8 +55,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.json.JSONObject;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -66,6 +75,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okio.BufferedSink;
 
 public class DemoActivity extends AppCompatActivity implements View.OnClickListener, WeakHandlerListener, View.OnFocusChangeListener {
     private final String TAG = "DemoActivity";

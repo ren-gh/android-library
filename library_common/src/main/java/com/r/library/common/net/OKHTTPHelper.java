@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.webkit.WebSettings;
 
 import com.r.library.common.util.LogUtils;
 import com.r.library.common.util.MD5Utils;
@@ -99,7 +100,7 @@ public class OKHTTPHelper {
     }
 
     public OKHTTPHelper requestAsync(String url, boolean post, String postParams,
-                                     RequestCallback requestCallback) {
+            RequestCallback requestCallback) {
         Callback callback = new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -161,6 +162,9 @@ public class OKHTTPHelper {
                 .get();
         if (null != headers) {
             builder.headers(headers);
+        } else {
+            builder.removeHeader("User-Agent");
+            builder.addHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16");
         }
         Request request = builder.build();
         return okHttpClient.newCall(request);
@@ -172,7 +176,7 @@ public class OKHTTPHelper {
     }
 
     public OKHTTPHelper postAsync(String url, RequestBody body, Headers headers,
-                                  Callback callback) {
+            Callback callback) {
         Call call = postCall(url, body, headers);
         enqueueCall(call, callback);
         return this;
@@ -200,13 +204,13 @@ public class OKHTTPHelper {
     }
 
     public OKHTTPHelper postAsync(String url, String mediaType, String body,
-                                  Callback callback) {
+            Callback callback) {
         return postAsync(url, RequestBody.create(MediaType.parse(mediaType), body),
                 null, callback);
     }
 
     public OKHTTPHelper postAsync(String url, String mediaType, String body,
-                                  Map<String, String> headerMap, Callback callback) {
+            Map<String, String> headerMap, Callback callback) {
         Headers headers = Headers.of(headerMap);
         return postAsync(url, RequestBody.create(MediaType.parse(mediaType), body),
                 headers, callback);
@@ -241,7 +245,7 @@ public class OKHTTPHelper {
     }
 
     public OKHTTPHelper postFileAsync(String url, File body, Map<String, String> headerMap,
-                                      Callback callback) {
+            Callback callback) {
         MediaType mediaType = MediaType.parse("application/octet-stream");
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -256,7 +260,7 @@ public class OKHTTPHelper {
     }
 
     public OKHTTPHelper postFormAsync(String url, FormBody body, Headers headers,
-                                      Callback callback) {
+            Callback callback) {
         Call call = postCall(url, body, headers);
         enqueueCall(call, callback);
         return this;
@@ -269,7 +273,7 @@ public class OKHTTPHelper {
     }
 
     public OKHTTPHelper postMultipartAsync(String url, MultipartBody body, Headers headers,
-                                           Callback callback) {
+            Callback callback) {
         Call call = postCall(url, body, headers);
         enqueueCall(call, callback);
         return this;
@@ -286,6 +290,9 @@ public class OKHTTPHelper {
                 .post(body);
         if (null != headers) {
             builder.headers(headers);
+        } else {
+            builder.removeHeader("User-Agent");
+            builder.addHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.133 Safari/534.16");
         }
         Request request = builder.build();
         return okHttpClient.newCall(request);
