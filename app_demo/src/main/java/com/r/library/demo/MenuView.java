@@ -214,17 +214,21 @@ public class MenuView extends RelativeLayout {
 
     private ObjectAnimator[] getBtnOpenAnimators(MenuBtn menuBtn) {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
+        // 由于是一开始就初始化，所以坐标计算方式和实时创建的计算方式不同
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
                 "x",
-                menuBtn.text().getX(), menuBtn.text().getX() + 50);
+                menuBtn.text().getX() - 50, menuBtn.text().getX());
+        // menuBtn.text().getX(), menuBtn.text().getX() + 50);
 
         ObjectAnimator textAnimationAlpha = ObjectAnimator.ofFloat(menuBtn.text(),
                 "alpha",
                 0, 1);
 
+        // 由于是一开始就初始化，所以坐标计算方式和实时创建的计算方式不同
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "x",
-                menuBtn.icon().getX(), menuBtn.icon().getX() - 50);
+                menuBtn.icon().getX() + 50, menuBtn.icon().getX());
+        // menuBtn.icon().getX(), menuBtn.icon().getX() - 50);
 
         objectAnimators[0] = textAnimationX;
         objectAnimators[1] = textAnimationAlpha;
