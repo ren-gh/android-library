@@ -67,6 +67,7 @@ public class MenuView extends RelativeLayout {
         initAnimatorSet();
         closed = false;
         LogUtils.i(TAG, "open() lowHeight=" + lowHeight + ", height=" + height);
+        LogUtils.i(TAG, "shutdown x=" + shutdownBtn().text().getX());
         animatorSetOpen.setDuration(duration).start();
     }
 
@@ -82,6 +83,7 @@ public class MenuView extends RelativeLayout {
         closed = true;
         imgDown.setVisibility(GONE);
         LogUtils.i(TAG, "close() lowHeight=" + lowHeight + ", height=" + height);
+        LogUtils.i(TAG, "shutdown x=" + shutdownBtn().text().getX());
         animatorSetClose.setDuration(duration).start();
     }
 
@@ -136,7 +138,7 @@ public class MenuView extends RelativeLayout {
             height = getHeight();
         }
         if (0 != height) {
-            lowHeight = height - (int) getResources().getDimension(R.dimen.dp_100);
+            lowHeight = height - (int) getResources().getDimension(R.dimen.dp_70);
             return true;
         }
         return false;
@@ -214,7 +216,7 @@ public class MenuView extends RelativeLayout {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
                 "x",
-                menuBtn.text().getX(), menuBtn.text().getX() + 100);
+                menuBtn.text().getX(), menuBtn.text().getX() + 50);
 
         ObjectAnimator textAnimationAlpha = ObjectAnimator.ofFloat(menuBtn.text(),
                 "alpha",
@@ -235,7 +237,7 @@ public class MenuView extends RelativeLayout {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
                 "x",
-                menuBtn.text().getX(), menuBtn.text().getX() - 100);
+                menuBtn.text().getX(), menuBtn.text().getX() - 50);
 
         ObjectAnimator textAnimationAlpha = ObjectAnimator.ofFloat(menuBtn.text(),
                 "alpha",
