@@ -41,21 +41,9 @@
         android:theme="@style/AppTheme.Black"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:allowBackup">
-        <!--<activity-->
-        <!--android:name=".activity.MainActivity"-->
-        <!--android:configChanges="orientation|keyboardHidden|screenSize"-->
-        <!--android:label="@string/app_name">-->
-        <!--</activity>-->
-        <activity android:name=".recyclerview.RecyclerDemoActivity" />
-        <activity android:name=".recyclerview.RecyclerActivity" />
-        <activity android:name=".recyclerview.OWenRecyclerActivity" />
-        <activity android:name=".recyclerview.OWenNewRecyclerActivity" />
-        <activity android:name=".tangram.activity.TangramActivity" />
-        <activity android:name=".recyclerview.NormalActivity" />
-        <activity android:name=".recyclerview.ModuleFocusActivity" />
-        <activity android:name=".recyclerview.ModuleFocusVerticalActivity" />
         <activity
-            android:name=".activity.DemoActivity"
+            android:name=".TestActivity"
+            android:theme="@style/AppTheme.FullScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name">
             <intent-filter>
@@ -68,6 +56,24 @@
 
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
+        </activity>
+        <!-- <activity -->
+        <!-- android:name=".activity.MainActivity" -->
+        <!-- android:configChanges="orientation|keyboardHidden|screenSize" -->
+        <!-- android:label="@string/app_name"> -->
+        <!-- </activity> -->
+        <activity android:name=".recyclerview.RecyclerDemoActivity" />
+        <activity android:name=".recyclerview.RecyclerActivity" />
+        <activity android:name=".recyclerview.OWenRecyclerActivity" />
+        <activity android:name=".recyclerview.OWenNewRecyclerActivity" />
+        <activity android:name=".tangram.activity.TangramActivity" />
+        <activity android:name=".recyclerview.NormalActivity" />
+        <activity android:name=".recyclerview.ModuleFocusActivity" />
+        <activity android:name=".recyclerview.ModuleFocusVerticalActivity" />
+        <activity
+            android:name=".activity.DemoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
