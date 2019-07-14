@@ -143,7 +143,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showContent() {
-        boolean showWebView = true;
+        boolean showWebView = false;
         if (showWebView) {
             menuView.firstBtn().setNextFocusUpId(R.id.wv_web);
             menuView.secondBtn().setNextFocusUpId(R.id.wv_web);
@@ -158,8 +158,8 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             menuView.thirdBtn().setNextFocusUpId(R.id.img_pic);
             otherAdView.setNextFocusDownId(menuView.getLastFocusBtnId());
 
-//            otherAdView.setClickable(true);
-//            otherAdView.setOnClickListener(this);
+            otherAdView.setClickable(true);
+            otherAdView.setOnClickListener(this);
 //            otherAdView.setFocusable(true);
 //            otherAdView.setOnFocusChangeListener(this);
 
