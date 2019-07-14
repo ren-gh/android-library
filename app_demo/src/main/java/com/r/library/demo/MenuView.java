@@ -271,6 +271,7 @@ public class MenuView extends RelativeLayout {
         }
     }
 
+    // 需求出偏移量计算方法
     private ObjectAnimator[] getBtnOpenAnimators(MenuBtn menuBtn) {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
         int textX = (menuBtn.text().getWidth() >> 1);
@@ -282,7 +283,7 @@ public class MenuView extends RelativeLayout {
                 "alpha",
                 0, 1);
 
-        int iconX = (int) (((menuBtn.getWidth() >> 1) - menuBtn.icon().getWidth() + menuBtn.icon().getWidth()) * 0.5);
+        int iconX = menuBtn.icon().getWidth();
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "x",
                 menuBtn.icon().getX() + iconX, menuBtn.icon().getX());
@@ -294,6 +295,7 @@ public class MenuView extends RelativeLayout {
         return objectAnimators;
     }
 
+    // 需求出偏移量计算方法
     private ObjectAnimator[] getBtnCloseAnimators(MenuBtn menuBtn) {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
         int textX = (menuBtn.text().getWidth() >> 1);
@@ -305,7 +307,7 @@ public class MenuView extends RelativeLayout {
                 "alpha",
                 1, 0);
 
-        int iconX = (int) (((menuBtn.getWidth() >> 1) - menuBtn.icon().getWidth() + menuBtn.icon().getWidth()) * 0.5);
+        int iconX = menuBtn.icon().getWidth();
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "x",
                 menuBtn.icon().getX(), menuBtn.icon().getX() + iconX);
