@@ -9,25 +9,26 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.r.library.common.util.LogUtils;
 
-import org.jetbrains.annotations.NotNull;
-
 public class MenuView extends RelativeLayout {
     private final String TAG = "MenuView";
     private AnimatorSet animatorSetOpen, animatorSetClose;
-    private MenuBtn mbtnShutdown, mbtnDelay, mbtnScreen;
+    private MenuBtn mbtnFirst, mbtnSecond, mbtnThird;
     private ImageView imgDown;
     private int height, lowHeight;
     private boolean closed = false;
 
-    public static final int SHUTDOWN_BTN_ID = R.id.mbtn_shutdown;
-    public static final int DELAY_BTN_ID = R.id.mbtn_delay;
-    public static final int SCREEN_BTN_ID = R.id.mbtn_screen;
+    public static final int FIRST_BTN_ID = R.id.mbtn_shutdown;
+    public static final int SECOND_BTN_ID = R.id.mbtn_delay;
+    public static final int THIRD_BTN_ID = R.id.mbtn_screen;
+
+    private int lastFocusBtnId = FIRST_BTN_ID;
 
     public MenuView(Context context) {
         super(context);
@@ -44,16 +45,94 @@ public class MenuView extends RelativeLayout {
         init(context);
     }
 
-    public MenuBtn shutdownBtn() {
-        return mbtnShutdown;
+    public MenuBtn firstBtn() {
+        return mbtnFirst;
     }
 
-    public MenuBtn delayBtn() {
-        return mbtnDelay;
+    public MenuBtn secondBtn() {
+        return mbtnSecond;
     }
 
-    public MenuBtn screenBtn() {
-        return mbtnScreen;
+    public MenuBtn thirdBtn() {
+        return mbtnThird;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public void setLastFocusBtnId(int id) {
+        this.lastFocusBtnId = id;
+    }
+
+    public int getLastFocusBtnId() {
+        return lastFocusBtnId;
+    }
+
+    public void setOnClickListener(OnClickListener onClickListener) {
+        mbtnFirst.setOnClickListener(onClickListener);
+        mbtnSecond.setOnClickListener(onClickListener);
+        mbtnThird.setOnClickListener(onClickListener);
+    }
+
+    public void setOnFocusChangeListener(OnFocusChangeListener onFocusChangeListener) {
+        mbtnFirst.setOnFocusChangeListener(onFocusChangeListener);
+        mbtnSecond.setOnFocusChangeListener(onFocusChangeListener);
+        mbtnThird.setOnFocusChangeListener(onFocusChangeListener);
+    }
+
+    public void disableFocus() {
+        mbtnFirst.setFocusable(false);
+        mbtnSecond.setFocusable(false);
+        mbtnThird.setFocusable(false);
+        mbtnFirst.clearFocus();
+        mbtnSecond.clearFocus();
+        mbtnThird.clearFocus();
+    }
+
+    public void revertFocus() {
+        mbtnFirst.setFocusable(true);
+        mbtnSecond.setFocusable(true);
+        mbtnThird.setFocusable(true);
+        switch (lastFocusBtnId) {
+            case MenuView.FIRST_BTN_ID:
+                mbtnFirst.requestFocus();
+                break;
+            case MenuView.SECOND_BTN_ID:
+                mbtnSecond.requestFocus();
+                break;
+            case MenuView.THIRD_BTN_ID:
+                mbtnThird.requestFocus();
+                break;
+        }
+    }
+
+    public void onFocusChange(View v, boolean hasFocus, boolean canClose) {
+        switch (v.getId()) {
+            case MenuView.FIRST_BTN_ID:
+            case MenuView.SECOND_BTN_ID:
+            case MenuView.THIRD_BTN_ID: {
+                if (hasFocus) {
+                    setLastFocusBtnId(v.getId());
+                    open();
+                }
+            }
+            break;
+            default: {
+                if (canClose) {
+                    close();
+                }
+            }
+            break;
+        }
+    }
+
+    public void open() {
+        open(500);
+    }
+
+    public void close() {
+        close(500);
     }
 
     public void open(int duration) {
@@ -61,13 +140,13 @@ public class MenuView extends RelativeLayout {
         if (!closed) {
             return;
         }
-        if (!initHeight()) {
+        if (initViewHeight()) {
             return;
         }
         initAnimatorSet();
         closed = false;
         LogUtils.i(TAG, "open() lowHeight=" + lowHeight + ", height=" + height);
-        LogUtils.i(TAG, "shutdown x=" + shutdownBtn().text().getX());
+        LogUtils.i(TAG, "shutdown x=" + firstBtn().text().getX());
         animatorSetOpen.setDuration(duration).start();
     }
 
@@ -76,14 +155,13 @@ public class MenuView extends RelativeLayout {
         if (closed) {
             return;
         }
-        if (!initHeight()) {
+        if (initViewHeight()) {
             return;
         }
         initAnimatorSet();
         closed = true;
-        imgDown.setVisibility(GONE);
         LogUtils.i(TAG, "close() lowHeight=" + lowHeight + ", height=" + height);
-        LogUtils.i(TAG, "shutdown x=" + shutdownBtn().text().getX());
+        LogUtils.i(TAG, "shutdown x=" + firstBtn().text().getX());
         animatorSetClose.setDuration(duration).start();
     }
 
@@ -118,117 +196,96 @@ public class MenuView extends RelativeLayout {
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.view_menu, this);
 
-        mbtnShutdown = findViewById(SHUTDOWN_BTN_ID);
-        mbtnDelay = findViewById(DELAY_BTN_ID);
-        mbtnScreen = findViewById(SCREEN_BTN_ID);
+        mbtnFirst = findViewById(FIRST_BTN_ID);
+        mbtnSecond = findViewById(SECOND_BTN_ID);
+        mbtnThird = findViewById(THIRD_BTN_ID);
         imgDown = findViewById(R.id.img_down);
-
-        mbtnShutdown.setImageResouorce(R.drawable.ic_player_rewind);
-        mbtnShutdown.setText("测试");
-
-        mbtnDelay.setImageResouorce(R.drawable.ic_player_play_focus);
-        mbtnDelay.setText("测试");
-
-        mbtnScreen.setImageResouorce(R.drawable.ic_player_forward);
-        mbtnScreen.setText("测试");
     }
 
-    private boolean initHeight() {
+    private boolean initViewHeight() {
         if (0 == height) {
             height = getHeight();
         }
         if (0 != height) {
             lowHeight = height - (int) getResources().getDimension(R.dimen.dp_70);
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     private void initAnimatorSet() {
         if (null == animatorSetOpen) {
             // open
-            ValueAnimator valueAnimator = getViewOpenAnimator();
-            ObjectAnimator[] shutdownBtnAnimators = getBtnOpenAnimators(mbtnShutdown);
-            ObjectAnimator[] delayBtnAnimators = getBtnOpenAnimators(mbtnDelay);
-            ObjectAnimator[] screenBtnAnimators = getBtnOpenAnimators(mbtnScreen);
-            Animator[] animators = new Animator[] {
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(lowHeight, height);
+            valueAnimator.addUpdateListener(animation -> {
+                int height = (int) animation.getAnimatedValue();
+                LogUtils.i(TAG, "open() onAnimationUpdate() height=" + height);
+                ViewGroup.LayoutParams layoutParams = getLayoutParams();
+                layoutParams.height = height;
+                setLayoutParams(layoutParams);
+            });
+            ObjectAnimator[] shutdownBtnAnimators = getBtnOpenAnimators(mbtnFirst);
+            ObjectAnimator[] delayBtnAnimators = getBtnOpenAnimators(mbtnSecond);
+            ObjectAnimator[] screenBtnAnimators = getBtnOpenAnimators(mbtnThird);
+            ObjectAnimator downIconAnimationAlpha = ObjectAnimator.ofFloat(imgDown,
+                    "alpha",
+                    0, 1);
+
+            Animator[] animators = new Animator[]{
                     valueAnimator,
                     shutdownBtnAnimators[0], shutdownBtnAnimators[1], shutdownBtnAnimators[2],
                     delayBtnAnimators[0], delayBtnAnimators[1], delayBtnAnimators[2],
-                    screenBtnAnimators[0], screenBtnAnimators[1], screenBtnAnimators[2]
+                    screenBtnAnimators[0], screenBtnAnimators[1], screenBtnAnimators[2],
+                    downIconAnimationAlpha
             };
             animatorSetOpen = new AnimatorSet();
             animatorSetOpen.playTogether(animators);
         }
         if (null == animatorSetClose) {
             // close
-            ValueAnimator valueAnimator = getViewCloseAnimator();
-            ObjectAnimator[] shutdownBtnAnimators = getBtnCloseAnimators(mbtnShutdown);
-            ObjectAnimator[] delayBtnAnimators = getBtnCloseAnimators(mbtnDelay);
-            ObjectAnimator[] screenBtnAnimators = getBtnCloseAnimators(mbtnScreen);
-            Animator[] animators = new Animator[] {
+            ValueAnimator valueAnimator = ValueAnimator.ofInt(height, lowHeight);
+            valueAnimator.addUpdateListener(animation -> {
+                int height = (int) animation.getAnimatedValue();
+                LogUtils.i(TAG, "close() onAnimationUpdate() height=" + height);
+                ViewGroup.LayoutParams layoutParams = getLayoutParams();
+                layoutParams.height = height;
+                setLayoutParams(layoutParams);
+            });
+            ObjectAnimator[] shutdownBtnAnimators = getBtnCloseAnimators(mbtnFirst);
+            ObjectAnimator[] delayBtnAnimators = getBtnCloseAnimators(mbtnSecond);
+            ObjectAnimator[] screenBtnAnimators = getBtnCloseAnimators(mbtnThird);
+
+            ObjectAnimator downIconAnimationAlpha = ObjectAnimator.ofFloat(imgDown,
+                    "alpha",
+                    1, 0);
+
+            Animator[] animators = new Animator[]{
                     valueAnimator,
                     shutdownBtnAnimators[0], shutdownBtnAnimators[1], shutdownBtnAnimators[2],
                     delayBtnAnimators[0], delayBtnAnimators[1], delayBtnAnimators[2],
-                    screenBtnAnimators[0], screenBtnAnimators[1], screenBtnAnimators[2]
+                    screenBtnAnimators[0], screenBtnAnimators[1], screenBtnAnimators[2],
+                    downIconAnimationAlpha
             };
             animatorSetClose = new AnimatorSet();
             animatorSetClose.playTogether(animators);
         }
     }
 
-    @NotNull
-    private ValueAnimator getViewOpenAnimator() {
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(lowHeight, height);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int height = (int) animation.getAnimatedValue();
-                LogUtils.i(TAG, "open() onAnimationUpdate() height=" + height);
-                ViewGroup.LayoutParams layoutParams = getLayoutParams();
-                layoutParams.height = height;
-                setLayoutParams(layoutParams);
-                if (height == MenuView.this.height) {
-                    imgDown.setVisibility(VISIBLE);
-                }
-            }
-        });
-        return valueAnimator;
-    }
-
-    @NotNull
-    private ValueAnimator getViewCloseAnimator() {
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(height, lowHeight);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int height = (int) animation.getAnimatedValue();
-                LogUtils.i(TAG, "close() onAnimationUpdate() height=" + height);
-                ViewGroup.LayoutParams layoutParams = getLayoutParams();
-                layoutParams.height = height;
-                setLayoutParams(layoutParams);
-            }
-        });
-        return valueAnimator;
-    }
-
     private ObjectAnimator[] getBtnOpenAnimators(MenuBtn menuBtn) {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
-        // 由于是一开始就初始化，所以坐标计算方式和实时创建的计算方式不同
+        int textX = (menuBtn.text().getWidth() >> 1);
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
                 "x",
-                menuBtn.text().getX() - 50, menuBtn.text().getX());
-        // menuBtn.text().getX(), menuBtn.text().getX() + 50);
+                menuBtn.text().getX() - textX, menuBtn.text().getX());
 
         ObjectAnimator textAnimationAlpha = ObjectAnimator.ofFloat(menuBtn.text(),
                 "alpha",
                 0, 1);
 
-        // 由于是一开始就初始化，所以坐标计算方式和实时创建的计算方式不同
+        int iconX = (int) (((menuBtn.getWidth() >> 1) - menuBtn.icon().getWidth() + menuBtn.icon().getWidth()) * 0.5);
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "x",
-                menuBtn.icon().getX() + 50, menuBtn.icon().getX());
-        // menuBtn.icon().getX(), menuBtn.icon().getX() - 50);
+                menuBtn.icon().getX() + iconX, menuBtn.icon().getX());
 
         objectAnimators[0] = textAnimationX;
         objectAnimators[1] = textAnimationAlpha;
@@ -239,17 +296,19 @@ public class MenuView extends RelativeLayout {
 
     private ObjectAnimator[] getBtnCloseAnimators(MenuBtn menuBtn) {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
+        int textX = (menuBtn.text().getWidth() >> 1);
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
                 "x",
-                menuBtn.text().getX(), menuBtn.text().getX() - 50);
+                menuBtn.text().getX(), menuBtn.text().getX() - textX);
 
         ObjectAnimator textAnimationAlpha = ObjectAnimator.ofFloat(menuBtn.text(),
                 "alpha",
                 1, 0);
 
+        int iconX = (int) (((menuBtn.getWidth() >> 1) - menuBtn.icon().getWidth() + menuBtn.icon().getWidth()) * 0.5);
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "x",
-                menuBtn.icon().getX(), menuBtn.icon().getX() + 50);
+                menuBtn.icon().getX(), menuBtn.icon().getX() + iconX);
 
         objectAnimators[0] = textAnimationX;
         objectAnimators[1] = textAnimationAlpha;
@@ -257,4 +316,5 @@ public class MenuView extends RelativeLayout {
 
         return objectAnimators;
     }
+
 }

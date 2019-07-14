@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -15,8 +16,8 @@ import com.bumptech.glide.Glide;
 public class TestActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
     private Context context;
     private MenuView menuView;
-    private ImageView picView;
-    private int lastFocusBtnId;
+    private ImageView otherAdView;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,77 +28,81 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
         initViews();
 
-        Glide.with(context)
-                .load("http://img5.imgtn.bdimg.com/it/u=8685675,2171717858&fm=26&gp=0.jpg")
-                .into(picView);
+        showContent();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case MenuView.SHUTDOWN_BTN_ID: {
+            case MenuView.FIRST_BTN_ID: {
                 Toast.makeText(context, "关机", Toast.LENGTH_LONG).show();
             }
-                break;
-            case MenuView.DELAY_BTN_ID: {
+            break;
+            case MenuView.SECOND_BTN_ID: {
                 Toast.makeText(context, "延时关机", Toast.LENGTH_LONG).show();
             }
-                break;
-            case MenuView.SCREEN_BTN_ID: {
+            break;
+            case MenuView.THIRD_BTN_ID: {
                 Toast.makeText(context, "息屏", Toast.LENGTH_LONG).show();
             }
-                break;
+            break;
             case R.id.img_pic: {
                 Toast.makeText(context, "查看详情", Toast.LENGTH_LONG).show();
             }
-                break;
+            break;
         }
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        // WebView 展示时此处失效，故不在此处理
+        boolean canClose = false;
+        if (otherAdView.isFocusable() && otherAdView.isClickable() && otherAdView.getVisibility() == View.VISIBLE) {
+            canClose = true;
+        }
+        menuView.onFocusChange(v, hasFocus, canClose);
+
         switch (v.getId()) {
-            case MenuView.SHUTDOWN_BTN_ID: {
-                if (hasFocus) {
-                    lastFocusBtnId = v.getId();
-                    menuView.open(500);
-                }
-            }
-                break;
-            case MenuView.DELAY_BTN_ID: {
-                if (hasFocus) {
-                    lastFocusBtnId = v.getId();
-                    menuView.open(500);
-                }
-            }
-                break;
-            case MenuView.SCREEN_BTN_ID: {
-                if (hasFocus) {
-                    lastFocusBtnId = v.getId();
-                    menuView.open(500);
-                }
-            }
-                break;
             case R.id.img_pic: {
                 if (hasFocus) {
-                    picView.setBackgroundResource(R.drawable.focus_highlight_icon);
-                    picView.setNextFocusDownId(lastFocusBtnId);
-                    menuView.close(500);
+                    otherAdView.setBackgroundResource(R.drawable.focus_highlight_icon);
+                    otherAdView.setNextFocusDownId(menuView.getLastFocusBtnId());
                 } else {
                     if (Build.VERSION.SDK_INT >= 16) {
-                        picView.setBackground(null);
+                        otherAdView.setBackground(null);
                     } else {
-                        picView.setBackgroundDrawable(null);
+                        otherAdView.setBackgroundDrawable(null);
                     }
                 }
             }
-                break;
+            break;
         }
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return super.onKeyDown(keyCode, event);
+        // WebView 特殊处理
+        if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+            if (webView.getVisibility() == View.VISIBLE) {
+                menuView.close();
+                menuView.disableFocus();
+                return true;
+            }
+            // 按上键直接跳转
+            otherAdView.performClick();
+        }
+        if (keyCode == KeyEvent.KEYCODE_BACK && menuView.isClosed()) {
+//            if (webView.canGoBack()) {
+//                webView.goBack();
+//            } else {
+            menuView.revertFocus();
+//            }
+            return true;
+        }
+        return super.
+
+                onKeyDown(keyCode, event);
+
     }
 
     @Override
@@ -119,29 +124,50 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initViews() {
         menuView = findViewById(R.id.mv_delay);
-        picView = findViewById(R.id.img_pic);
+        otherAdView = findViewById(R.id.img_pic);
+        webView = findViewById(R.id.wv_web);
 
-        menuView.shutdownBtn().setText("关机");
-        menuView.delayBtn().setText("延时5min");
-        menuView.screenBtn().setText("息屏");
+        webView.setVisibility(View.GONE);
+        otherAdView.setVisibility(View.GONE);
 
-        menuView.shutdownBtn().setOnClickListener(this);
-        menuView.delayBtn().setOnClickListener(this);
-        menuView.screenBtn().setOnClickListener(this);
+        menuView.firstBtn().setImageResouorce(R.drawable.ic_player_rewind);
+        menuView.firstBtn().setText("关机");
+        menuView.secondBtn().setImageResouorce(R.drawable.ic_player_play_focus);
+        menuView.secondBtn().setText("延时5min");
+        menuView.thirdBtn().setImageResouorce(R.drawable.ic_player_forward);
+        menuView.thirdBtn().setText("息屏");
+        menuView.setOnClickListener(this);
+        menuView.setOnFocusChangeListener(this);
 
-        menuView.shutdownBtn().setOnFocusChangeListener(this);
-        menuView.delayBtn().setOnFocusChangeListener(this);
-        menuView.screenBtn().setOnFocusChangeListener(this);
+        menuView.firstBtn().requestFocus();
+    }
 
-        picView.setFocusable(true);
-        picView.setOnFocusChangeListener(this);
+    private void showContent() {
+        boolean showWebView = true;
+        if (showWebView) {
+            menuView.firstBtn().setNextFocusUpId(R.id.wv_web);
+            menuView.secondBtn().setNextFocusUpId(R.id.wv_web);
+            menuView.thirdBtn().setNextFocusUpId(R.id.wv_web);
+            webView.setNextFocusDownId(menuView.getLastFocusBtnId());
 
-        menuView.shutdownBtn().setNextFocusUpId(R.id.img_pic);
-        menuView.delayBtn().setNextFocusUpId(R.id.img_pic);
-        menuView.screenBtn().setNextFocusUpId(R.id.img_pic);
-        picView.setNextFocusDownId(MenuView.SHUTDOWN_BTN_ID);
+            webView.setVisibility(View.VISIBLE);
+            webView.loadUrl("https://www.jianshu.com/");
+        } else {
+            menuView.firstBtn().setNextFocusUpId(R.id.img_pic);
+            menuView.secondBtn().setNextFocusUpId(R.id.img_pic);
+            menuView.thirdBtn().setNextFocusUpId(R.id.img_pic);
+            otherAdView.setNextFocusDownId(menuView.getLastFocusBtnId());
 
-        menuView.shutdownBtn().requestFocus();
+//            otherAdView.setClickable(true);
+//            otherAdView.setOnClickListener(this);
+//            otherAdView.setFocusable(true);
+//            otherAdView.setOnFocusChangeListener(this);
+
+            otherAdView.setVisibility(View.VISIBLE);
+            Glide.with(context)
+                    .load("http://img5.imgtn.bdimg.com/it/u=8685675,2171717858&fm=26&gp=0.jpg")
+                    .into(otherAdView);
+        }
     }
 
 }

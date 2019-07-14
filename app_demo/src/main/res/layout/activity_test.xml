@@ -14,6 +14,11 @@
         android:scaleType="fitXY"
         android:src="@drawable/pic_default" />
 
+    <WebView
+        android:id="@+id/wv_web"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.r.library.demo.MenuView
         android:id="@+id/mv_delay"
         android:layout_width="match_parent"

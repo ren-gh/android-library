@@ -46,9 +46,15 @@ public class MenuBtn extends LinearLayout implements View.OnFocusChangeListener 
     }
 
     @Override
+    public void setOnFocusChangeListener(OnFocusChangeListener onFocusChangeListener) {
+        this.onFocusChangeListener = onFocusChangeListener;
+        super.setOnFocusChangeListener(this);
+    }
+
+    @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            icon.setVisibility(GONE);
+            icon.setVisibility(VISIBLE);
             text.setTextColor(0xae000000);
             setBackgroundResource(R.drawable.btn_bg_focus);
         } else {
@@ -63,12 +69,6 @@ public class MenuBtn extends LinearLayout implements View.OnFocusChangeListener 
         if (null != this.onFocusChangeListener) {
             this.onFocusChangeListener.onFocusChange(v, hasFocus);
         }
-    }
-
-    @Override
-    public void setOnFocusChangeListener(OnFocusChangeListener onFocusChangeListener) {
-        this.onFocusChangeListener = onFocusChangeListener;
-        super.setOnFocusChangeListener(this);
     }
 
     public ImageView icon() {
