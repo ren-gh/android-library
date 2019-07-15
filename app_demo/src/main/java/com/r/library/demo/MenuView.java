@@ -305,7 +305,6 @@ public class MenuView extends RelativeLayout {
                 1, 0);
 
         float iconX = menuBtn.icon().getWidth();
-        LogUtils.i(TAG, "iconX: " + iconX);
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "translationX", 0, iconX);
 

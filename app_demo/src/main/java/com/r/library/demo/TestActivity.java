@@ -38,6 +38,10 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case MenuView.FIRST_BTN_ID: {
                 Toast.makeText(context, "关机", Toast.LENGTH_LONG).show();
+                ObjectAnimator animator = ObjectAnimator.ofFloat(menuView.firstBtn().icon(),
+                        "translationX", 0, 150);
+                animator.setDuration(500);
+                animator.start();
             }
                 break;
             case MenuView.SECOND_BTN_ID: {

@@ -9,10 +9,10 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MenuBtn extends LinearLayout implements View.OnFocusChangeListener {
+public class MenuBtn extends RelativeLayout implements View.OnFocusChangeListener {
     private ImageView icon;
     private TextView text;
     private OnFocusChangeListener onFocusChangeListener;
@@ -35,7 +35,6 @@ public class MenuBtn extends LinearLayout implements View.OnFocusChangeListener 
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.view_menu_button, this);
         setGravity(Gravity.CENTER);
-        setOrientation(LinearLayout.HORIZONTAL);
         setClickable(true);
         setFocusable(true);
         setOnFocusChangeListener(this);
