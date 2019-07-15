@@ -1,6 +1,7 @@
 
 package com.r.library.demo;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -37,19 +39,19 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             case MenuView.FIRST_BTN_ID: {
                 Toast.makeText(context, "关机", Toast.LENGTH_LONG).show();
             }
-            break;
+                break;
             case MenuView.SECOND_BTN_ID: {
                 Toast.makeText(context, "延时关机", Toast.LENGTH_LONG).show();
             }
-            break;
+                break;
             case MenuView.THIRD_BTN_ID: {
                 Toast.makeText(context, "息屏", Toast.LENGTH_LONG).show();
             }
-            break;
+                break;
             case R.id.img_pic: {
                 Toast.makeText(context, "查看详情", Toast.LENGTH_LONG).show();
             }
-            break;
+                break;
         }
     }
 
@@ -75,7 +77,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-            break;
+                break;
         }
     }
 
@@ -92,17 +94,14 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             otherAdView.performClick();
         }
         if (keyCode == KeyEvent.KEYCODE_BACK && menuView.isClosed()) {
-//            if (webView.canGoBack()) {
-//                webView.goBack();
-//            } else {
-            menuView.revertFocus();
-//            }
+            if (webView.canGoBack()) {
+                webView.goBack();
+            } else {
+                menuView.revertFocus();
+            }
             return true;
         }
-        return super.
-
-                onKeyDown(keyCode, event);
-
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -143,15 +142,23 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showContent() {
-        boolean showWebView = false;
+        boolean showWebView = true;
         if (showWebView) {
             menuView.firstBtn().setNextFocusUpId(R.id.wv_web);
             menuView.secondBtn().setNextFocusUpId(R.id.wv_web);
             menuView.thirdBtn().setNextFocusUpId(R.id.wv_web);
             webView.setNextFocusDownId(menuView.getLastFocusBtnId());
 
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setWebViewClient(new WebViewClient() {
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
+            });
+
             webView.setVisibility(View.VISIBLE);
-            webView.loadUrl("https://www.jianshu.com/");
+            webView.loadUrl("http://10.58.106.127:8888/romo/demo.html");
         } else {
             menuView.firstBtn().setNextFocusUpId(R.id.img_pic);
             menuView.secondBtn().setNextFocusUpId(R.id.img_pic);
@@ -160,8 +167,8 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
             otherAdView.setClickable(true);
             otherAdView.setOnClickListener(this);
-//            otherAdView.setFocusable(true);
-//            otherAdView.setOnFocusChangeListener(this);
+            // otherAdView.setFocusable(true);
+            // otherAdView.setOnFocusChangeListener(this);
 
             otherAdView.setVisibility(View.VISIBLE);
             Glide.with(context)

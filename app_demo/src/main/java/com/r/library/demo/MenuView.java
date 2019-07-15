@@ -117,13 +117,13 @@ public class MenuView extends RelativeLayout {
                     open();
                 }
             }
-            break;
+                break;
             default: {
                 if (canClose) {
                     close();
                 }
             }
-            break;
+                break;
         }
     }
 
@@ -231,7 +231,7 @@ public class MenuView extends RelativeLayout {
                     "alpha",
                     0, 1);
 
-            Animator[] animators = new Animator[]{
+            Animator[] animators = new Animator[] {
                     valueAnimator,
                     shutdownBtnAnimators[0], shutdownBtnAnimators[1], shutdownBtnAnimators[2],
                     delayBtnAnimators[0], delayBtnAnimators[1], delayBtnAnimators[2],
@@ -259,7 +259,7 @@ public class MenuView extends RelativeLayout {
                     "alpha",
                     1, 0);
 
-            Animator[] animators = new Animator[]{
+            Animator[] animators = new Animator[] {
                     valueAnimator,
                     shutdownBtnAnimators[0], shutdownBtnAnimators[1], shutdownBtnAnimators[2],
                     delayBtnAnimators[0], delayBtnAnimators[1], delayBtnAnimators[2],
@@ -274,19 +274,17 @@ public class MenuView extends RelativeLayout {
     // 需求出偏移量计算方法
     private ObjectAnimator[] getBtnOpenAnimators(MenuBtn menuBtn) {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
-        int textX = (menuBtn.text().getWidth() >> 1);
+        float textX = -1 * (menuBtn.text().getWidth() >> 1);
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
-                "x",
-                menuBtn.text().getX() - textX, menuBtn.text().getX());
+                "translationX", textX, 0);
 
         ObjectAnimator textAnimationAlpha = ObjectAnimator.ofFloat(menuBtn.text(),
                 "alpha",
                 0, 1);
 
-        int iconX = menuBtn.icon().getWidth();
+        float iconX = menuBtn.icon().getWidth();
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
-                "x",
-                menuBtn.icon().getX() + iconX, menuBtn.icon().getX());
+                "translationX", iconX, 0);
 
         objectAnimators[0] = textAnimationX;
         objectAnimators[1] = textAnimationAlpha;
@@ -298,19 +296,18 @@ public class MenuView extends RelativeLayout {
     // 需求出偏移量计算方法
     private ObjectAnimator[] getBtnCloseAnimators(MenuBtn menuBtn) {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
-        int textX = (menuBtn.text().getWidth() >> 1);
+        int textX = -1 * (menuBtn.text().getWidth() >> 1);
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
-                "x",
-                menuBtn.text().getX(), menuBtn.text().getX() - textX);
+                "translationX", 0, textX);
 
         ObjectAnimator textAnimationAlpha = ObjectAnimator.ofFloat(menuBtn.text(),
                 "alpha",
                 1, 0);
 
-        int iconX = menuBtn.icon().getWidth();
+        float iconX = menuBtn.icon().getWidth();
+        LogUtils.i(TAG, "iconX: " + iconX);
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
-                "x",
-                menuBtn.icon().getX(), menuBtn.icon().getX() + iconX);
+                "translationX", 0, iconX);
 
         objectAnimators[0] = textAnimationX;
         objectAnimators[1] = textAnimationAlpha;

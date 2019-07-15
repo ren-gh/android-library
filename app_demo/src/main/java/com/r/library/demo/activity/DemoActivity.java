@@ -3,15 +3,14 @@ package com.r.library.demo.activity;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+import com.jaredrummler.android.processes.AndroidProcesses;
+import com.jaredrummler.android.processes.models.AndroidAppProcess;
 import com.r.library.common.apk.ApkInstaller;
 import com.r.library.common.dialog.RDialog;
 import com.r.library.common.handler.WeakHandler;
@@ -36,8 +35,6 @@ import com.r.library.demo.recyclerview.RecyclerDemoActivity;
 import com.r.library.demo.runnable.MyFileRunnable;
 import com.r.library.demo.tangram.activity.TangramActivity;
 import com.r.library.demo.util.BgUtils;
-import com.r.library.demo.util.FileType;
-import com.r.library.demo.util.FileTypeUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import android.Manifest;
@@ -45,45 +42,35 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.os.Process;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebSettings;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.json.JSONObject;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import okhttp3.Response;
-import okio.BufferedSink;
 
 public class DemoActivity extends AppCompatActivity implements View.OnClickListener, WeakHandlerListener, View.OnFocusChangeListener {
     private final String TAG = "DemoActivity";
@@ -202,6 +189,32 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
 
+        int uid = Process.myUid();
+        int pid = Process.myPid();
+        int tid = Process.myTid();
+        LogUtils.i(TAG, "uid=" + uid + ", pid=" + pid + ", tid=" + tid);
+
+        PackageManager pm = getPackageManager();
+        List<AndroidAppProcess> processes = AndroidProcesses.getRunningAppProcesses();
+        for (AndroidAppProcess appProcess : processes) {
+            try {
+                CharSequence appName = appProcess.getPackageInfo(mContext, 0).applicationInfo.loadLabel(pm);
+                Drawable appLogo = appProcess.getPackageInfo(mContext, 0).applicationInfo.loadLogo(pm);
+                LogUtils.i(TAG, "appProcess Name: " + appName
+                        + ". uid: " + appProcess.uid
+                        + ", pid: " + appProcess.pid
+                        + ", name: " + appProcess.name
+                        + ", foreground: " + appProcess.foreground
+                        + ", ppid: " + appProcess.stat().ppid()
+                        + ", startTime: " + appProcess.stat().stime()
+                        + ", policy: " + appProcess.stat().policy()
+                        + ", state: " + appProcess.stat().state()
+                        + ", totalSize: " + appProcess.statm().getSize()
+                        + ", residentSetSize: " + appProcess.statm().getResidentSetSize()
+                        + ", package: " + appProcess.getPackageName());
+            } catch (Exception e) {
+            }
+        }
     }
 
     @SuppressLint("CheckResult")
