@@ -224,12 +224,13 @@ public class MenuView extends RelativeLayout {
                 layoutParams.height = height;
                 setLayoutParams(layoutParams);
             });
-            ObjectAnimator[] shutdownBtnAnimators = getBtnOpenAnimators(mbtnFirst);
-            ObjectAnimator[] delayBtnAnimators = getBtnOpenAnimators(mbtnSecond);
-            ObjectAnimator[] screenBtnAnimators = getBtnOpenAnimators(mbtnThird);
             ObjectAnimator downIconAnimationAlpha = ObjectAnimator.ofFloat(imgDown,
                     "alpha",
                     0, 1);
+
+            Animator[] shutdownBtnAnimators = getBtnOpenAnimators(mbtnFirst);
+            Animator[] delayBtnAnimators = getBtnOpenAnimators(mbtnSecond);
+            Animator[] screenBtnAnimators = getBtnOpenAnimators(mbtnThird);
 
             Animator[] animators = new Animator[] {
                     valueAnimator,
@@ -251,13 +252,13 @@ public class MenuView extends RelativeLayout {
                 layoutParams.height = height;
                 setLayoutParams(layoutParams);
             });
-            ObjectAnimator[] shutdownBtnAnimators = getBtnCloseAnimators(mbtnFirst);
-            ObjectAnimator[] delayBtnAnimators = getBtnCloseAnimators(mbtnSecond);
-            ObjectAnimator[] screenBtnAnimators = getBtnCloseAnimators(mbtnThird);
-
             ObjectAnimator downIconAnimationAlpha = ObjectAnimator.ofFloat(imgDown,
                     "alpha",
                     1, 0);
+
+            Animator[] shutdownBtnAnimators = getBtnCloseAnimators(mbtnFirst);
+            Animator[] delayBtnAnimators = getBtnCloseAnimators(mbtnSecond);
+            Animator[] screenBtnAnimators = getBtnCloseAnimators(mbtnThird);
 
             Animator[] animators = new Animator[] {
                     valueAnimator,
@@ -271,10 +272,13 @@ public class MenuView extends RelativeLayout {
         }
     }
 
-    // 需求出偏移量计算方法
-    private ObjectAnimator[] getBtnOpenAnimators(MenuBtn menuBtn) {
+    private Animator[] getBtnOpenAnimators(MenuBtn menuBtn) {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
-        float textX = -1 * (menuBtn.text().getWidth() >> 1);
+
+        LayoutParams textParams = (LayoutParams) menuBtn.text().getLayoutParams();
+        float contentWidth = menuBtn.icon().getWidth() + menuBtn.text().getWidth() + textParams.leftMargin;
+
+        float textX = contentWidth / 2 - menuBtn.text().getWidth() / 2 - menuBtn.text().getRight();
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
                 "translationX", textX, 0);
 
@@ -282,7 +286,7 @@ public class MenuView extends RelativeLayout {
                 "alpha",
                 0, 1);
 
-        float iconX = menuBtn.icon().getWidth();
+        float iconX = contentWidth / 2 - menuBtn.icon().getWidth() / 2 - menuBtn.icon().getLeft();
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "translationX", iconX, 0);
 
@@ -293,10 +297,13 @@ public class MenuView extends RelativeLayout {
         return objectAnimators;
     }
 
-    // 需求出偏移量计算方法
-    private ObjectAnimator[] getBtnCloseAnimators(MenuBtn menuBtn) {
+    private Animator[] getBtnCloseAnimators(MenuBtn menuBtn) {
         ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
-        int textX = -1 * (menuBtn.text().getWidth() >> 1);
+
+        LayoutParams textParams = (LayoutParams) menuBtn.text().getLayoutParams();
+        float contentWidth = menuBtn.icon().getWidth() + menuBtn.text().getWidth() + textParams.leftMargin;
+
+        float textX = contentWidth / 2 - menuBtn.text().getWidth() / 2 - menuBtn.text().getRight();
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
                 "translationX", 0, textX);
 
@@ -304,7 +311,7 @@ public class MenuView extends RelativeLayout {
                 "alpha",
                 1, 0);
 
-        float iconX = menuBtn.icon().getWidth();
+        float iconX = contentWidth / 2 - menuBtn.icon().getWidth() / 2 - menuBtn.icon().getLeft();
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "translationX", 0, iconX);
 
