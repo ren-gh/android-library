@@ -273,12 +273,10 @@ public class MenuView extends RelativeLayout {
     }
 
     private Animator[] getBtnOpenAnimators(MenuBtn menuBtn) {
-        ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
-
         LayoutParams textParams = (LayoutParams) menuBtn.text().getLayoutParams();
         float contentWidth = menuBtn.icon().getWidth() + menuBtn.text().getWidth() + textParams.leftMargin;
 
-        float textX = contentWidth / 2 - menuBtn.text().getWidth() / 2 - menuBtn.text().getRight();
+        float textX = -1 * (contentWidth - menuBtn.text().getWidth()) / 2;
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
                 "translationX", textX, 0);
 
@@ -286,10 +284,11 @@ public class MenuView extends RelativeLayout {
                 "alpha",
                 0, 1);
 
-        float iconX = contentWidth / 2 - menuBtn.icon().getWidth() / 2 - menuBtn.icon().getLeft();
+        float iconX = (contentWidth - menuBtn.icon().getWidth()) / 2;
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "translationX", iconX, 0);
 
+        ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
         objectAnimators[0] = textAnimationX;
         objectAnimators[1] = textAnimationAlpha;
         objectAnimators[2] = iconAnimationX;
@@ -298,12 +297,10 @@ public class MenuView extends RelativeLayout {
     }
 
     private Animator[] getBtnCloseAnimators(MenuBtn menuBtn) {
-        ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
-
         LayoutParams textParams = (LayoutParams) menuBtn.text().getLayoutParams();
         float contentWidth = menuBtn.icon().getWidth() + menuBtn.text().getWidth() + textParams.leftMargin;
 
-        float textX = contentWidth / 2 - menuBtn.text().getWidth() / 2 - menuBtn.text().getRight();
+        float textX = -1 * (contentWidth - menuBtn.text().getWidth()) / 2;
         ObjectAnimator textAnimationX = ObjectAnimator.ofFloat(menuBtn.text(),
                 "translationX", 0, textX);
 
@@ -311,10 +308,11 @@ public class MenuView extends RelativeLayout {
                 "alpha",
                 1, 0);
 
-        float iconX = contentWidth / 2 - menuBtn.icon().getWidth() / 2 - menuBtn.icon().getLeft();
+        float iconX = (contentWidth - menuBtn.icon().getWidth()) / 2;
         ObjectAnimator iconAnimationX = ObjectAnimator.ofFloat(menuBtn.icon(),
                 "translationX", 0, iconX);
 
+        ObjectAnimator[] objectAnimators = new ObjectAnimator[3];
         objectAnimators[0] = textAnimationX;
         objectAnimators[1] = textAnimationAlpha;
         objectAnimators[2] = iconAnimationX;
