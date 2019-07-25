@@ -1,6 +1,8 @@
 
 package com.r.library.common.util;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,6 +10,8 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Build.VERSION;
 import android.support.v4.app.NotificationCompat;
 
@@ -44,36 +48,42 @@ public class ServiceHelper {
         return componentName;
     }
 
-    public static void setForegroundService(Service service, int iconResId, String channelName,
-            String channelId, int id) {
-        setForegroundService(service, service.getPackageName() + "." + channelName,
-                channelId, iconResId, "", "", "",
-                false, true, id);
+    public static void setForegroundService(Service service, int iconResId,
+                                            String channelName, String channelId, int id) {
+        setForegroundService(service, id, channelName, channelId, iconResId, iconResId,
+                "default", "default");
     }
 
-    public static void setForegroundService(Service service, String channelName, String channelId,
-            int smallIcon, String title, String content, String desc, boolean autoCancel,
-            boolean onGoing, int notificationId) {
-        Notification notification;
-        if (VERSION.SDK_INT >= 26) {
-            int importance = NotificationManager.IMPORTANCE_LOW;
-            NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
-            channel.setDescription(desc);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(service, channelId);
-            builder.setSmallIcon(smallIcon)
+    public static void setForegroundService(Service service, int id,
+                                            String name, String channelId,
+                                            int smallIconId, int largeIconId,
+                                            String title, String content) {
+        NotificationManager manager = (NotificationManager) service.getSystemService(NOTIFICATION_SERVICE);
+        Notification notification = null;
+        if (Build.VERSION.SDK_INT >= 26) {
+            NotificationChannel channel = new NotificationChannel(channelId, name, NotificationManager.IMPORTANCE_HIGH);
+            manager.createNotificationChannel(channel);
+            notification = new Notification.Builder(service, channelId)
                     .setContentTitle(title)
                     .setContentText(content)
-                    .setAutoCancel(autoCancel)
-                    .setOngoing(onGoing);
-            NotificationManager notificationManager = service.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-            notification = builder.build();
+                    .setSmallIcon(smallIconId)
+                    .setLargeIcon(BitmapFactory.decodeResource(service.getResources(), largeIconId))
+                    .build();
         } else {
-            notification = new Notification();
-            notification.flags = Notification.FLAG_ONGOING_EVENT;
-            notification.flags |= Notification.FLAG_NO_CLEAR;
-            notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+            // notification = new Notification();
+            // notification.flags = Notification.FLAG_ONGOING_EVENT;
+            // notification.flags |= Notification.FLAG_NO_CLEAR;
+            // notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(service, channelId);
+            mBuilder.setSmallIcon(smallIconId);
+            mBuilder.setLargeIcon(BitmapFactory.decodeResource(service.getResources(), largeIconId));
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                mBuilder.setContentTitle(title);
+                mBuilder.setContentText(content);
+            }
+
+            notification = mBuilder.build();
         }
-        service.startForeground(notificationId, notification);
+        service.startForeground(id, notification);
     }
 }

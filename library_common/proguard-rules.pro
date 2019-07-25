@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class com.r.library.common.net.**{*;}
+-keep class com.r.library.common.focus.**{*;}
+-keep class com.r.library.common.view.**{*;}

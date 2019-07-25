@@ -58,7 +58,7 @@ public class ShutdownUtils {
             // 获得ServiceManager类
             Class ServiceManager = Class.forName("android.os.ServiceManager");
             // 获得ServiceManager的getService方法
-            Method getService = ServiceManager.getMethod("getService", java.lang.String.class);
+            Method getService = ServiceManager.getMethod("getService", String.class);
             // 调用getService获取RemoteService
             Object oRemoteService = getService.invoke(null, Context.POWER_SERVICE);
             // 获得IPowerManager.Stub类
@@ -96,7 +96,7 @@ public class ShutdownUtils {
             // 获得ServiceManager类
             Class ServiceManager = Class.forName("android.os.ServiceManager");
             // 获得ServiceManager的getService方法
-            Method getService = ServiceManager.getMethod("getService", java.lang.String.class);
+            Method getService = ServiceManager.getMethod("getService", String.class);
             // 调用getService获取RemoteService
             Object oRemoteService = getService.invoke(null, Context.POWER_SERVICE);
             // 获得IPowerManager.Stub类

@@ -15,7 +15,6 @@ import com.r.library.common.apk.ApkInstaller;
 import com.r.library.common.dialog.RDialog;
 import com.r.library.common.handler.WeakHandler;
 import com.r.library.common.handler.WeakHandlerListener;
-import com.r.library.common.net.HttpConnHelper;
 import com.r.library.common.net.LocalNetHelper;
 import com.r.library.common.net.OKHTTPHelper;
 import com.r.library.common.notification.NotificationHelper;
@@ -178,9 +177,6 @@ public class DemoActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
                         LogUtils.e(TAG, "onFailure()");
-                        HttpConnHelper httpConnHelper = new HttpConnHelper();
-                        HttpConnHelper.HttpResponse response = httpConnHelper.request("https://album-scloud.cp21.ott.cibntv.net/wx/album/tv_login?mac=b01bd269de22");
-                        LogUtils.i(TAG, "response(): " + response);
                     }
 
                     @Override

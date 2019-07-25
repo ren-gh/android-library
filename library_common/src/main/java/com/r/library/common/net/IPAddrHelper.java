@@ -46,7 +46,7 @@ public class IPAddrHelper {
             @Override
             public void run() {
                 String url = "http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip=" + ip;
-                HttpConnHelper.HttpResponse httpResponse = new HttpConnHelper().request(url);
+                OKHTTPHelper.HttpResponse httpResponse = OKHTTPHelper.getDefault().request(url);
                 if (httpResponse != null && httpResponse.isSuccess()) {
                     String response = httpResponse.getResponse();
                     IpInfo ipInfoObj = new IpInfo(response);
