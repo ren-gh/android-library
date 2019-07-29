@@ -103,7 +103,7 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.3'
     implementation 'com.google.zxing:zxing-parent:3.3.3'
     implementation 'com.squareup.okio:okio:2.2.2'
-    implementation 'com.squareup.okhttp3:okhttp:4.0.0-alpha01'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
 
     implementation 'com.owen:tv-recyclerview:2.0.3'
 
