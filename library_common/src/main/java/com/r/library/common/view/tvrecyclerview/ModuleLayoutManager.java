@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import static com.r.library.common.view.tvrecyclerview.TvRecyclerView.DEBUG;
 
-
 public abstract class ModuleLayoutManager extends RecyclerView.LayoutManager implements
         RecyclerView.SmoothScroller.ScrollVectorProvider {
 
@@ -21,9 +20,9 @@ public abstract class ModuleLayoutManager extends RecyclerView.LayoutManager imp
 
     private static final int BASE_ITEM_DEFAULT_SIZE = 380;
 
-    public static final int HORIZONTAL = OrientationHelper.HORIZONTAL;
+    private static final int HORIZONTAL = OrientationHelper.HORIZONTAL;
 
-    public static final int VERTICAL = OrientationHelper.VERTICAL;
+    private static final int VERTICAL = OrientationHelper.VERTICAL;
 
     private final static int LAYOUT_START = -1;
 
