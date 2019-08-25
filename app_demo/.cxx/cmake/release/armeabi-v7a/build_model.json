@@ -1,0 +1,70 @@
+{
+  "variant": {
+    "module": {
+      "rootBuildGradleFolder": "/Users/rengh/workspace/android/code/rengh/r-library",
+      "sdkFolder": "/Users/rengh/workspace/android/sdk",
+      "isNativeCompilerSettingsCacheEnabled": false,
+      "isBuildOnlyTargetAbiEnabled": true,
+      "splitsAbiFilterSet": [],
+      "intermediatesFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/build/intermediates",
+      "gradleModulePathName": ":app_demo",
+      "moduleRootFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo",
+      "makeFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/CMakeLists.txt",
+      "buildSystem": "CMAKE",
+      "compilerSettingsCacheFolder": "/Users/rengh/workspace/android/code/rengh/r-library/.cxx",
+      "cxxFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx",
+      "ndkFolder": "/Users/rengh/workspace/android/sdk/ndk-bundle",
+      "ndkVersion": "20.0.5594570",
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "cmakeToolchainFile": "."
+    },
+    "buildSystemArgumentList": [],
+    "cFlagList": [],
+    "cppFlagsList": [
+      "-frtti -fexceptions"
+    ],
+    "variantName": "release",
+    "soFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/build/intermediates/cmake/release/lib",
+    "objFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/build/intermediates/cmake/release/obj",
+    "jsonFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release",
+    "gradleBuildOutputFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cxx/release",
+    "isDebuggableEnabled": false,
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A"
+    ],
+    "buildTargetSet": []
+  },
+  "abi": "ARMEABI_V7A",
+  "abiPlatformVersion": 16,
+  "cxxBuildFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a",
+  "jsonFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a/android_gradle_build.json",
+  "gradleBuildOutputFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cxx/release/armeabi-v7a",
+  "objFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/build/intermediates/cmake/release/obj/armeabi-v7a",
+  "buildCommandFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a/build_command.txt",
+  "buildOutputFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a/build_output.txt",
+  "modelOutputFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a/build_model.json",
+  "cmake": {
+    "cmakeListsWrapperFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cxx/release/armeabi-v7a/CMakeLists.txt",
+    "toolchainWrapperFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cxx/release/armeabi-v7a/android_gradle_build.toolchain.cmake",
+    "buildGenerationStateFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cxx/release/armeabi-v7a/build_generation_state.json",
+    "cacheKeyFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cxx/release/armeabi-v7a/compiler_cache_key.json",
+    "compilerCacheUseFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cxx/release/armeabi-v7a/compiler_cache_use.json",
+    "compilerCacheWriteFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cxx/release/armeabi-v7a/compiler_cache_write.json",
+    "toolchainSettingsFromCacheFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cxx/release/armeabi-v7a/compiler_settings_cache.cmake",
+    "cmakeWrappingBaseFolder": "."
+  },
+  "jsonGenerationLoggingRecordFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a/json_generation_record.json",
+  "compileCommandsJsonFile": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a/compile_commands.json"
+}

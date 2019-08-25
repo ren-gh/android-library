@@ -1,0 +1,16 @@
+{
+  "buildFiles": [
+    "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "/Users/rengh/workspace/android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/arm64-v8a --target clean"
+  ],
+  "libraries": {
+    "native-lib-Release-arm64-v8a": {
+      "artifactName": "native-lib",
+      "buildCommand": "/Users/rengh/workspace/android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/arm64-v8a --target native-lib",
+      "abi": "arm64-v8a",
+      "output": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/build/intermediates/cmake/release/obj/arm64-v8a/libnative-lib.so"
+    }
+  }
+}

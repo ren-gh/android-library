@@ -1,0 +1,3 @@
+/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx/cmake/release/armeabi-v7a/CMakeFiles/native-lib.dir
