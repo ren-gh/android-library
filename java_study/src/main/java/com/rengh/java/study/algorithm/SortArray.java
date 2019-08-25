@@ -25,6 +25,26 @@ public class SortArray {
     /**
      * 排序算法测试用例
      */
+    // 交换数据：a=20, b=10
+    // 1. 冒泡排序
+    // 使用时间：17897 ms
+    // 2. 选择排序
+    // 使用时间：5072 ms
+    // 3.1 插入排序
+    // 使用时间：1041 ms
+    // 3.2 折半插入排序
+    // 使用时间：820 ms
+    // 4. 归并排序
+    // 使用时间：16 ms
+    // 5. 希尔排序
+    // 使用时间：23 ms
+
+    // 6.2 三项查找排序
+    // 使用时间：14 ms
+    // 7. 基数排序
+    // 使用时间：29 ms
+    // 8. 堆排序
+    // 使用时间：189 ms
     private static void sortTestCase() {
         int[] array = new int[100000];
         for (int i = 0; i < array.length; i++) {
@@ -40,68 +60,69 @@ public class SortArray {
 
         int[] copyedArray;
         long start;
-        System.out.println("1. 冒泡排序");
-        copyedArray = array.clone();
-        start = System.currentTimeMillis();
-        sortArray.bubbleSort(copyedArray);
-        if (DEBUG)
-            sortArray.print(copyedArray);
-        long use = System.currentTimeMillis() - start;
-        System.out.println("使用时间：" + use + " ms");
-
-        System.out.println("2. 选择排序");
-        copyedArray = array.clone();
-        start = System.currentTimeMillis();
-        sortArray.selectSort(copyedArray);
-        if (DEBUG)
-            sortArray.print(copyedArray);
-        use = System.currentTimeMillis() - start;
-        System.out.println("使用时间：" + use + " ms");
-
-        System.out.println("3.1 插入排序");
-        copyedArray = array.clone();
-        start = System.currentTimeMillis();
-        sortArray.insertSort(copyedArray);
-        if (DEBUG)
-            sortArray.print(copyedArray);
-        use = System.currentTimeMillis() - start;
-        System.out.println("使用时间：" + use + " ms");
-
-        System.out.println("3.2 折半插入排序");
-        copyedArray = array.clone();
-        start = System.currentTimeMillis();
-        sortArray.binaryInsertSort(copyedArray);
-        if (DEBUG)
-            sortArray.print(copyedArray);
-        use = System.currentTimeMillis() - start;
-        System.out.println("使用时间：" + use + " ms");
-
-        System.out.println("4. 归并排序");
-        copyedArray = array.clone();
-        start = System.currentTimeMillis();
-        sortArray.mergerSort(copyedArray);
-        if (DEBUG)
-            sortArray.print(copyedArray);
-        use = System.currentTimeMillis() - start;
-        System.out.println("使用时间：" + use + " ms");
-
-        System.out.println("5. 希尔排序");
-        copyedArray = array.clone();
-        start = System.currentTimeMillis();
-        sortArray.shellSort(copyedArray);
-        if (DEBUG)
-            sortArray.print(copyedArray);
-        use = System.currentTimeMillis() - start;
-        System.out.println("使用时间：" + use + " ms");
-
-        System.out.println("6.1 快速排序");
-        copyedArray = array.clone();
-        start = System.currentTimeMillis();
-        sortArray.quickSort(copyedArray);
-        if (DEBUG)
-            sortArray.print(copyedArray);
-        use = System.currentTimeMillis() - start;
-        System.out.println("使用时间：" + use + " ms");
+        long use;
+        // System.out.println("1. 冒泡排序");
+        // copyedArray = array.clone();
+        // start = System.currentTimeMillis();
+        // sortArray.bubbleSort(copyedArray);
+        // if (DEBUG)
+        // sortArray.print(copyedArray);
+        // use = System.currentTimeMillis() - start;
+        // System.out.println("使用时间：" + use + " ms");
+        //
+        // System.out.println("2. 选择排序");
+        // copyedArray = array.clone();
+        // start = System.currentTimeMillis();
+        // sortArray.selectSort(copyedArray);
+        // if (DEBUG)
+        // sortArray.print(copyedArray);
+        // use = System.currentTimeMillis() - start;
+        // System.out.println("使用时间：" + use + " ms");
+        //
+        // System.out.println("3.1 插入排序");
+        // copyedArray = array.clone();
+        // start = System.currentTimeMillis();
+        // sortArray.insertSort(copyedArray);
+        // if (DEBUG)
+        // sortArray.print(copyedArray);
+        // use = System.currentTimeMillis() - start;
+        // System.out.println("使用时间：" + use + " ms");
+        //
+        // System.out.println("3.2 折半插入排序");
+        // copyedArray = array.clone();
+        // start = System.currentTimeMillis();
+        // sortArray.binaryInsertSort(copyedArray);
+        // if (DEBUG)
+        // sortArray.print(copyedArray);
+        // use = System.currentTimeMillis() - start;
+        // System.out.println("使用时间：" + use + " ms");
+        //
+        // System.out.println("4. 归并排序");
+        // copyedArray = array.clone();
+        // start = System.currentTimeMillis();
+        // sortArray.mergerSort(copyedArray);
+        // if (DEBUG)
+        // sortArray.print(copyedArray);
+        // use = System.currentTimeMillis() - start;
+        // System.out.println("使用时间：" + use + " ms");
+        //
+        // System.out.println("5. 希尔排序");
+        // copyedArray = array.clone();
+        // start = System.currentTimeMillis();
+        // sortArray.shellSort(copyedArray);
+        // if (DEBUG)
+        // sortArray.print(copyedArray);
+        // use = System.currentTimeMillis() - start;
+        // System.out.println("使用时间：" + use + " ms");
+        //
+        // System.out.println("6.1 快速排序");
+        // copyedArray = array.clone();
+        // start = System.currentTimeMillis();
+        // sortArray.quickSort(copyedArray);
+        // if (DEBUG)
+        // sortArray.print(copyedArray);
+        // use = System.currentTimeMillis() - start;
+        // System.out.println("使用时间：" + use + " ms");
 
         System.out.println("6.2 三项查找排序");
         copyedArray = array.clone();
@@ -622,7 +643,8 @@ public class SortArray {
      */
     // 其中VectorHeap是一个自己写到堆的实现类，关于堆到后面介绍到堆时再详细介绍，下面先给出其具体实现类的代码
     public void heapSort(int[] array) {
-        print(array);
+        if (DEBUG)
+            print(array);
         VectorHeap<Integer, Integer> vectorHeap = new VectorHeap<>();
         for (int i = 0; i < array.length; i++)
             vectorHeap.insert(array[i], null);
