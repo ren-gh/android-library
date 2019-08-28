@@ -28,7 +28,7 @@ public class MySort {
     }
 
     /**
-     * 获取一个制定范围的随机数
+     * 获取一个指定范围的随机数
      *
      * @param min 包含
      * @param max 包含
