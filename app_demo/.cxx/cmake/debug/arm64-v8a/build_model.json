@@ -13,7 +13,7 @@
       "buildSystem": "CMAKE",
       "compilerSettingsCacheFolder": "/Users/rengh/workspace/android/code/rengh/r-library/.cxx",
       "cxxFolder": "/Users/rengh/workspace/android/code/rengh/r-library/app_demo/.cxx",
-      "ndkFolder": "/Users/rengh/workspace/android/sdk/ndk-bundle",
+      "ndkFolder": "/Users/rengh/workspace/android/sdk/ndk/20.0.5594570",
       "ndkVersion": "20.0.5594570",
       "ndkSupportedAbiList": [
         "ARMEABI_V7A",

@@ -18,6 +18,23 @@ public class SortArray {
         a = a - b;
         System.out.println("交换数据：a=" + a + ", b=" + b);
 
+        int[] K = {
+                1, 1, 1
+        };
+        // F 和 K 指向同一数组
+        int[] F = K;
+        // 拷贝数组方式一：
+        // int[] F = K.clone();
+        // 拷贝数组方式二：
+        // int[] F = new int[K.length];
+        // System.arraycopy(K, 0, F, 0, K.length);
+        for (int i = 0; i < F.length; i++) {
+            F[i]++;
+        }
+        for (int tmp : K) {
+            System.out.println(tmp);
+        }
+
         sortTestCase();
 
     }
@@ -155,7 +172,7 @@ public class SortArray {
     /**
      * 获取一个随机数
      *
-     * @param max
+     * @param max 包含
      * @return
      */
     public static int getRandom(int max) {
@@ -165,15 +182,15 @@ public class SortArray {
     /**
      * 获取一个制定范围的随机数
      *
-     * @param min
-     * @param max
+     * @param min 包含
+     * @param max 包含
      * @return
      */
     public static int getRandom(int min, int max) {
         if (min > max) {
             throw new IllegalArgumentException("最大数必须大于最小数");
         }
-        return min + (int) (Math.random() * (max - 1 - min));
+        return min + (int) (Math.random() * (max - min + 1));
     }
 
     /**
@@ -214,7 +231,7 @@ public class SortArray {
 
     /**
      * 是否开启 DEBUG 模式
-     * 
+     *
      * @param debug
      */
     public void setDebug(boolean debug) {
@@ -236,7 +253,7 @@ public class SortArray {
 
     /**
      * 1. 冒泡排序
-     * 
+     *
      * @param array
      */
     // 比较次数：O(n^2)
@@ -290,7 +307,7 @@ public class SortArray {
 
     /**
      * 3.1 插入排序
-     * 
+     *
      * @param array
      */
     // 随机数据：O(n^2)
@@ -326,7 +343,7 @@ public class SortArray {
 
     /**
      * 3.2 折半插入排序
-     * 
+     *
      * @param array
      */
     // 又叫二分插入排序, 即寻找插入位置时，用二分法寻找
@@ -362,7 +379,7 @@ public class SortArray {
 
     /**
      * 4. 归并排序
-     * 
+     *
      * @param array
      */
     // 序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。
@@ -422,7 +439,7 @@ public class SortArray {
 
     /**
      * 5. 希尔排序
-     * 
+     *
      * @param array
      */
     // 又叫最小增量排序，基于插入排序，时间复杂度O(N*(logN)2)，效率不算太高,适于中等大小数组，但是非常容易实现，代码既简单又短。
@@ -458,7 +475,7 @@ public class SortArray {
 
     /**
      * 6.1 快速排序
-     * 
+     *
      * @param array
      */
     // 划分：快速排序的根本机制, 把数据分为两组,使所有关键字大于特定值的数据项在一组,小于的在另一组, 如全班学生的考试成绩以及格线60划分。
@@ -597,7 +614,7 @@ public class SortArray {
 
     /**
      * 7. 基数排序
-     * 
+     *
      * @param data
      * @param radix
      * @param d
@@ -638,7 +655,7 @@ public class SortArray {
 
     /**
      * 8. 堆排序
-     * 
+     *
      * @param array
      */
     // 其中VectorHeap是一个自己写到堆的实现类，关于堆到后面介绍到堆时再详细介绍，下面先给出其具体实现类的代码

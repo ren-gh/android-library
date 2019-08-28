@@ -1,5 +1,5 @@
 {
-  "ndkFolder": "/Users/rengh/workspace/android/sdk/ndk-bundle",
+  "ndkFolder": "/Users/rengh/workspace/android/sdk/ndk/20.0.5594570",
   "messages": [
     {
       "level": "INFO",
@@ -7,7 +7,7 @@
     },
     {
       "level": "INFO",
-      "message": "ndk.dir in local.properties is /Users/rengh/workspace/android/sdk/ndk-bundle"
+      "message": "ndk.dir in local.properties is not set"
     },
     {
       "level": "INFO",
@@ -19,10 +19,6 @@
     },
     {
       "level": "INFO",
-      "message": "Considering /Users/rengh/workspace/android/sdk/ndk-bundle by ndk.dir"
-    },
-    {
-      "level": "INFO",
       "message": "Considering /Users/rengh/workspace/android/sdk/ndk-bundle in SDK ndk-bundle folder"
     },
     {
@@ -31,7 +27,7 @@
     },
     {
       "level": "INFO",
-      "message": "Found requested ndk.dir (/Users/rengh/workspace/android/sdk/ndk-bundle) which has version 20.0.5594570"
+      "message": "No user requested version, choosing /Users/rengh/workspace/android/sdk/ndk/20.0.5594570 which is version 20.0.5594570"
     }
   ]
 }
