@@ -50,7 +50,7 @@ public class BaseUtils {
     public static void swap(int[] array, int i, int j) {
         if (array == null)
             throw new NullPointerException("数组不能是空");
-        if (i >= array.length - 1 || j >= array.length - 1)
+        if (i >= array.length  || j >= array.length)
             throw new ArrayIndexOutOfBoundsException("需要交换的索引应在数组长度范围内");
         if (i == j)
             return;

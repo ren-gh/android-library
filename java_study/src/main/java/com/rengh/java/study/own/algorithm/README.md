@@ -1,110 +1,37 @@
-# 排序
+# 算法
 
-## 前言、辅助方法
+# 一、查找
+- 顺序查找
+> 用所给关键字与线性表中各元素的关键字逐个进行比较，直到成功或失败。
+> 基本思想：在查找表的一端设置一个称为“监视哨”的附加单元，存放要查找的数据元素关键字。然后从表的另一端开始查找，如果在“监视哨”位置找到给定关键字，则失败，否则成功返回相应元素的位置。
 
-#### 获取随机数
-```
-    /**
-     * 获取一个随机数
-     *
-     * @param max 包含
-     * @return
-     */
-    public static int getRandom(int max) {
-        return getRandom(0, max);
-    }
+- 折半查找
+> 又称二分查找。
+> 条件：查找表必须使用顺序的存储结构；查找表必须按关键字大小有序排列。
+> 基本思想：首先，将查找表中间位置数据元素的关键字与给定关键字比较，如果相等则查找成功；否则利用中间元素将表一分为二，如果中间元素关键字大于给定关键字，则在前一子表中进行折半查找，否则在后一子表中进行折半查找。重复以上过程，直到找到满足条件的元素，则查找成功；或直到子表为空为止，此时查找不成功。
 
-    /**
-     * 获取一个制定范围的随机数
-     *
-     * @param min 包含
-     * @param max 包含
-     * @return
-     */
-    public static int getRandom(int min, int max) {
-        if (min > max) {
-            throw new IllegalArgumentException("最大数必须大于最小数");
-        }
-        return min + (int) (Math.random() * (max - min + 1));
-    }
-```
+# 二、排序
+- 插入类排序
+1. 直接插入排序
+将第一个元素看做有序队列，从第二个元素开始，与前面有序队列的元素依次比较，找到合适的位置，将该位置及之后的有序队列元素依次后移一位，然后把目标元素插入目标位置，以此类推。
+时间复杂度为 O(n^2)，当待排序元素有序时，时间复杂度可提高到 O(n)。
+2. 折半插入排序
+基于直接插入排序，将查找位置的部分改为折半查找实现，节省查找的时间，减少比较次数。不过移动次数不变。
+时间复杂度为 O(n^2)。
+3. 希尔排序
+基于直接插入排序，由于直接插入排序在元素个数少的时候效率较高，希尔排序将待排序队列分为若干个元素个数少的队列，分别对其进行直接插入排序，然后对所有排好序的这些队列进行一次完整的直接插入排序。
+时间复杂度为 O(n^(3/2))。
 
-#### 打印数组
-```
-    /**
-     * 打印数组
-     *
-     * @param array
-     */
-    public static void print(int[] array) {
-        if (null == array) {
-            System.out.println("null");
-            return;
-        }
-        if (0 == array.length) {
-            System.out.println("length is 0");
-            return;
-        }
-        System.out.print("{");
-        for (int i = 0; i < array.length; i++) {
-            System.out.print(array[i]);
-            if (i != array.length - 1) {
-                System.out.print(", ");
-            }
-        }
-        System.out.println("}");
-    }
-```
+- 交换类排序
+1. 冒泡排序
+2. 快速排序
+- 选择类排序
+1. 简单选择排序
+2. 树形选择排序
+3. 堆排序
+- 归并排序
+- 基于比较的排序的对比
+- 在线性时间内排序
+1. 计数排序
+2. 基数排序
 
-## 一、选择排序
-
-#### 原理
-- 从位置 0 开始，跟位置 1 一直到最后的元素进行比较，找到最小元素的位置，将最小元素和 0 进行交换；
-- 从位置 1 开始，跟位置 2 一直到最后的元素进行比较，找到最小元素的位置，将最小元素和 1 进行交换；
-- …………
-- …………
-- …………
-- 从位置 n - 2 开始，跟位置 n - 1 元素进行比较，如果 n - 1 小于 n - 2，将 n - 1 和 n - 2 进行交换；
-
-#### 代码
-```
-    /**
-     * 选择排序
-     *
-     * @param array
-     */
-    public static void selectSort(int[] array) {
-        selectSort(array, false);
-    }
-
-    public static void selectSort(int[] array, boolean big2small) {
-        if (null == array) {
-            throw new NullPointerException("Array must not be null.");
-        }
-        if (0 == array.length) {
-            return;
-        }
-        int n = array.length;
-        for (int i = 0; i < n - 1; i++) {
-            int minOrMax = i;
-            for (int j = i + 1; j < n; j++) {
-                if (big2small) {
-                    if (array[minOrMax] < array[j]) {
-                        minOrMax = j;
-                    }
-                } else {
-                    if (array[minOrMax] > array[j]) {
-                        minOrMax = j;
-                    }
-                }
-            }
-            if (i != minOrMax) {
-                int temp = array[i];
-                array[i] = array[minOrMax];
-                array[minOrMax] = temp;
-            }
-        }
-    }
-```
-
-## 二、

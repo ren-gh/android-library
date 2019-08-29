@@ -64,7 +64,7 @@ public class SortArray {
     // 8. 堆排序
     // 使用时间：189 ms
     private static void sortTestCase() {
-        int[] array = new int[100000];
+        int[] array = new int[3000];
         for (int i = 0; i < array.length; i++) {
             int temp = BaseUtils.getRandom(0, 100000);
             array[i] = temp;

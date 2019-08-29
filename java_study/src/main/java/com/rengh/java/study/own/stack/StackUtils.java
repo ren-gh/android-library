@@ -5,7 +5,7 @@ import java.util.Stack;
 
 public class StackUtils {
     public static void main(String[] args) {
-        baseConversion(10);
+        baseConversion(17);
     }
 
     /**
