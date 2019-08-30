@@ -50,7 +50,7 @@ public class BaseUtils {
     public static void swap(int[] array, int i, int j) {
         if (array == null)
             throw new NullPointerException("数组不能是空");
-        if (i >= array.length  || j >= array.length)
+        if (i >= array.length || j >= array.length)
             throw new ArrayIndexOutOfBoundsException("需要交换的索引应在数组长度范围内");
         if (i == j)
             return;
@@ -65,6 +65,10 @@ public class BaseUtils {
      * @param array
      */
     public static void print(int[] array) {
+        print(array, 0, array.length - 1);
+    }
+
+    public static void print(int[] array, int left, int right) {
         if (null == array) {
             System.out.println("数组为 null");
             return;
@@ -73,15 +77,21 @@ public class BaseUtils {
             System.out.println("数组长度为 0");
             return;
         }
-        int n = array.length;
+        if (left > right || 0 > left) {
+            return;
+        }
+        int n = array.length - 1;
         if (20 < array.length) {
             System.out.println("数组元素太多，只打印前二十个：");
             n = 20;
         }
+        if (right < array.length) {
+            n = right;
+        }
         System.out.print("{");
-        for (int i = 0; i < n; i++) {
+        for (int i = left; i <= n; i++) {
             System.out.print(array[i]);
-            if (i != n - 1) {
+            if (i != n) {
                 System.out.print(", ");
             }
         }
