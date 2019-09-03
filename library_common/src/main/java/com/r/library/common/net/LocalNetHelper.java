@@ -17,10 +17,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.RequiresPermission;
-import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+
+import androidx.annotation.RequiresPermission;
+import androidx.core.app.ActivityCompat;
 
 public class LocalNetHelper {
     private static final String TAG = "LocalNetHelper";

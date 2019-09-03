@@ -6,9 +6,10 @@ import com.r.library.common.handler.WeakHandler;
 import com.r.library.common.util.LogUtils;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.animation.Animation;
+
+import androidx.viewpager.widget.ViewPager;
 
 public class GalleryTransformer implements ViewPager.PageTransformer {
     private final String TAG = "GalleryTransformer";

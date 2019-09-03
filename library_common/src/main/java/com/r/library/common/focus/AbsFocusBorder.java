@@ -18,14 +18,15 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+
+import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 
 /**
  * @author xiaoxuan 参考网上实现思路，稍加整理修改 抽象调用方法，参照《Android源码设计模式》第三章Builder模式

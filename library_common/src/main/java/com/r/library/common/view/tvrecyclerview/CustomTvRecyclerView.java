@@ -3,10 +3,11 @@ package com.r.library.common.view.tvrecyclerview;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.r.library.common.util.LogUtils;
 

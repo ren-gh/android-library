@@ -1,8 +1,9 @@
 
 package com.r.library.common.focus;
 
-import android.support.annotation.NonNull;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 public interface FocusBorder {
     void setVisible(boolean visible);

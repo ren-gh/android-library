@@ -10,8 +10,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.RectF;
-import android.support.v4.view.ViewCompat;
 import android.view.ViewGroup;
+
+import androidx.core.view.ViewCompat;
 
 /**
  * @author xiaoxuan 2017.09.05 实现抽象类AbsFocusBorder的具体执行方法 ColorFocusBorder为具体的实现类

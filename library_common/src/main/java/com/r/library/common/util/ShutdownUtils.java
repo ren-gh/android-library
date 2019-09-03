@@ -7,7 +7,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.PowerManager;
 import android.os.SystemClock;
-import android.support.annotation.RequiresPermission;
+
+import androidx.annotation.RequiresPermission;
 
 public class ShutdownUtils {
     private static final String TAG = "ShutdownUtils";

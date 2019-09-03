@@ -1,1 +1,1 @@
-include ':app_demo', ':library_common', ':app_star', ':app_study', ':java_study'
+include ':library_common', ':java_study'

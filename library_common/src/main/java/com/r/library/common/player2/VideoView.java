@@ -17,7 +17,6 @@ import android.media.MediaDataSource;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -25,6 +24,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
+
+import androidx.annotation.RequiresApi;
 
 public class VideoView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "VideoView";

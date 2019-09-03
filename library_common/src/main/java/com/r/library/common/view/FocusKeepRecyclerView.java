@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import com.r.library.common.util.LogUtils;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class FocusKeepRecyclerView extends RecyclerView {
     private static final String TAG = "FocusKeepRecyclerView";

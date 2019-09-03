@@ -3,9 +3,10 @@ package com.r.library.common.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ScaleRecyclerView extends RecyclerView {
     private int mSelectedPosition = 0;
