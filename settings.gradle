@@ -1,1 +1,1 @@
-include ':library_common', ':java_study'
+include ':library_common', ':java_study', ':app_flutter'

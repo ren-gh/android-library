@@ -1,7 +1,6 @@
 package com.r.library.common.view.tvrecyclerview;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -19,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
@@ -162,7 +162,7 @@ public class TvRecyclerView extends RecyclerView {
     private void addFlyBorderView(Context context) {
         if (mFocusBorderView == null) {
             mFocusBorderView = new FocusBorderView(context);
-            ((Activity) context).getWindow().addContentView(mFocusBorderView,
+            ((AppCompatActivity) context).getWindow().addContentView(mFocusBorderView,
                     new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             mFocusBorderView.setSelectPadding(mFocusFrameLeft, mFocusFrameTop,
                     mFocusFrameRight, mFocusFrameBottom);

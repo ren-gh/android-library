@@ -1,10 +1,5 @@
 package com.r.library.common.apk;
 
-import java.io.File;
-
-import com.r.library.common.util.FileUtils;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -12,7 +7,12 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+
+import com.r.library.common.util.FileUtils;
+
+import java.io.File;
 
 public class ApkInstaller {
     private static boolean hasSDCard = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
@@ -28,17 +28,17 @@ public class ApkInstaller {
         return mkdirs(dir);
     }
 
-    public static String getCacheDirPath(Activity activity) {
+    public static String getCacheDirPath(AppCompatActivity activity) {
         String dir = activity.getCacheDir().getPath() + "/";
         return mkdirs(dir);
     }
 
-    public static String getFileDirPath(Activity activity) {
+    public static String getFileDirPath(AppCompatActivity activity) {
         String dir = activity.getFilesDir().getPath() + "/";
         return mkdirs(dir);
     }
 
-    public static void installApk(Activity activity, String apkPath) {
+    public static void installApk(AppCompatActivity activity, String apkPath) {
         if (activity == null || TextUtils.isEmpty(apkPath)) {
             return;
         }
@@ -57,7 +57,7 @@ public class ApkInstaller {
         activity.startActivity(intent);
     }
 
-    public static boolean canRequestPackageInstalls(Activity activity, int resultCode) {
+    public static boolean canRequestPackageInstalls(AppCompatActivity activity, int resultCode) {
         if (Build.VERSION.SDK_INT >= 26) {
             boolean b = activity.getPackageManager().canRequestPackageInstalls();
             if (!b) {

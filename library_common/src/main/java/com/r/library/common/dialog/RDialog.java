@@ -1,10 +1,6 @@
 
 package com.r.library.common.dialog;
 
-import com.r.library.common.R;
-import com.r.library.common.util.UIUtils;
-
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -14,6 +10,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.r.library.common.R;
+import com.r.library.common.util.UIUtils;
+
 public class RDialog extends Dialog implements View.OnClickListener, View.OnFocusChangeListener {
     private final String TAG = "RDialog";
     private Context mContext;
@@ -21,7 +22,7 @@ public class RDialog extends Dialog implements View.OnClickListener, View.OnFocu
     private TextView textView;
     private Button buttonYes, buttonNo;
 
-    public RDialog(Activity activity) {
+    public RDialog(AppCompatActivity activity) {
         super(activity, R.style.DialogStyle);
         setContentView(R.layout.dialog_r_layout);
         mContext = activity;
