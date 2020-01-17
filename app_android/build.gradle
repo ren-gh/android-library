@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "cn.rengh.app.android"
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // 过滤 Flutter 支持的架构。
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+    }
+    compileOptions {
+        // 添加 flutter_lib 项目以 aar 方式集成到本 app
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+    buildTypes {
+        // 添加 flutter_lib 项目以 aar 方式集成到本 app
+        profile {
+            initWith debug
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+// 1. 添加 flutter_lib 项目以 aar 方式集成到本 app
+repositories {
+    maven {
+        url '../../flutter_lib/build/host/outputs/repo'
+    }
+    maven {
+        url 'http://download.flutter.io'
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.annotation:annotation:1.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation 'junit:junit:4.12'
+
+//    // 2. 添加 flutter_lib 项目以 aar 方式集成到本 app
+//    debugImplementation 'cn.rengh.flutter.flutter_lib:flutter_debug:1.0'
+//    profileImplementation 'cn.rengh.flutter.flutter_lib:flutter_profile:1.0'
+//    releaseImplementation 'cn.rengh.flutter.flutter_lib:flutter_release:1.0'
+
+    // 2. 添加 flutter_lib2 作为 app 依赖的源码项目, 步骤 1 在 settings.gradle 配置
+    implementation project(':flutter')
+}

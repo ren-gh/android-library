@@ -1,1 +1,7 @@
-include ':library_common', ':java_study', ':app_flutter'
+include ':library_common', ':java_study', ':app_android'
+
+// 1. 添加 flutter_lib2 作为 app 依赖的源码项目，步骤 2 在 app 的 build.gradle 配置
+setBinding(new Binding([gradle: this]))
+evaluate(new File(settingsDir.parentFile, 'flutter_lib2/.android/include_flutter.groovy'))
+include ':flutter_lib2'
+project(':flutter_lib2').projectDir = new File('../flutter_lib2')
